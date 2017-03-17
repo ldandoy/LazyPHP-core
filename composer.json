@@ -1,0 +1,12 @@
+{
+    "name": "lazyphp/lazyphp-core",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ldandoy",
+            "email": "ldandoy@overconsulting.net"
+        }
+    ],
+    "require": {}
+}
