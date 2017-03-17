@@ -8,5 +8,10 @@
             "email": "ldandoy@overconsulting.net"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "System": "src/"
+        }
+    }
 }
