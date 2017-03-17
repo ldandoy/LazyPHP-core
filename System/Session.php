@@ -5,13 +5,13 @@
  * @category System
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
- * @license  GNU 
+ * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace system;
+namespace System;
 
-use system\helpers\Bootstrap;
+use Helpers\Bootstrap;
 
 /**
  * Class to manage session
@@ -19,7 +19,7 @@ use system\helpers\Bootstrap;
  * @category System
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
- * @license  GNU 
+ * @license  GNU
  * @link     http://overconsulting.net
  */
 class Session
@@ -90,12 +90,12 @@ class Session
     }
 
     /**
-     * Get a session variable 
+     * Get a session variable
      *
      * @return mixed
      */
     public static function get($name)
-    {        
+    {
         return isset($_SESSION[$name]) ? $_SESSION[$name] : null;
     }
 

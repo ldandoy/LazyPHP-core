@@ -9,7 +9,7 @@
  * @link     http://overconsulting.net
  */
 
-namespace system;
+namespace System;
 
 /**
  * Class gérant les requètes arrivant au serveur
