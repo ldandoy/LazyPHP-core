@@ -37,7 +37,7 @@ class Config
      */
     public static function init()
     {
-        /*self::$config =  parse_ini_file(CONFIG_DIR.DS."config.ini", true);
+        self::$config =  parse_ini_file(CONFIG_DIR.DS."config.ini", true);
         self::$config_db = self::$config['DB'];
         self::$config_general = self::$config['GENERAL'];
         self::$config_css = self::$config['CSS'];
@@ -46,7 +46,7 @@ class Config
         if (!ini_get('display_errors')) {
             ini_set('error_reporting', E_ALL);
             ini_set('display_errors', self::getValueG('debug'));
-        }*/
+        }
     }
 
     /**
