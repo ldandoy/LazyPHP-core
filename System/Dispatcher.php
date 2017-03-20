@@ -27,6 +27,7 @@ class Dispatcher
 
     public function __construct()
     {
+        
         $this->request = new Request();
 
         if (!Router::parse($this->request)) {
@@ -62,9 +63,11 @@ class Dispatcher
     public function loadController()
     {
         $file = CONTROLLER_DIR.DS.$this->controller.'Controller.php';
+
         if (is_file($file)) {
             $class = '\app\\controllers\\'.str_replace('/', '\\', $this->controller)."Controller";
             if (class_exists($class)) {
+                
                 $controller = new $class($this->request);
                 return $controller;
             } else {
