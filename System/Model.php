@@ -9,11 +9,11 @@
  * @link     http://overconsulting.net
  */
 
-namespace system;
+namespace System;
 
-use system\Config;
-use system\Query;
-use system\Db;
+use System\Config;
+use System\Query;
+use System\Db;
 
 /**
  * Class gérant les Models du site

@@ -9,7 +9,7 @@
  * @link     http://overconsulting.net
  */
 
-namespace system;
+namespace System;
 
 use \PDO;
 
