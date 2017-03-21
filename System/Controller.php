@@ -44,7 +44,7 @@ class Controller
     /**
      * @param string $view
      *
-     * @return string
+     * @return string|bool
      */
     private function findView($view)
     {
@@ -52,29 +52,21 @@ class Controller
         do {
             $reflection = new \ReflectionClass($class);
             $file = $reflection->getFileName();
-            $dir = dirname(dirname($file)).'/views';
-            echo '<pre>'.print_r($file, true).'</pre>';
-            echo '<pre>'.print_r(dirname($file), true).'</pre>';
-            echo '<pre>'.print_r(dirname(dirname($file)), true).'</pre>';
-            echo '<pre>'.print_r("<br />", true).'</pre>';
+            $controller = strtolower(str_replace('Controller.php', '', basename($file)));
+            $tpl = dirname(dirname($file)).'/views'.DS.$controller.DS.$view.'.php';
+            if (file_exists($tpl)) {
+                return $tpl;
+            }
             $class = get_parent_class($class);
         } while ($class !== false);
 
-            exit;
-
-        if (strpos($view, "/") === 0) {
-            $tpl = VIEW_DIR.$view.".php";
-        } else {
-            $tpl = VIEW_DIR.DS.$this->controller.DS.$view.".php";
-        }
-
+        return false;
     }
 
     public function render($view, $params = array())
     {
         $tpl = $this->findView($view);
-
-        if (file_exists($tpl)) {
+        if ($tpl) {
             ob_start();
             require_once $tpl;
             $yeslp = ob_get_clean();
