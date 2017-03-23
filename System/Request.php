@@ -69,10 +69,17 @@ class Request
 
             $tabUrl = deleteEmptyItem(explode('/', $url));
             $controller = array_shift($tabUrl);
+
             if ($controller == $adminPrefix) {
                 $prefix = $adminPrefix;
                 $controller = array_shift($tabUrl);
             }
+
+            if (isset(Config::$packages[$controller])) {
+                $package = $controller;
+                $controller = array_shift($tabUrl);
+            }
+
             $action = array_shift($tabUrl);
             $params = $tabUrl;
 
@@ -84,13 +91,14 @@ class Request
                 $action = $defaultAction;
             }
 
-            $this->url = '/'.(isset($prefix) ? $prefix.'/' : '').$controller.'/'.$action.(count($params) > 0 ? '/'.implode('/', $params) : '');
+            $this->url = '/'.(isset($prefix) ? $prefix.'/' : '').(isset($package) ? $package.'/' : '').$controller.'/'.$action.(count($params) > 0 ? '/'.implode('/', $params) : '');
             $this->format = 'html';
         } else {
             /* If the url is just / */
             $this->url = '/'.$defaultController.'/'.$defaultAction;
             $this->format = 'html';
         }
+
         /* We manage the request method */
         $this->method = strtolower($_SERVER['REQUEST_METHOD']);
 

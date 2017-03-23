@@ -68,37 +68,24 @@ class Router
                 case 'crud':
                     foreach ($crudActions as $actionName => $actionMethod) {
                         $key = $section.'_'.$actionName;
-
                         $routes[$key]['url'] = '/'.str_replace('_', '/', $key);
-
-                        $a = explode('_', $section, 2);
-                        if (count($a) > 1) {
-                            $routes[$key]['prefix'] = $a[0];
-                            $routes[$key]['controller'] = str_replace('_', '/', $a[1]);
-                        } else {
-                            $routes[$key]['controller'] = str_replace('_', '/', $section);
-                        }
-                        $routes[$key]['action'] = $actionName;
                         $routes[$key]['method'] = $actionMethod;
+                        $routes[$key] = array_merge(
+                            $routes[$key],
+                            self::decodeUrl($routes[$key]['url'])
+                        );
                     }
                     break;
 
                 case 'post':
                 case 'get':
                 default:
-                    $a = explode('_', $section);
-                    $actionName = array_pop($a);
-                    $key = $section;
-
                     $routes[$key]['url'] = $params['url'];
-                    if (count($a) > 1) {
-                        $routes[$key]['prefix'] = $a[0];
-                        $routes[$key]['controller'] = str_replace('_', '/', $a[1]);
-                    } else {
-                        $routes[$key]['controller'] = $a[0];
-                    }
-                    $routes[$key]['action'] = $actionName;
                     $routes[$key]['method'] = $method;
+                    $routes[$key] = array_merge(
+                        $routes[$key],
+                        self::decodeUrl($routes[$key]['url'])
+                    );
                     break;
             }
         }
@@ -116,33 +103,83 @@ class Router
      */
     public static function parse($request)
     {
-        $adminPrefix = Config::getValueG('admin_prefix');
-        $key = '';
-        $tabUrl = deleteEmptyItem(explode('/', $request->url));
-        $controller = array_shift($tabUrl);
-        if ($controller == $adminPrefix) {
-            $prefix = $adminPrefix;
-            $key .= $prefix.'_';
-            $controller = array_shift($tabUrl);
-        }
-        $action = array_shift($tabUrl);
-        $params = $tabUrl;
-        $key .= $controller.'_'.$action;
+        $a = self::decodeUrl($request->url);
+
+        $key = 
+            (isset($a['prefix']) ? $a['prefix'].'_' : '').
+            (isset($a['package']) ? $a['package'].'_' : '').
+            $a['controller'].'_'.
+            $a['action'];
 
         foreach (self::$routes as $k => $v) {
             if ($key == $k) {
                 $route = $v;
-                if (!empty($route['prefix'])) {
+
+                if (isset($route['prefix'])) {
                     $request->prefix = $route['prefix'];
                 }
+
+                if (isset($route['package'])) {
+                    $request->package = $route['package'];
+                }
+
                 $request->controller = ucfirst($route['controller']);
                 $request->action = $route['action'];
-                $request->params = $params;
-                
+
+                if (isset($a['params'])) {
+                    $request->params = $a['params'];
+                }
+
                 return true;
             }
         }
+
         return false;
+    }
+
+    /**
+     * Decode an url
+     *
+     * @param string $url
+     *
+     * @return mixed
+     */
+    public static function decodeUrl($url)
+    {
+        $res = array();
+
+        $adminPrefix = Config::getValueG('admin_prefix');
+
+        $tabUrl = deleteEmptyItem(explode('/', $url));
+
+        $controller = array_shift($tabUrl);
+
+        if ($controller == $adminPrefix) {
+            $res['prefix'] = $adminPrefix;
+            $controller = array_shift($tabUrl);
+        }
+
+        if (isset(Config::$packages[$controller])) {
+            $res['package'] = $controller;
+            $controller = array_shift($tabUrl);
+        }
+
+        if ($controller === null) {
+            $controller = $defaultController;
+        }
+        $res['controller'] = $controller;
+
+        $action = array_shift($tabUrl);
+        if ($action === null) {
+            $action = $defaultAction;
+        }
+        $res['action'] = $action;
+
+        if (!empty($tabUrl)) {
+            $res['params'] = $tabUrl;
+        }
+
+        return $res;
     }
 
     /**

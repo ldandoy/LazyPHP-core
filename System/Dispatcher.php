@@ -22,12 +22,23 @@ namespace System;
  */
 class Dispatcher
 {
+    /**
+     * @var System\Request
+     */
     public $request = null;
+
+    /**
+     * @var string
+     */
     public $controller = null;
+
+    /**
+     * @var string
+     */
+    public $package = null;
 
     public function __construct()
     {
-        
         $this->request = new Request();
 
         if (!Router::parse($this->request)) {
@@ -35,18 +46,24 @@ class Dispatcher
         }
 
         $this->checkUrl();
+
         if (isset($this->request->prefix)) {
             $this->controller = $this->request->prefix.DS.$this->request->controller;
         } else {
             $this->controller = $this->request->controller;
         }
-        
+
+        if (isset($this->request->package)) {
+            $this->package = $this->request->package;
+        }
+
         $controller = $this->loadController();
         $action = $this->request->action.'Action';
+        $params = isset($this->request->params) ? $this->request->params : array();
         if (!in_array($action, get_class_methods($controller))) {
             $this->error('Action error', 'Method "'.$action.'" was not found in controller "'.$this->controller.'".');
         }
-        call_user_func_array(array($controller, $action), $this->request->params);
+        call_user_func_array(array($controller, $action), $params);
     }
 
     public function checkUrl()
@@ -62,25 +79,28 @@ class Dispatcher
 
     public function loadController()
     {
-        $file = CONTROLLER_DIR.DS.$this->controller.'Controller.php';
-
-        if (is_file($file)) {
-            $class = '\app\\controllers\\'.str_replace('/', '\\', $this->controller)."Controller";
-            if (class_exists($class)) {
-                
-                $controller = new $class($this->request);
-                return $controller;
-            } else {
-                $this->error('Controller error', 'Controller "'.$class.'" was not found.');
-            }
+        if (isset($this->package)) {
+            // $dir = VENDOR_DIR.DS.Config::$packages[$this->package].DS.'controllers';
+            $namespace = '\\'.ucfirst($this->package);
         } else {
-            $this->error('Controller error', 'File "'.$file.'" doesn\'t exist.');
+            // $dir = CONTROLLER_DIR;
+            $namespace = '\\app';
+        }
+
+       // $file = $dir.DS.$this->controller.'Controller.php';
+        $class = $namespace.'\\controllers\\'.$this->controller.'Controller';
+        if (class_exists($class)) {
+            $controller = new $class($this->request);
+            return $controller;
+        } else {
+            $this->error('Controller error', 'Controller "'.$class.'" was not found.');
         }
     }
 
     public function error($titre, $message)
     {
-        $controller = new Controller($this->request);
-        $controller->e404($titre, $message);
+        die($titre.'<br />'.$message);
+        // $controller = new Controller(null);
+        // $controller->e404($titre, $message);
     }
 }

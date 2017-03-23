@@ -28,6 +28,8 @@ class Config
     public static $config_css;
     public static $config_js;
 
+    public static $packages = array();
+
     /**
      * Init
      *
@@ -42,6 +44,8 @@ class Config
         self::$config_general = self::$config['GENERAL'];
         self::$config_css = self::$config['CSS'];
         self::$config_js = self::$config['JS'];
+
+        self::$packages = self::$config['PACKAGES'];
 
         if (!ini_get('display_errors')) {
             ini_set('error_reporting', E_ALL);
