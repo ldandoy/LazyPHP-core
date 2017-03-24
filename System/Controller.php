@@ -53,7 +53,11 @@ class Controller
             $reflection = new \ReflectionClass($class);
             $file = $reflection->getFileName();
             $controller = strtolower(str_replace('Controller.php', '', basename($file)));
-            $tpl = dirname(dirname($file)).'/views'.DS.$controller.DS.$view.'.php';
+            if (isset($this->request->prefix)) {
+                $tpl = dirname(dirname(dirname($file))).'/views'.DS.$this->request->prefix.DS.$controller.DS.$view.'.php';
+            } else {
+                $tpl = dirname(dirname($file)).'/views'.DS.$controller.DS.$view.'.php';
+            }
             if (file_exists($tpl)) {
                 return $tpl;
             }

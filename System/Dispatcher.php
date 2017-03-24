@@ -47,10 +47,9 @@ class Dispatcher
 
         $this->checkUrl();
 
+        $this->controller = $this->request->controller;
         if (isset($this->request->prefix)) {
-            $this->controller = $this->request->prefix.DS.$this->request->controller;
-        } else {
-            $this->controller = $this->request->controller;
+            $this->controller = $this->request->prefix.'\\'.$this->controller;
         }
 
         if (isset($this->request->package)) {
@@ -58,11 +57,14 @@ class Dispatcher
         }
 
         $controller = $this->loadController();
+
         $action = $this->request->action.'Action';
-        $params = isset($this->request->params) ? $this->request->params : array();
         if (!in_array($action, get_class_methods($controller))) {
             $this->error('Action error', 'Method "'.$action.'" was not found in controller "'.$this->controller.'".');
         }
+
+        $params = isset($this->request->params) ? $this->request->params : array();
+
         call_user_func_array(array($controller, $action), $params);
     }
 
@@ -89,6 +91,7 @@ class Dispatcher
 
        // $file = $dir.DS.$this->controller.'Controller.php';
         $class = $namespace.'\\controllers\\'.$this->controller.'Controller';
+
         if (class_exists($class)) {
             $controller = new $class($this->request);
             return $controller;

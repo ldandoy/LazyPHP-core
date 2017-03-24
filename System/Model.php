@@ -1,6 +1,6 @@
 <?php
 /**
- * File system\Model.php
+ * File System\Model.php
  *
  * @category System
  * @package  Netoverconsulting
@@ -40,12 +40,10 @@ class Model
      */
     public function __construct($data = array())
     {
+        $this->setDefaultProperties();
         if (!empty($data)) {
             $this->setData($data);
         } else {
-            foreach ($this->permittedColumns as $k => $v) {
-                $this->$v = '';
-            }
         }
     }
 
@@ -83,6 +81,16 @@ class Model
 
         if (isset($data['updated_at'])) {
             $this->updated_at = $data['updated_at'];
+        }
+    }
+
+    /**
+     * Set default properties values
+     */
+    public function setDefaultProperties()
+    {
+        foreach ($this->permittedColumns as $k => $v) {
+            $this->$v = null;
         }
     }
 

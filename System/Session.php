@@ -11,7 +11,7 @@
 
 namespace System;
 
-use Helpers\Bootstrap;
+use Helper\Bootstrap;
 
 /**
  * Class to manage session

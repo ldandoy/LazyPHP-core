@@ -80,6 +80,7 @@ class Router
                 case 'post':
                 case 'get':
                 default:
+                    $key = $section;
                     $routes[$key]['url'] = $params['url'];
                     $routes[$key]['method'] = $method;
                     $routes[$key] = array_merge(
