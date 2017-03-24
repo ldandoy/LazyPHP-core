@@ -100,10 +100,8 @@ class Dispatcher
         }
     }
 
-    public function error($titre, $message)
+    public function error($title, $message)
     {
-        die($titre.'<br />'.$message);
-        // $controller = new Controller(null);
-        // $controller->e404($titre, $message);
+        die($title.'<br />'.$message);
     }
 }

@@ -154,38 +154,31 @@ class Model
     }
 
     /**
-     * Renvoie tous les enregistrement d'une table
+     * Get all rows from a table
      *
-     * Cette fonction permet de récupérer les enregistrement d'une table
-     * et les renvoie sous forme d'un tableau objets
-     *
-     * @return array $return contient tous les objets trouvé en base
+     * @return mixed
      */
     public static function findAll()
     {
-        $return = array();
+        $res = array();
         $class = get_called_class();
-        
+
         $query = new Query();
         $query->select('*');
-        $query->from(self::getTableName());
+        $query->from($class::getTableName());
         $rows = $query->executeAndFetchAll();
-        
         foreach ($rows as $row) {
-            $return[] = new $class($row);
+            $res[] = new $class($row);
         }
-        return $return;
+        return $res;
     }
 
     /**
-     * Renvoie l'enregistrement s'il est trouvé
+     * Get a record from a table by id
      *
-     * Cette fonction permet de récupérer un enregistrement d'une table
-     * en le cherchant par son ID
+     * @param int $id
      *
-     * @param integer $id contient l'id cherché dans la DB
-     *
-     * @return \system\Model $return Contient l'objets trouvé en base
+     * @return \system\Model
      */
     public static function findById($id = 0)
     {
@@ -194,20 +187,20 @@ class Model
         $query = new Query();
         $query->select('*');
         $query->where('id = :id');
-        $query->from(self::getTableName());
+        $query->from($class::getTableName());
 
         $row = $query->executeAndFetch(array('id' => $id));
         
-        $return = new $class($row);
-        if (isset($return->parent) && !empty($return->parent)) {
-            foreach ($return->parent as $k_parent => $v_parent) {
+        $res = new $class($row);
+        if (isset($res->parent) && !empty($res->parent)) {
+            foreach ($res->parent as $k_parent => $v_parent) {
                 $parentClass = 'app\\models\\'.$k_parent;
                 $parent = $parentClass::findById($v_parent);
-                $return->$k_parent = $parent;
+                $res->$k_parent = $parent;
             }
         }
 
-        return $return;
+        return $res;
     }
 
     /**
@@ -217,7 +210,7 @@ class Model
      */
     public static function getTableName()
     {
-        $tableName = strtolower(getLastElement(explode('\\', get_called_class())))."s";
+        $tableName = strtolower(getLastElement(explode('\\', get_called_class()))).'s';
         return $tableName;
     }
 
@@ -228,8 +221,10 @@ class Model
      */
     public function getTable()
     {
-        $tableName = strtolower(getLastElement(explode('\\', get_class($this))))."s";
-        return $tableName;
+        $class = get_class($this);
+        return $class::getTableName();
+        // $tableName = strtolower(getLastElement(explode('\\', get_class($this)))).'s';
+        // return $tableName;
     }
 
     /**

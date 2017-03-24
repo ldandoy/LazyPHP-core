@@ -76,7 +76,7 @@ class Controller
             $yeslp = ob_get_clean();
         } else {
             $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
-            $this->e404('Erreur de template', $message);
+            $this->error('Erreur de template', $message);
         }
         ob_start();
         if (strpos($view, "/errors/") === 0) {
@@ -96,7 +96,7 @@ class Controller
                 require_once $layout;
             } else {
                 $message = 'Le layout "'.$layout.'" n\'existe pas';
-                $this->e404('Erreur de layout', $message);
+                $this->error('Erreur de layout', $message);
             }
         }
         $html = ob_get_clean();
@@ -107,17 +107,9 @@ class Controller
         Session::remove('redirect');
     }
 
-    public function e404($title, $message)
+    public function error($title, $message)
     {
-        header('HTTP/1.0 404 Not Found');
-        $this->render(
-            '/errors/404',
-            array(
-                'title'     => $title,
-                'message'   => $message
-            )
-        );
-        die();
+        die($title.'<br />'.$message);
     }
 
     public function redirect($url, $code = null)
