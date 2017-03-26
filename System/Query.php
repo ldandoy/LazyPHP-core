@@ -65,6 +65,13 @@ class Query
     private $where = array();
 
     /**
+     * The order part of the query
+     *
+     * @var string[]
+     */
+    private $order = array();
+
+    /**
      * The insert part of the query
      *
      * @var string
@@ -199,6 +206,28 @@ class Query
     }
 
     /**
+     * Create the order part of the query
+     *
+     * @param mixed $order
+     *     array(
+     *         'column' => 'col'
+     *         'order' => 'asc' | 'desc'
+     *     )
+     *
+     * @return \system\Query
+     */
+    public function order($order = '')
+    {
+        if (is_array($order)) {
+            $this->order[] = $order['col'].' '.$order['order'];
+        } else {
+            $this->order[] = $order;
+        }
+
+        return $this;
+    }
+
+    /**
      * Create the insert part of the query
      *
      * @param mixed $params
@@ -292,11 +321,18 @@ class Query
                     $where = '';
                 }
 
+                if (count($this->order) > 0) {
+                    $order = ' ORDER BY '.implode(', ', $this->order);
+                } else {
+                    $order = '';
+                }
+
                 $this->sql =
                     $this->select.' '.
                     $this->from.' '.
                     ltrim($join.' ').
-                    $where;
+                    $where.
+                    $order;
 
                 break;
 
