@@ -48,6 +48,40 @@ class Model
     }
 
     /**
+     * Magic method __get
+     * @param string $name
+     */
+    public function __get($name)
+    {
+        if (isset($this->$name)) {
+            return $this->name;
+        } else {
+            $association = $this->getAssociation($name);
+            if ($association !== null) {
+                $class = $association['model'];
+
+                switch($association['type']) {
+                    case '1':
+                        $this->$name = $class::findById($this->$association['key']);
+                        return $this->$name;
+                        break;
+                    case '+':
+                    case '*':
+                        // $table = $class::getTableName();
+                        // $query = new Query();
+                        // $query->select('*');
+                        // $query->from($table);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Ajout les données dans l'objet
      *
      * Cette fonction est appelé à l'instanciation de la classe pour
@@ -192,13 +226,13 @@ class Model
         $row = $query->executeAndFetch(array('id' => $id));
         
         $res = new $class($row);
-        if (isset($res->parent) && !empty($res->parent)) {
+        /*if (isset($res->parent) && !empty($res->parent)) {
             foreach ($res->parent as $k_parent => $v_parent) {
                 $parentClass = 'app\\models\\'.$k_parent;
                 $parent = $parentClass::findById($v_parent);
                 $res->$k_parent = $parent;
             }
-        }
+        }*/
 
         return $res;
     }
@@ -223,8 +257,6 @@ class Model
     {
         $class = get_class($this);
         return $class::getTableName();
-        // $tableName = strtolower(getLastElement(explode('\\', get_class($this)))).'s';
-        // return $tableName;
     }
 
     /**
@@ -256,6 +288,33 @@ class Model
             }
         }
         return $permittedData;
+    }
+
+    /**
+     * Get list of associed table(s)
+     *
+     * @return mixed
+     */
+    public function getAssociations()
+    {
+        return array();
+    }
+
+    /**
+     * Get one associed table if exists
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getAssociation($name)
+    {
+        $associations = $this->getAssociations();
+        if (isset($associations[$name])) {
+            return $associations[$name];
+        } else {
+            return null;
+        }
     }
 
     /**

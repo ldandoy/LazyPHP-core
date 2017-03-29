@@ -99,6 +99,11 @@ class Query
      */
     private $preparedStatement = null;
 
+    /*
+     * @var string
+     */
+    public $lastError = '';
+
     /**
      * Set the query type and reset parts of the query
      *
@@ -412,14 +417,21 @@ class Query
     {
         $this->checkCreateSql();
 
+        $this->lastError = '';
+
         $res = Db::prepare($this->sql);
         if ($res !== false) {
             $this->preparedStatement = $res;
+
             foreach ($data as $k => $v) {
                 Db::bind($this->preparedStatement, $k, $v);
             }
-            $this->preparedStatement->execute();
-            return true;
+
+            if ($this->preparedStatement->execute()) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -434,6 +446,8 @@ class Query
      */
     public function executeAndFetchAll($params = array())
     {
+        $this->lastError = '';
+
         if ($this->execute($params)) {
             return $this->fetchAll();
         } else {
@@ -449,6 +463,8 @@ class Query
      */
     public function fetchAll()
     {
+        $this->lastError = '';
+
         if ($this->preparedStatement !== null) {
             return $this->preparedStatement->fetchAll(Db::FETCH_OBJ);
         } else {
@@ -465,6 +481,8 @@ class Query
      */
     public function executeAndFetch($params = array())
     {
+        $this->lastError = '';
+
         if ($this->execute($params)) {
             return $this->fetch();
         } else {
