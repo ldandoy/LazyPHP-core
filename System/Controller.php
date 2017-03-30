@@ -144,6 +144,22 @@ class Controller
                 closedir($handle);
             }
         }
+
+        if (isset($this->request->package) && isset(Config::$packages[$this->request->package])) {
+            $dir = ROOT_DIR.'/vendor/'.Config::$packages[$this->request->package].'/assets/css';
+            $cssDir = '../vendor/'.Config::$packages[$this->request->package].'/assets/css';
+
+            if (file_exists($dir)) {
+                if ($handle = opendir($dir)) {
+                    while (false !== ($entry = readdir($handle))) {
+                        if ($entry != "." && $entry != "..") {
+                            echo '<link rel="stylesheet" href="'.$cssDir.'/'.$entry.'" />';
+                        }
+                    }
+                    closedir($handle);
+                }
+            }
+        }
     }
 
     public function loadJs()
@@ -163,6 +179,22 @@ class Controller
                     }
                 }
                 closedir($handle);
+            }
+        }
+
+        if (isset($this->request->package) && isset(Config::$packages[$this->request->package])) {
+            $dir = ROOT_DIR.'/vendor/'.Config::$packages[$this->request->package].'/assets/js';
+            $jsDir = '../vendor/'.Config::$packages[$this->request->package].'/assets/js';
+
+            if (file_exists($dir)) {
+                if ($handle = opendir($dir)) {
+                    while (false !== ($entry = readdir($handle))) {
+                        if ($entry != "." && $entry != "..") {
+                            echo '<script src="'.$jsDir.'/'.$entry.'"></script>';
+                        }
+                    }
+                    closedir($handle);
+                }
             }
         }
     }

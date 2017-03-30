@@ -107,6 +107,23 @@ class Request
         if ($sessionPost !== null) {
             $_POST = array_merge($_POST, $sessionPost);
         }
+
+        if (isset($_FILES) && !empty($_FILES)) {
+            $files = array();
+            foreach ($_FILES as $key => $file) {
+                if (is_array($file['name'])) {
+                    foreach ($file as $k1 => $v1) {
+                        foreach ($v1 as $k2 => $v2) {
+                            $files[$key][$k2][$k1] = $v2;
+                        }
+                    }
+                } else {
+                    $files[$key] = array($file);
+                }
+            }
+            $_POST = array_merge($_POST, $files);
+        }
+
         $this->post = $_POST;
     }
 }
