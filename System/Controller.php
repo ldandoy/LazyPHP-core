@@ -145,9 +145,9 @@ class Controller
             }
         }
 
-        if (isset($this->request->package) && isset(Config::$packages[$this->request->package])) {
-            $dir = ROOT_DIR.'/vendor/'.Config::$packages[$this->request->package].'/assets/css';
-            $cssDir = '../vendor/'.Config::$packages[$this->request->package].'/assets/css';
+        foreach (Config::$packages as $packageName => $package) {
+            $dir = ASSETS_DIR.DS.$packageName.DS.'css';
+            $cssDir = '/assets/'.$packageName.'/css';
 
             if (file_exists($dir)) {
                 if ($handle = opendir($dir)) {
@@ -182,9 +182,9 @@ class Controller
             }
         }
 
-        if (isset($this->request->package) && isset(Config::$packages[$this->request->package])) {
-            $dir = ROOT_DIR.'/vendor/'.Config::$packages[$this->request->package].'/assets/js';
-            $jsDir = '../vendor/'.Config::$packages[$this->request->package].'/assets/js';
+        foreach (Config::$packages as $packageName => $package) {
+            $dir = ASSETS_DIR.DS.$packageName.DS.'js';
+            $jsDir = '/assets/'.$packageName.'/js';
 
             if (file_exists($dir)) {
                 if ($handle = opendir($dir)) {

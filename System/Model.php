@@ -110,7 +110,7 @@ class Model
         }
 
         if (isset($data['created_at'])) {
-           $this->created_at = $data['created_at'];
+            $this->created_at = $data['created_at'];
         }
 
         if (isset($data['updated_at'])) {
@@ -341,7 +341,7 @@ class Model
         if ($file['error'] > UPLOAD_ERR_OK) {
             switch ($file['error']) {
                 case UPLOAD_ERR_INI_SIZE:
-                    return 'The uploaded file exceeds the upload_max_filesize directive in php.ini'; 
+                    return 'The uploaded file exceeds the upload_max_filesize directive in php.ini';
                     break;
 
                 case UPLOAD_ERR_FORM_SIZE:
@@ -379,19 +379,19 @@ class Model
 
             switch ($type) {
                 case 'image':
-                    if (!in_array($ext, array('jpg', 'jpeg', 'png', 'gif'))) 
+                    if (!in_array($ext, array('jpg', 'jpeg', 'png', 'gif'))) {
                         return 'Le fichier doit être une image (jpg, jpeg, png, gif)';
                     }
                     break;
 
                 case 'video':
-                    if (!in_array($ext, array('avi', 'mpg', 'mpeg', 'mp4', 'mkv'))) 
+                    if (!in_array($ext, array('avi', 'mpg', 'mpeg', 'mp4', 'mkv'))) {
                         return 'Le fichier doit être une video (avi, mpg, mpeg, mp4, mkv)';
                     }
                     break;
 
                 case 'music':
-                    if (!in_array($ext, array('wav', 'mp3', 'mid', 'ogg'))) 
+                    if (!in_array($ext, array('wav', 'mp3', 'mid', 'ogg'))) {
                         return 'Le fichier doit être un fichier audio (wav, mp3, mid, ogg)';
                     }
                     break;
