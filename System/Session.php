@@ -120,4 +120,16 @@ class Session
         self::remove($name);
         return $value;
     }
+
+    /**
+     * Check if use is connected
+     * @return bool
+     */
+    public static function isConnected($search)
+    {
+        if (Session::get($search)) {
+            return true;
+        }
+        return false;
+    }
 }
