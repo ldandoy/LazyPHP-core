@@ -57,6 +57,9 @@ class Dispatcher
         }
 
         $controller = $this->loadController();
+        if (method_exists($controller, 'before')) {
+            $controller->before();
+        }
 
         $action = $this->request->action.'Action';
         if (!in_array($action, get_class_methods($controller))) {
@@ -66,6 +69,9 @@ class Dispatcher
         $params = isset($this->request->params) ? $this->request->params : array();
 
         call_user_func_array(array($controller, $action), $params);
+        if (method_exists($controller, 'after')) {
+            $controller->after();
+        }
     }
 
     public function checkUrl()

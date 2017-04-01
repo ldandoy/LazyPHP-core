@@ -38,6 +38,7 @@ class Controller
             } else {
                 $this->controller = strtolower($this->request->controller);
             }
+            $this->connectedUser = Session::get('connected');
         }
     }
 
@@ -101,6 +102,9 @@ class Controller
         }
         $html = ob_get_clean();
         $templator = new Templator();
+
+        var_dump($params);
+
         $html = $templator->parse($html, $params);
         echo $html;
 
