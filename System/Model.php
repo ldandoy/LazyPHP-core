@@ -400,4 +400,64 @@ class Model
 
         return true;
     }
+
+    /**
+     * Get children categories
+     *
+     * @param int $menu_id
+     * @param bool $recursive
+     * @param int $level
+     * @param bool $flat
+     *
+     * @return app\models\Menu[]
+     */
+    public static function getChildren($parent_id = null, $recursive = true, $level = 0, $flat = false)
+    {
+        $children = array();
+
+        $query = new Query();
+        $query->select('*');
+        if ($parent_id === null) {
+            $query->where('parent is null');
+        } else {
+            $query->where('parent = '.$parent_id);
+        }
+        $query->order('position');
+        $query->from(self::getTableName());
+        $children = $query->executeAndFetchAll();
+
+        foreach ($children as &$child) {
+            $child->level = $level;
+        }
+
+        if ($recursive) {
+            if ($flat) {
+                $i = 0;
+                while ($i < count($children)) {
+                    $child = &$children[$i];
+                    $child->childCount = 0;
+                    $child_children = self::getChildren($child->id, true, $level + 1, true);
+
+                    if (!empty($child_children)) {
+                        array_splice($children, $i + 1, 0, $child_children);
+                        $i = $i + count($child_children);
+
+                        foreach ($child_children as $child_child) {
+                            if ($child->parent == $children->id) {
+                                $children->childCount = $children->childCount + 1;
+                            }
+                        }
+                    }
+                    $i++;
+                }
+            } else {
+                foreach ($children as &$child) {
+                    $child_children = self::getChildren($child->id, true, $level + 1, false);
+                    $child->children = $child_children;
+                }
+            }
+        }
+
+        return $children;
+    }
 }
