@@ -538,4 +538,30 @@ class Model
 
         return $children;
     }
+
+    public static function getFlat()
+    {
+        return self::getChildren(null, true, 0, true);
+    }
+
+    public static function getOptions()
+    {
+        $options = array(
+            0 => array(
+                'value' => '',
+                'label' => '---'
+            )
+        );
+
+        $menus = self::getFlat();
+
+        foreach ($menus as $menu) {
+            $options[$menu->id] = array(
+                'value' => $menu->id,
+                'label' => str_repeat('&nbsp;', $menu->level * 8).$menu->label
+            );
+        }
+
+        return $options;
+    }
 }
