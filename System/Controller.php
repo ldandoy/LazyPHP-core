@@ -12,7 +12,7 @@
 namespace System;
 
 use System\Session;
-use Helper\Templator;
+use System\Templator;
 
 /**
  * Class gérant les Controllers du site

@@ -15,6 +15,8 @@ use System\Config;
 use System\Query;
 use System\Db;
 
+define('VALIDATION_STRING', 0);
+
 /**
  * Class gérant les Models du site
  *
@@ -31,8 +33,7 @@ class Model
     /**
      * Constructeur
      *
-     * Cette fonction appel la fonction setData au l'initialisation
-     * de l'objet
+     * Cette fonction appel la fonction setData au l'initialisation de l'objet
      *
      * @param array $data Contient les données à ajouter à l'objet
      *
@@ -291,6 +292,23 @@ class Model
     }
 
     /**
+     * Get validation infos. Should be overrided in child class
+     * 
+     * @return mixed
+     *     'required' => true | false
+     *     'type' => 'required' | 'int' | 'float' | 'datetime' | 'date' | 'time' | 'email' | 'password' | 'regex'
+     *     'min' => $min (for 'int', 'float')
+     *     'max' => $max (for 'int', 'float')
+     *     'format' => $format (for 'datetime', 'date', 'time')
+     *     'pattern' => $regex (for 'regex')
+     *     'error' => $errorMessage
+     */
+    public function getValidations()
+    {
+        return array();
+    }
+
+    /**
      * Get list of associed table(s)
      *
      * @return mixed
@@ -318,14 +336,72 @@ class Model
     }
 
     /**
-     * Valid the object and fill $this->errors with error messages. Should be overrided in child class
+     * Valid the object and fill $this->errors with error messages
      *
      * @return bool
      */
     public function valid()
     {
         $this->errors = array();
-        return true;
+
+        $validations = $this->getValidations();
+        foreach ($validations as $key => $validation) {
+            $type = $validation['type'];
+            $value = isset($this->$key) ? $this->$key : '';
+
+            $hasError = false;
+
+            if ($type == 'required' && $value == '') {
+                $this->errors[$key] = $error;
+            } else {
+                switch ($type) {
+                    case 'int':
+                        if (preg_match('/-?[0-9]+/', $value) === false) {
+                            $hasError = true;
+                        }
+                        break;
+
+                    case 'float':
+                        if (!is_numeric($value)) {
+                            $hasError = true;
+                        }
+                        break;
+
+                    case 'datetime':
+                    case 'date':
+                    case 'time':
+                        $d = \DateTime::createFromFormat($validation['format'], $value);
+                        if (!is_numeric($value)) {
+                            $hasError = true;
+                        }
+                        break;
+
+                    case 'email':
+                        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+                            $hasError = true;
+                        }
+                        break;
+
+                    case 'password':
+                        if (false) {
+                            $hasError = true;
+                        }
+                        break;
+
+                    case 'regex':
+                        if (preg_match($validation['pattern'], $value) === false) {
+                            $hasError = true;
+                        }
+                        break;
+                }
+            }
+
+            if ($hasError) {
+                $this->errors[$key] = $validation['error'];
+            }
+        }
+
+        return empty($this->errors);
     }
 
     /**

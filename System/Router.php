@@ -106,7 +106,7 @@ class Router
     {
         $a = self::decodeUrl($request->url);
 
-        $key = 
+        $key =
             (isset($a['prefix']) ? $a['prefix'].'_' : '').
             (isset($a['package']) ? $a['package'].'_' : '').
             $a['controller'].'_'.
@@ -191,7 +191,7 @@ class Router
      *
      * @return string
      */
-    public static function url($string = null, $params = array())
+    public static function url($string, $params = array())
     {
         $url = '/'.ltrim(str_replace('_', '/', $string), '/');
         if (!empty($params)) {
