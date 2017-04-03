@@ -478,17 +478,19 @@ class Model
     }
 
     /**
-     * Get children categories
+     * Get children tree
      *
-     * @param int $menu_id
+     * @param int $parent_id
      * @param bool $recursive
      * @param int $level
      * @param bool $flat
      *
-     * @return app\models\Menu[]
+     * @return mixed
      */
     public static function getChildren($parent_id = null, $recursive = true, $level = 0, $flat = false)
     {
+        $class = get_called_class();
+
         $children = array();
 
         $query = new Query();
@@ -499,7 +501,7 @@ class Model
             $query->where('parent = '.$parent_id);
         }
         $query->order('position');
-        $query->from(self::getTableName());
+        $query->from($class::getTableName());
         $children = $query->executeAndFetchAll();
 
         foreach ($children as &$child) {
@@ -519,8 +521,8 @@ class Model
                         $i = $i + count($child_children);
 
                         foreach ($child_children as $child_child) {
-                            if ($child->parent == $children->id) {
-                                $children->childCount = $children->childCount + 1;
+                            if ($child_child->parent == $child->id) {
+                                $child->childCount = $child->childCount + 1;
                             }
                         }
                     }
