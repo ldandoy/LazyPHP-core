@@ -59,7 +59,7 @@ class Model
             if ($association !== null) {
                 $class = $association['model'];
 
-                switch($association['type']) {
+                switch ($association['type']) {
                     case '1':
                         $this->$name = $class::findById($this->$association['key']);
                         return $this->$name;
@@ -165,7 +165,7 @@ class Model
     /**
      * Create the object in database
      *
-     * @param mixed $data 
+     * @param mixed $data
      *
      * @return bool
      */
@@ -339,7 +339,7 @@ class Model
 
     /**
      * Get validation infos. Should be overrided in child class
-     * 
+     *
      * @return mixed
      *     'type' => 'required' | 'int' | 'float' | 'datetime' | 'date' | 'time' | 'email' | 'password' | 'regex'
      *     'defaultValue' => $defaultValue (if required and not set then take this value with no error)
@@ -626,6 +626,14 @@ class Model
         }
 
         return true;
+    }
+
+    /**
+     * Get category tree
+     */
+    public static function findAllWithChildren()
+    {
+        return self::getChildren(null, true, 0, false);
     }
 
     /**
