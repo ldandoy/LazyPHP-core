@@ -15,8 +15,6 @@ use System\Config;
 use System\Query;
 use System\Db;
 
-define('VALIDATION_STRING', 0);
-
 /**
  * Class gérant les Models du site
  *
@@ -77,6 +75,12 @@ class Model
                         break;
                 }
             }
+
+            $attachedFile = $this->getAttachedFile($name);
+            if ($attachedFile !== null) {
+                $this->$name = $attachedFile;
+                return $this->$name;
+            }
         }
 
         return null;
@@ -120,12 +124,41 @@ class Model
     }
 
     /**
-     * Set default properties values
+     * Set default properties values, special or common fields
      */
     public function setDefaultProperties()
     {
-        foreach ($this->permittedColumns as $k => $v) {
-            $this->$v = null;
+        foreach ($this->permittedColumns as $name) {
+            switch ($name) {
+                case 'active':
+                    $this->$name = 1;
+                    break;
+
+                case 'parent':
+                    $this->$name = null;
+                    break;
+
+                case 'position':
+                    $this->$name = 0;
+                    break;
+
+                default:
+                    $this->$name = null;
+                    break;
+            }
+        }
+    }
+
+    public function saveAttachedFiles()
+    {
+        $attachedFiles = $this->getAttachedFiles();
+        foreach ($attachedFiles as $key => $attachedFile) {
+            $idStr = (string)$this->id+1256;
+            $path = '';
+            for ($i = 0; $i < strlen($idStr); $i++) {
+                $path .= '/'.$idStr[$i];
+            }
+            var_dump(get_called_class(), $path);
         }
     }
 
@@ -149,7 +182,14 @@ class Model
             'columns' => array_keys($permittedData)
         ));
 
-        return $query->execute($permittedData);
+        $res = $query->execute($permittedData);
+
+        if ($res) {
+            $this->id = $query->lastInsertId();
+            $this->saveAttachedFiles();
+        }
+
+        return $res;
     }
 
     /**
@@ -171,7 +211,13 @@ class Model
         ));
         $query->where('id = '.$this->id);
 
-        return $query->execute($permittedData);
+        $res = $query->execute($permittedData);
+
+        if ($res) {
+            $this->saveAttachedFiles();
+        }
+
+        return $res;
     }
 
     /**
@@ -295,12 +341,13 @@ class Model
      * Get validation infos. Should be overrided in child class
      * 
      * @return mixed
-     *     'required' => true | false
      *     'type' => 'required' | 'int' | 'float' | 'datetime' | 'date' | 'time' | 'email' | 'password' | 'regex'
+     *     'defaultValue' => $defaultValue (if required and not set then take this value with no error)
+     *     'filters' => 'filter1,filter2,...' (apply some filters before validation)
      *     'min' => $min (for 'int', 'float')
      *     'max' => $max (for 'int', 'float')
-     *     'format' => $format (for 'datetime', 'date', 'time')
-     *     'pattern' => $regex (for 'regex')
+     *     'format' => $datetimeFormat (for 'datetime', 'date', 'time')
+     *     'pattern' => $regexPattern (for 'regex')
      *     'error' => $errorMessage
      */
     public function getValidations()
@@ -309,7 +356,7 @@ class Model
     }
 
     /**
-     * Get list of associed table(s)
+     * Get list of associed tables
      *
      * @return mixed
      */
@@ -336,6 +383,33 @@ class Model
     }
 
     /**
+     * Get list of attached files.
+     * 
+     * @return mixed
+     */
+    public function getAttachedFiles()
+    {
+        return array();
+    }
+
+    /**
+     * Get one attached file if exists
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getAttachedFile($name)
+    {
+        $attachedFiles = $this->getAttachedFiles();
+        if (isset($attachedFiles[$name])) {
+            return $attachedFiles[$name];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Valid the object and fill $this->errors with error messages
      *
      * @return bool
@@ -344,15 +418,92 @@ class Model
     {
         $this->errors = array();
 
+        // Special or common fields
+        $permittedColumns = $this->getPermittedColumns();
+        if (!empty($permittedColumns)) {
+            if (isset($permittedColumns['active']) && (!isset($this->active) || $this->active == '')) {
+                $this->active = 1;
+            }
+
+            if (isset($permittedColumns['parent']) && (!isset($this->parent) || $this->parent == '')) {
+                $this->parent = null;
+            }
+
+            if (isset($permittedColumns['position']) && (!isset($this->position) || $this->position == '')) {
+                $this->position = 0;
+            }
+        }
+
+        // Attached files
+        $attachedFiles = $this->getAttachedFiles();
+        foreach ($attachedFiles as $attachedFile) {
+            $name = $attachedFile['name'];
+            if (isset($this->$name)) {
+                $hasError = false;
+                $uploadedFile = $this->$name;
+                $uploadedFile = $uploadedFile[0];
+                $type = isset($attachedFile['type']) ? $attachedFile['type'] : 'file';
+                switch ($type) {
+                    case 'file':
+                        $errorFile = $this->validFile($uploadedFile);
+                        if ($errorFile !== true) {
+                            $hasError = true;
+                        }
+                        break;
+
+                    case 'image':
+                    case 'video':
+                    case 'audio':
+                        $errorFile = $this->validFile($uploadedFile, $type);
+                        if ($errorFile !== true) {
+                            $hasError = true;
+                        }
+                        break;
+                }
+
+                if ($hasError) {
+                    $this->errors[$name] = 'Erreur fichier : '.$errorFile;
+                }
+            }
+        }
+
         $validations = $this->getValidations();
         foreach ($validations as $key => $validation) {
             $type = $validation['type'];
+
             $value = isset($this->$key) ? $this->$key : '';
+            
+            $filters = isset($validation['filter']) ? explode(',', $validation['filters']) : array();
+            if (!empty($filters)) {
+                foreach ($filters as $filter) {
+                    switch ($filter) {
+                        case 'trim':
+                            $value = trim($value);
+                            break;
+                        
+                        case 'uppercase':
+                            $value = uppercase($value);
+                            break;
+
+                        case 'lowercase':
+                            $value = lowercase($value);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+                $this->$key = $value;
+            }
 
             $hasError = false;
 
             if ($type == 'required' && $value == '') {
-                $this->errors[$key] = $error;
+                if (isset($validation['defaultValue'])) {
+                    $this->$key = $validation['defaultValue'];
+                } else {
+                    $this->errors[$key] = $validation['error'];
+                }
             } else {
                 switch ($type) {
                     case 'int':
@@ -408,7 +559,7 @@ class Model
      * Valid a file : return true if OK, string with error message
      *
      * @param mixed $file
-     * @param string $type '' | 'image' | 'video' | 'music'
+     * @param string $type '' | 'image' | 'video' | 'audio'
      *
      * @return mixed
      */
@@ -466,7 +617,7 @@ class Model
                     }
                     break;
 
-                case 'music':
+                case 'audio':
                     if (!in_array($ext, array('wav', 'mp3', 'mid', 'ogg'))) {
                         return 'Le fichier doit être un fichier audio (wav, mp3, mid, ogg)';
                     }

@@ -73,4 +73,14 @@ class Db
             return false;
         }
     }
+
+    /**
+     * Get last insert id
+     *
+     * @return int
+     */
+    public static function lastInsertId()
+    {
+        return self::$db->lastInsertId();
+    }
 }

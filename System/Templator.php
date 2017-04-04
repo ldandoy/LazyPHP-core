@@ -194,8 +194,8 @@ class Templator
                         $replace = Form::video($attributes);
                         break;
 
-                    case 'input_music':
-                        $replace = Form::music($attributes);
+                    case 'input_audio':
+                        $replace = Form::audio($attributes);
                         break;
 
                     case 'input_submit':

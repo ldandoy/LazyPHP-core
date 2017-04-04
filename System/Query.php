@@ -499,4 +499,14 @@ class Query
     {
         return $this->preparedStatement->fetch(Db::FETCH_OBJ);
     }
+
+    /**
+     * Get last insert id
+     *
+     * @return int
+     */
+    public function lastInsertId()
+    {
+        return Db::lastInsertId();
+    }
 }
