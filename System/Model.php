@@ -693,36 +693,40 @@ class Model
         }
         $query->order('position');
         $query->from($class::getTableName());
-        $children = $query->executeAndFetchAll();
+        $res = $query->executeAndFetchAll();
 
-        foreach ($children as &$child) {
-            $child->level = $level;
-        }
+        if ($res !== false) {
+            $children = $res;
+            
+            foreach ($children as &$child) {
+                $child->level = $level;
+            }
 
-        if ($recursive) {
-            if ($flat) {
-                $i = 0;
-                while ($i < count($children)) {
-                    $child = &$children[$i];
-                    $child->childCount = 0;
-                    $child_children = self::getChildren($child->id, true, $level + 1, true);
+            if ($recursive) {
+                if ($flat) {
+                    $i = 0;
+                    while ($i < count($children)) {
+                        $child = &$children[$i];
+                        $child->childCount = 0;
+                        $child_children = self::getChildren($child->id, true, $level + 1, true);
 
-                    if (!empty($child_children)) {
-                        array_splice($children, $i + 1, 0, $child_children);
-                        $i = $i + count($child_children);
+                        if (!empty($child_children)) {
+                            array_splice($children, $i + 1, 0, $child_children);
+                            $i = $i + count($child_children);
 
-                        foreach ($child_children as $child_child) {
-                            if ($child_child->parent == $child->id) {
-                                $child->childCount = $child->childCount + 1;
+                            foreach ($child_children as $child_child) {
+                                if ($child_child->parent == $child->id) {
+                                    $child->childCount = $child->childCount + 1;
+                                }
                             }
                         }
+                        $i++;
                     }
-                    $i++;
-                }
-            } else {
-                foreach ($children as &$child) {
-                    $child_children = self::getChildren($child->id, true, $level + 1, false);
-                    $child->children = $child_children;
+                } else {
+                    foreach ($children as &$child) {
+                        $child_children = self::getChildren($child->id, true, $level + 1, false);
+                        $child->children = $child_children;
+                    }
                 }
             }
         }
@@ -733,26 +737,5 @@ class Model
     public static function getFlat()
     {
         return self::getChildren(null, true, 0, true);
-    }
-
-    public static function getOptions()
-    {
-        $options = array(
-            0 => array(
-                'value' => '',
-                'label' => '---'
-            )
-        );
-
-        $menus = self::getFlat();
-
-        foreach ($menus as $menu) {
-            $options[$menu->id] = array(
-                'value' => $menu->id,
-                'label' => str_repeat('&nbsp;', $menu->level * 8).$menu->label
-            );
-        }
-
-        return $options;
     }
 }
