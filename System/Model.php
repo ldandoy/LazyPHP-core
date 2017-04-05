@@ -114,12 +114,11 @@ class Model
             }
         }
 
-        if (isset($data['created_at'])) {
-            $this->created_at = $data['created_at'];
-        }
-
-        if (isset($data['updated_at'])) {
-            $this->updated_at = $data['updated_at'];
+        $attachedFiles = $this->getAttachedFiles();
+        foreach ($attachedFiles as $key => $attachedFile) {
+            if (isset($data[$key])) {
+                $this->$key = $data[$key];
+            }
         }
     }
 
@@ -149,16 +148,42 @@ class Model
         }
     }
 
+    private function getAttachedFilePath($name)
+    {
+        $attachedFile = $this->getAttachedFile($name);
+        if ($attachedFile !== null) {
+            $path = PUBLIC_DIR.DS.'uploads'.DS.strtolower(basename(str_replace('\\', '/', get_called_class())));
+            $idStr = (string)($this->id);
+            for ($i = 0; $i < strlen($idStr); $i++) {
+                $path .= '/'.$idStr[$i];
+            }
+
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $path .= DS.$idStr.'_'.$name;
+
+            return $path;
+        }
+    }
+
     public function saveAttachedFiles()
     {
         $attachedFiles = $this->getAttachedFiles();
         foreach ($attachedFiles as $key => $attachedFile) {
-            $idStr = (string)$this->id+1256;
-            $path = '';
-            for ($i = 0; $i < strlen($idStr); $i++) {
-                $path .= '/'.$idStr[$i];
+            if (isset($this->$key)) {
+                $uploadedFile = $this->$key;
+                $uploadedFile = $uploadedFile[0];
+                if ($uploadedFile['name'] != '') {
+                    $ext = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
+                    $path = $this->getAttachedFilePath($key).'.'.$ext;
+                    if (file_exists($path)) {
+                        unlink($path);
+                    }
+                    move_uploaded_file($uploadedFile['tmp_name'], $path);
+                }
             }
-            var_dump(get_called_class(), $path);
         }
     }
 
@@ -436,119 +461,126 @@ class Model
 
         // Attached files
         $attachedFiles = $this->getAttachedFiles();
-        foreach ($attachedFiles as $attachedFile) {
-            $name = $attachedFile['name'];
-            if (isset($this->$name)) {
-                $hasError = false;
-                $uploadedFile = $this->$name;
+        foreach ($attachedFiles as $key => $attachedFile) {
+            if (isset($this->$key)) {
+                $uploadedFile = $this->$key;
                 $uploadedFile = $uploadedFile[0];
-                $type = isset($attachedFile['type']) ? $attachedFile['type'] : 'file';
-                switch ($type) {
-                    case 'file':
-                        $errorFile = $this->validFile($uploadedFile);
-                        if ($errorFile !== true) {
-                            $hasError = true;
-                        }
-                        break;
+                if ($uploadedFile['name'] != '') {
+                    $hasError = false;
+                    $type = isset($attachedFile['type']) ? $attachedFile['type'] : 'file';
+                    switch ($type) {
+                        case 'file':
+                            $errorFile = $this->validFile($uploadedFile);
+                            if ($errorFile !== true) {
+                                $hasError = true;
+                            }
+                            break;
 
-                    case 'image':
-                    case 'video':
-                    case 'audio':
-                        $errorFile = $this->validFile($uploadedFile, $type);
-                        if ($errorFile !== true) {
-                            $hasError = true;
-                        }
-                        break;
-                }
+                        case 'image':
+                        case 'video':
+                        case 'audio':
+                            $errorFile = $this->validFile($uploadedFile, $type);
+                            if ($errorFile !== true) {
+                                $hasError = true;
+                            }
+                            break;
+                    }
 
-                if ($hasError) {
-                    $this->errors[$name] = 'Erreur fichier : '.$errorFile;
+                    if ($hasError) {
+                        $this->errors[$key] = 'Erreur fichier : '.$errorFile;
+                    }
                 }
             }
         }
 
-        $validations = $this->getValidations();
-        foreach ($validations as $key => $validation) {
-            $type = $validation['type'];
+        $validationList = $this->getValidations();
+        foreach ($validationList as $key => $validations) {
+            if (!array_key_exists(0, $validations)) {
+                $validations = array($validations);
+            }
 
-            $value = isset($this->$key) ? $this->$key : '';
-            
-            $filters = isset($validation['filter']) ? explode(',', $validation['filters']) : array();
-            if (!empty($filters)) {
-                foreach ($filters as $filter) {
-                    switch ($filter) {
-                        case 'trim':
-                            $value = trim($value);
-                            break;
-                        
-                        case 'uppercase':
-                            $value = uppercase($value);
+            foreach ($validations as $validation) {
+                $type = $validation['type'];
+
+                $value = isset($this->$key) ? $this->$key : '';
+                
+                $filters = isset($validation['filters']) ? explode(',', $validation['filters']) : array();
+                if (!empty($filters)) {
+                    foreach ($filters as $filter) {
+                        switch ($filter) {
+                            case 'trim':
+                                $value = trim($value);
+                                break;
+                            
+                            case 'uppercase':
+                                $value = uppercase($value);
+                                break;
+
+                            case 'lowercase':
+                                $value = lowercase($value);
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                    $this->$key = $value;
+                }
+
+                $hasError = false;
+
+                if ($type == 'required' && $value == '') {
+                    if (array_key_exists('defaultValue', $validation)) {
+                        $this->$key = $validation['defaultValue'];
+                    } else {
+                        $this->errors[$key] = $validation['error'];
+                    }
+                } else {
+                    switch ($type) {
+                        case 'int':
+                            if (preg_match('/-?[0-9]+/', $value) === false) {
+                                $hasError = true;
+                            }
                             break;
 
-                        case 'lowercase':
-                            $value = lowercase($value);
+                        case 'float':
+                            if (!is_numeric($value)) {
+                                $hasError = true;
+                            }
                             break;
 
-                        default:
+                        case 'datetime':
+                        case 'date':
+                        case 'time':
+                            $d = \DateTime::createFromFormat($validation['format'], $value);
+                            if (!is_numeric($value)) {
+                                $hasError = true;
+                            }
+                            break;
+
+                        case 'email':
+                            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+                                $hasError = true;
+                            }
+                            break;
+
+                        case 'password':
+                            if (false) {
+                                $hasError = true;
+                            }
+                            break;
+
+                        case 'regex':
+                            if (preg_match($validation['pattern'], $value) === false) {
+                                $hasError = true;
+                            }
                             break;
                     }
                 }
-                $this->$key = $value;
-            }
 
-            $hasError = false;
-
-            if ($type == 'required' && $value == '') {
-                if (isset($validation['defaultValue'])) {
-                    $this->$key = $validation['defaultValue'];
-                } else {
+                if ($hasError) {
                     $this->errors[$key] = $validation['error'];
                 }
-            } else {
-                switch ($type) {
-                    case 'int':
-                        if (preg_match('/-?[0-9]+/', $value) === false) {
-                            $hasError = true;
-                        }
-                        break;
-
-                    case 'float':
-                        if (!is_numeric($value)) {
-                            $hasError = true;
-                        }
-                        break;
-
-                    case 'datetime':
-                    case 'date':
-                    case 'time':
-                        $d = \DateTime::createFromFormat($validation['format'], $value);
-                        if (!is_numeric($value)) {
-                            $hasError = true;
-                        }
-                        break;
-
-                    case 'email':
-                        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-                            $hasError = true;
-                        }
-                        break;
-
-                    case 'password':
-                        if (false) {
-                            $hasError = true;
-                        }
-                        break;
-
-                    case 'regex':
-                        if (preg_match($validation['pattern'], $value) === false) {
-                            $hasError = true;
-                        }
-                        break;
-                }
-            }
-
-            if ($hasError) {
-                $this->errors[$key] = $validation['error'];
             }
         }
 

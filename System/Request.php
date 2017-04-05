@@ -112,13 +112,22 @@ class Request
             $files = array();
             foreach ($_FILES as $key => $file) {
                 if (is_array($file['name'])) {
-                    foreach ($file as $k1 => $v1) {
-                        foreach ($v1 as $k2 => $v2) {
-                            $files[$key][$k2][$k1] = $v2;
+                    for ($i = 0; $i < count($file['name']); $i++) {
+                        if ($file['name'][$i] != '') {
+                            foreach ($file as $k => $v) {
+                                $files[$key][$i][$k] = $v[$i];
+                            }
                         }
                     }
+                    // foreach ($file as $k1 => $v1) {
+                    //     foreach ($v1 as $k2 => $v2) {
+                    //         $files[$key][$k2][$k1] = $v2;
+                    //     }
+                    // }
                 } else {
-                    $files[$key] = array($file);
+                    if ($file['name'] != '') {
+                        $files[$key] = array($file);
+                    }
                 }
             }
             $_POST = array_merge($_POST, $files);
