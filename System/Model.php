@@ -504,7 +504,10 @@ class Model
 
                 $value = isset($this->$key) ? $this->$key : '';
                 
-                $filters = isset($validation['filters']) ? explode(',', $validation['filters']) : array();
+                $filters = isset($validation['filters']) ? $validation['filters'] : array();
+                if (!is_array($filters)) {
+                    $filters = array($filters);
+                }
                 if (!empty($filters)) {
                     foreach ($filters as $filter) {
                         switch ($filter) {
@@ -697,7 +700,7 @@ class Model
 
         if ($res !== false) {
             $children = $res;
-            
+
             foreach ($children as &$child) {
                 $child->level = $level;
             }
