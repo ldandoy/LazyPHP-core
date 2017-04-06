@@ -204,7 +204,9 @@ class Query
         if (is_array($where)) {
             $this->where[] = $where['column'].' '.$where['operator'].' '.$where['value'];
         } else {
-            $this->where[] = $where;
+            if ($where != '') {
+                $this->where[] = $where;
+            }
         }
 
         return $this;

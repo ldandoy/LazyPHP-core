@@ -61,19 +61,17 @@ class Model
 
                 switch ($association['type']) {
                     case '1':
-                        $this->$name = $class::findById($this->$association['key']);
-                        return $this->$name;
+                        $this->$name = $class::findById($association['key']);
                         break;
                     case '+':
                     case '*':
-                        // $table = $class::getTableName();
-                        // $query = new Query();
-                        // $query->select('*');
-                        // $query->from($table);
+                        $this->$name = $class::findAll($association['key'].'='.$this->id);
                         break;
                     default:
+                        $this->$name = null;
                         break;
                 }
+                return $this->$name;
             }
 
             $attachedFile = $this->getAttachedFile($name);
@@ -262,9 +260,11 @@ class Model
     /**
      * Get all rows from a table
      *
+     * @param mixed $where
+     *
      * @return mixed
      */
-    public static function findAll()
+    public static function findAll($where = '')
     {
         $res = array();
         $class = get_called_class();
@@ -272,6 +272,7 @@ class Model
         $query = new Query();
         $query->select('*');
         $query->from($class::getTableName());
+        $query->where($where);
         $rows = $query->executeAndFetchAll();
         foreach ($rows as $row) {
             $res[] = new $class($row);
