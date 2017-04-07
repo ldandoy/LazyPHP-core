@@ -8,11 +8,51 @@ use Helper\Bootstrap;
 use Helper\Html;
 use Helper\Form;
 
+use Widget\models\Widget;
+
 class Templator
 {
     /**
      * @param mixed $attributes
+     *
+     * @return mixed
+     */
+    private function processAttributes($attributes, $params)
+    {
+        $processedAttributes = array();
+        foreach ($attributes as $name => $attribute) {
+            $matchesVar = array();
+            preg_match_all('/\\$ *([^\\$ ]*) *\\$/', $attribute, $matchesVar, PREG_SET_ORDER);
+            if (!empty($matchesVar)) {
+                foreach ($matchesVar as $v) {
+                    $model = $v[1];
+                    if (strpos($model, '.') !== false) {
+                        $a = explode('.', $model, 2);
+                        if (isset($params[$a[0]])) {
+                            $obj = $params[$a[0]];
+                            $key = $a[1];
+                            $replace = isset($obj->$key) ? $obj->$key : '';
+                        } else {
+                            $replace = '';
+                        }
+                    } else if (isset($params[$model])) {
+                        $replace = $params[$model];
+                    } else {
+                        $replace = '';
+                    }
+                    $attribute = str_replace($v[0], $replace, $attribute);
+                }
+            }
+            $processedAttributes[$name] = $attribute;
+        }
+        return $processedAttributes;
+    }
+
+    /**
+     * @param mixed $attributes
      * @param mixed $params
+     *
+     * @return mixed
      */
     private function getModelValueForInput($attributes, $params)
     {
@@ -45,6 +85,8 @@ class Templator
     /**
      * @param mixed $attributes
      * @param mixed $params
+     *
+     * @return mixed
      */
     private function getOptionsForInput($attributes, $params)
     {
@@ -71,6 +113,8 @@ class Templator
     /**
      * @param string $html
      * @param mixed $params
+     *
+     * @return string
      */
     public function parse($html, $params = array())
     {
@@ -84,7 +128,10 @@ class Templator
                 $data = $parser->parse($v[1]);
 
                 $tag = $data['tag'];
-                $attributes = $data['attributes'];
+                $attributes = $this->processAttributes($data['attributes'], $params);
+
+                preg_match_all('/{{ *([^}{ ]*) *}}/', $html, $matchesVar, PREG_SET_ORDER);
+
 
                 if (strpos($tag, 'input_') === 0) {
                     $model = $this->getModelValueForInput($attributes, $params);
@@ -202,6 +249,14 @@ class Templator
                         $replace = Form::submit($attributes);
                         break;
 
+                    case 'widget_gallery':
+                        $replace = Widget::gallery($attributes);
+                        break;
+
+                    case 'widget_slider':
+                        $replace = Widget::slider($attributes);
+                        break;
+
                     default:
                         $replace = '';
                 }
@@ -211,7 +266,7 @@ class Templator
         }
 
         $matchesVar = array();
-        preg_match_all("/{{ *([^}{ ]*) *}}/", $html, $matchesVar, PREG_SET_ORDER);
+        preg_match_all('/{{ *([^}{ ]*) *}}/', $html, $matchesVar, PREG_SET_ORDER);
 
         if (!empty($matchesVar)) {
             foreach ($matchesVar as $v) {
