@@ -45,14 +45,14 @@ class Dispatcher
             $this->error('URL error', 'Requested URL was not found.');
         }
 
-        $this->checkUrl();
+        // $this->checkUrl();
 
         $this->controller = $this->request->controller;
-        if (isset($this->request->prefix)) {
+        if (isset($this->request->prefix) && $this->request->prefix != '') {
             $this->controller = $this->request->prefix.'\\'.$this->controller;
         }
 
-        if (isset($this->request->package)) {
+        if (isset($this->request->package) && $this->request->package != '') {
             $this->package = $this->request->package;
         }
 
@@ -74,7 +74,7 @@ class Dispatcher
         }
     }
 
-    public function checkUrl()
+    /*public function checkUrl()
     {
         if (!isset($this->request->controller)) {
             $this->error('Controller error', 'Controller not found or invalid');
@@ -83,7 +83,7 @@ class Dispatcher
         if (!isset($this->request->action)) {
             $this->error('Action error', 'Action not found or invalid');
         }
-    }
+    }*/
 
     public function loadController()
     {

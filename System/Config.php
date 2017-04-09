@@ -44,7 +44,6 @@ class Config
         self::$config_general = self::$config['GENERAL'];
         self::$config_css = self::$config['CSS'];
         self::$config_js = self::$config['JS'];
-
         self::$packages = self::$config['PACKAGES'];
 
         if (!ini_get('display_errors')) {
@@ -57,7 +56,6 @@ class Config
             $file = ROOT_DIR.DS.$class.'.php';
             if (file_exists($file)) {
                 require_once $file;
-            } else {
             }
         });
     }
