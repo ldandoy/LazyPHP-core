@@ -74,11 +74,6 @@ class Model
                 return $this->$name;
             }
 
-            $attachedFile = $this->getAttachedFile($name);
-            if ($attachedFile !== null) {
-                $this->$name = $attachedFile;
-                return $this->$name;
-            }
         }
 
         return null;
@@ -111,13 +106,6 @@ class Model
                 }
             }
         }
-
-        $attachedFiles = $this->getAttachedFiles();
-        foreach ($attachedFiles as $key => $attachedFile) {
-            if (isset($data[$key])) {
-                $this->$key = $data[$key];
-            }
-        }
     }
 
     /**
@@ -146,43 +134,51 @@ class Model
         }
     }
 
-    private function getAttachedFilePath($name)
-    {
-        $attachedFile = $this->getAttachedFile($name);
-        if ($attachedFile !== null) {
-            $path = PUBLIC_DIR.DS.'uploads'.DS.strtolower(basename(str_replace('\\', '/', get_called_class())));
-            $idStr = (string)($this->id);
-            for ($i = 0; $i < strlen($idStr); $i++) {
-                $path .= '/'.$idStr[$i];
-            }
-
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-
-            $path .= DS.$idStr.'_'.$name;
-
-            return $path;
-        }
-    }
-
     public function saveAttachedFiles()
     {
+        $data = array();
         $attachedFiles = $this->getAttachedFiles();
         foreach ($attachedFiles as $key => $attachedFile) {
-            if (isset($this->$key)) {
+            if (isset($this->$key) && $this->$key !== null) {
                 $uploadedFile = $this->$key;
                 $uploadedFile = $uploadedFile[0];
+
                 if ($uploadedFile['name'] != '') {
                     $ext = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
-                    $path = $this->getAttachedFilePath($key).'.'.$ext;
+
+                    $url = DS.'uploads'.DS.strtolower(basename(str_replace('\\', '/', get_called_class())));
+                    $idStr = (string)($this->id);
+                    for ($i = 0; $i < strlen($idStr); $i++) {
+                        $url .= '/'.$idStr[$i];
+                    }
+
+                    $path = PUBLIC_DIR.$url;
+                    if (!file_exists($path)) {
+                        mkdir($path, 0777, true);
+                    }
+
+                    $path .= DS.$idStr.'_'.$key.'.'.$ext;
+                    $url .= DS.$idStr.'_'.$key.'.'.$ext;
+
                     if (file_exists($path)) {
                         unlink($path);
                     }
                     move_uploaded_file($uploadedFile['tmp_name'], $path);
+
+                    $this->$key = $url;
+
+                    $data[$key] = $url;
                 }
             }
         }
+
+        $query = new Query();
+        $query->update(array(
+            'table' => $this->getTable(),
+            'columns' => array_keys($data)
+        ));
+        $query->where('id = '.$this->id);
+        $query->execute($data);
     }
 
     /**
@@ -355,8 +351,10 @@ class Model
     public function getPermittedData($data = array())
     {
         $permittedData = [];
+        $attachedFiles = $this->getAttachedFiles();
+        $permittedColumns = $this->getPermittedColumns();
         foreach ($data as $k => $v) {
-            if (in_array($k, $this->getPermittedColumns())) {
+            if (in_array($k, $permittedColumns) && !isset($attachedFiles[$k])) {
                 $permittedData[$k] = $v;
             }
         }
@@ -465,7 +463,9 @@ class Model
         foreach ($attachedFiles as $key => $attachedFile) {
             if (isset($this->$key)) {
                 $uploadedFile = $this->$key;
+var_dump($this->$key);
                 $uploadedFile = $uploadedFile[0];
+
                 if ($uploadedFile['name'] != '') {
                     $hasError = false;
                     $type = isset($attachedFile['type']) ? $attachedFile['type'] : 'file';
@@ -488,8 +488,11 @@ class Model
                     }
 
                     if ($hasError) {
+                        $this->$key = null;
                         $this->errors[$key] = 'Erreur fichier : '.$errorFile;
                     }
+                } else {
+                    $this->$key = null;
                 }
             }
         }

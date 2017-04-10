@@ -53,6 +53,11 @@ class Router
 
         $routeConfs = parse_ini_file(CONFIG_DIR.DS.'route.ini', true);
 
+        /* On charge les routes du fichier ini */
+        foreach ($routeConfs as $section => $params) {
+            self::createRoute($section, $params);
+        }
+
         foreach (Config::$packages as $key => $packages) {
             $route_ini_path = VENDOR_DIR.DS.$packages.DS.'config/route.ini';
             if (file_exists($route_ini_path)) {
@@ -62,15 +67,6 @@ class Router
                 }
             }
         }
-        /* On charge les routes du fichier ini */
-        foreach ($routeConfs as $section => $params) {
-            self::createRoute($section, $params);
-        }
-
-        /*echo "<pre>";
-        var_dump(self::$routes);
-        echo "</pre>";*/
-        // die();
     }
 
     private static function createRoute($section, $params, $package = '')
