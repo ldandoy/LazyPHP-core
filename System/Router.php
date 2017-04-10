@@ -100,7 +100,7 @@ class Router
                         self::$routes[$key]['url'] = '/'.str_replace('_', '/', $key);
                     }
 
-                    if (in_array($actionName, ['create', 'show', 'edit', 'update', 'delete'])) {
+                    if (in_array($actionName, ['show', 'edit', 'update', 'delete'])) {
                         self::$routes[$key]['url'] = self::$routes[$key]['url']."/:id";
                     }
 

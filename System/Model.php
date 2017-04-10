@@ -408,7 +408,7 @@ class Model
 
     /**
      * Get list of attached files.
-     * 
+     *
      * @return mixed
      */
     public function getAttachedFiles()
@@ -445,15 +445,15 @@ class Model
         // Special or common fields
         $permittedColumns = $this->getPermittedColumns();
         if (!empty($permittedColumns)) {
-            if (isset($permittedColumns['active']) && (!isset($this->active) || $this->active == '')) {
+            if (in_array('active', $permittedColumns) && (!isset($this->active) || $this->active == '')) {
                 $this->active = 1;
             }
 
-            if (isset($permittedColumns['parent']) && (!isset($this->parent) || $this->parent == '')) {
+            if (in_array('parent', $permittedColumns) && (!isset($this->parent) || $this->parent == '')) {
                 $this->parent = null;
             }
 
-            if (isset($permittedColumns['position']) && (!isset($this->position) || $this->position == '')) {
+            if (in_array('position', $permittedColumns) && (!isset($this->position) || $this->position == '')) {
                 $this->position = 0;
             }
         }
@@ -463,7 +463,7 @@ class Model
         foreach ($attachedFiles as $key => $attachedFile) {
             if (isset($this->$key)) {
                 $uploadedFile = $this->$key;
-var_dump($this->$key);
+
                 $uploadedFile = $uploadedFile[0];
 
                 if ($uploadedFile['name'] != '') {
