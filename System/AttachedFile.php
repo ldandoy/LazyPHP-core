@@ -46,5 +46,7 @@ class AttachedFile
 
             $this->url = $url;
         }
+
+        return true;
     }
 }

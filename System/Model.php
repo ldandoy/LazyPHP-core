@@ -156,7 +156,7 @@ class Model
         }
     }
 
-    public function saveAttachedFiles()
+    private function saveAttachedFiles()
     {
         $data = array();
         $attachedFiles = $this->getAttachedFiles();
@@ -164,8 +164,8 @@ class Model
             if (isset($this->$key) && $this->$key != '') {
                 $value = &$this->$key;
                 if ($value->saveUploadedFile(strtolower(basename(str_replace('\\', '/', get_called_class()))), $this->id, $key)) {
-                    $data[$key] = $this->url;
                 }
+                $data[$key] = $value->url;
             }
         }
 
@@ -179,6 +179,41 @@ class Model
     }
 
     /**
+     * Valid and save the object in database (create or update if id is set)
+     *
+     * @param mixed $data
+     *
+     * @return bool
+     */
+    public function save($data = array())
+    {
+        if (!empty($data)) {
+            $this->setData($data);
+        }
+
+        if ($this->valid()) {
+            if (isset($this->id)) {
+                $res = $this->update((array)$this);
+                if (!$res) {
+                    return false;
+                }
+            } else {
+                $res = $this->create((array)$this);
+                if (!$res) {
+                    return false;
+                }
+                $this->id = $res;
+            }
+        } else {
+            return false;
+        }
+
+        $this->saveAttachedFiles();
+
+        return true;
+    }
+
+    /**
      * Create the object in database
      *
      * @param mixed $data
@@ -189,7 +224,6 @@ class Model
     {
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = $data['created_at'];
-
         $permittedData = $this->getPermittedData($data);
 
         $query = new Query();
@@ -197,13 +231,7 @@ class Model
             'table' => $this->getTable(),
             'columns' => array_keys($permittedData)
         ));
-
         $res = $query->execute($permittedData);
-
-        if ($res) {
-            $this->id = $query->lastInsertId();
-            $this->saveAttachedFiles();
-        }
 
         return $res;
     }
@@ -226,12 +254,7 @@ class Model
             'columns' => array_keys($permittedData)
         ));
         $query->where('id = '.$this->id);
-
         $res = $query->execute($permittedData);
-
-        if ($res) {
-            $this->saveAttachedFiles();
-        }
 
         return $res;
     }
