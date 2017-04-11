@@ -67,6 +67,9 @@ class Router
                 }
             }
         }
+        /*echo "<pre>";
+        var_dump(self::$routes);
+        echo "</pre>";*/
     }
 
     private static function createRoute($section, $params, $package = '')
@@ -88,12 +91,16 @@ class Router
                     // On détecte le prefixe
                     $key = $section.'_'.$actionName;
                     if (strpos($section, Config::getValueG('admin_prefix')) === 0) {
-                        
                         $prefix = Config::getValueG('admin_prefix');
                         self::$routes[$key]['url'] = '/'.str_replace('_', '/', $key);
-                        self::$routes[$key]['url'] = str_replace($prefix, $prefix.'/'.$package, self::$routes[$key]['url']);
                         $infos = explode("_", $section);
-                        $controller = $infos[1];
+                        if (isset($params['parent'])) {
+                            self::$routes[$key]['url'] = preg_replace("/".$params['parent']."/", $params['parent']."/:".$params['parent']."_id", self::$routes[$key]['url'], 1);
+                            $controller = $infos[sizeof($infos)-1];
+                        } else {
+                            $controller = $infos[sizeof($infos)-1];
+                        }
+                        self::$routes[$key]['url'] = str_replace($prefix, $prefix.'/'.$package, self::$routes[$key]['url']);
                     } else {
                         $prefix = '';
                         $controller = $section;
@@ -146,7 +153,7 @@ class Router
 
             if (!$urlFound) {
                 $search = '/^'.str_replace('/', '\/', $route['url']).'/';
-                $search = preg_replace('/:([a-z0-9\-]+)/', '(?P<${1}>[a-z0-9\-]+)', $search);
+                $search = preg_replace('/:([a-z0-9\-_]+)/', '(?P<${1}>[a-z0-9\-_]+)', $search);
                 preg_match($search, $request->url, $match);
                 if (!empty($match)) {
                     $key = $k;

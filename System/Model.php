@@ -707,21 +707,29 @@ class Model
      *
      * @return mixed
      */
-    public static function getChildren($parent_id = null, $recursive = true, $level = 0, $flat = false)
+    public static function getChildren($parent_id = null, $recursive = true, $level = 0, $flat = false, $parent_field = 'parent', $children_table = null)
     {
         $class = get_called_class();
+        if ($children_table == null) {
+            $children_table = $class::getTableName();
+        }
 
         $children = array();
 
         $query = new Query();
         $query->select('*');
         if ($parent_id === null) {
-            $query->where('parent is null');
+            $query->where($parent_field.' is null');
         } else {
-            $query->where('parent = '.$parent_id);
+            $query->where($parent_field.' = '.$parent_id);
         }
+
+        if ($parent_field != 'parent') {
+            $query->where('parent is null');
+        }
+
         $query->order('position');
-        $query->from($class::getTableName());
+        $query->from($children_table);
         $res = $query->executeAndFetchAll();
 
         if ($res !== false) {
@@ -737,7 +745,7 @@ class Model
                     while ($i < count($children)) {
                         $child = &$children[$i];
                         $child->childCount = 0;
-                        $child_children = self::getChildren($child->id, true, $level + 1, true);
+                        $child_children = self::getChildren($child->id, true, $level + 1, true, 'parent', $children_table);
 
                         if (!empty($child_children)) {
                             array_splice($children, $i + 1, 0, $child_children);
@@ -753,7 +761,7 @@ class Model
                     }
                 } else {
                     foreach ($children as &$child) {
-                        $child_children = self::getChildren($child->id, true, $level + 1, false);
+                        $child_children = self::getChildren($child->id, true, $level + 1, false, 'parent', $children_table);
                         $child->children = $child_children;
                     }
                 }
@@ -763,8 +771,29 @@ class Model
         return $children;
     }
 
-    public static function getFlat()
+    public static function getFlat($parent_id = null, $parent_label = 'parent', $children_model = null)
     {
-        return self::getChildren(null, true, 0, true);
+        return self::getChildren($parent_id, true, 0, true, $parent_label, $children_model);
+    }
+
+    public static function getOptions($parent_id = null, $parent_label = 'parent', $children_model = null)
+    {
+        $options = array(
+            0 => array(
+                'value' => '',
+                'label' => '---'
+            )
+        );
+
+        $itemsMenus = self::getFlat($parent_id, $parent_label, $children_model);
+
+        foreach ($itemsMenus as $item) {
+            $options[$item->id] = array(
+                'value' => $item->id,
+                'label' => str_repeat('&nbsp;', $item->level * 8).$item->label
+            );
+        }
+
+        return $options;
     }
 }
