@@ -208,6 +208,10 @@ class Templator
                         $replace = Form::close($attributes);
                         break;
 
+                    case 'input_hidden':
+                        $replace = Form::hidden($attributes);
+                        break;
+
                     case 'input_text':
                         $replace = Form::text($attributes);
                         break;
