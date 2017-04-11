@@ -92,6 +92,7 @@ class Templator
     {
         if (isset($attributes['options'])) {
             $options = $attributes['options'];
+            // If we have direct value (["ceci est a": a, "Ceci est b": b])
             if ($options[0] == '[') {
                 $a = explode(';', trim($options, '[]'));
                 $options = array();
@@ -101,7 +102,13 @@ class Templator
                 }
                 return $options;
             } else if (isset($params[$options])) {
-                return $params[$options];
+                // Here we do the check table/object...
+                // var_dump($params[$options]);
+                $optionsList[] = array('label' => "---", 'value' => '');
+                foreach ($params[$options] as $value) {
+                    $optionsList[] = array('label' => $value->label, 'value' => $value->id);
+                }
+                return $optionsList;
             } else {
                 return null;
             }
