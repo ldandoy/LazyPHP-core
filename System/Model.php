@@ -15,6 +15,8 @@ use System\Config;
 use System\Query;
 use System\Db;
 
+use System\AttachedFile;
+
 /**
  * Class gérant les Models du site
  *
@@ -99,10 +101,30 @@ class Model
             $this->id = $data['id'];
         }
 
+        $attachedFiles = $this->getAttachedFiles();
         if (isset($this->permittedColumns) && !empty($this->permittedColumns)) {
-            foreach ($this->permittedColumns as $k => $v) {
-                if (isset($data[$v])) {
-                    $this->$v = $data[$v];
+            foreach ($this->permittedColumns as $column) {
+                if (isset($attachedFiles[$column])) {
+                    $url = null;
+                    $uploadedFile = null;
+                    if (isset($data[$column])) {
+                        $v = $data[$column];
+                        if (is_array($v)) {
+                            $url = null;
+                            $uploadedFile = $v;
+                            if (is_array($uploadedFile)) {
+                                $uploadedFile = $uploadedFile[0];
+                            }
+                        } else if (is_string($v)) {
+                            $url = $v;
+                            $uploadedFile = null;
+                        }
+                    }
+                    $this->$column = new AttachedFile($url, $uploadedFile);
+                } else {
+                    if (isset($data[$column])) {
+                        $this->$column = $data[$column];
+                    }
                 }
             }
         }
@@ -139,35 +161,10 @@ class Model
         $data = array();
         $attachedFiles = $this->getAttachedFiles();
         foreach ($attachedFiles as $key => $attachedFile) {
-            if (isset($this->$key) && $this->$key !== null) {
-                $uploadedFile = $this->$key;
-                $uploadedFile = $uploadedFile[0];
-
-                if ($uploadedFile['name'] != '') {
-                    $ext = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
-
-                    $url = DS.'uploads'.DS.strtolower(basename(str_replace('\\', '/', get_called_class())));
-                    $idStr = (string)($this->id);
-                    for ($i = 0; $i < strlen($idStr); $i++) {
-                        $url .= '/'.$idStr[$i];
-                    }
-
-                    $path = PUBLIC_DIR.$url;
-                    if (!file_exists($path)) {
-                        mkdir($path, 0777, true);
-                    }
-
-                    $path .= DS.$idStr.'_'.$key.'.'.$ext;
-                    $url .= DS.$idStr.'_'.$key.'.'.$ext;
-
-                    if (file_exists($path)) {
-                        unlink($path);
-                    }
-                    move_uploaded_file($uploadedFile['tmp_name'], $path);
-
-                    $this->$key = $url;
-
-                    $data[$key] = $url;
+            if (isset($this->$key) && $this->$key != '') {
+                $value = &$this->$key;
+                if ($value->saveUploadedFile(strtolower(basename(str_replace('\\', '/', get_called_class()))), $this->id, $key)) {
+                    $data[$key] = $this->url;
                 }
             }
         }
@@ -445,55 +442,53 @@ class Model
         // Special or common fields
         $permittedColumns = $this->getPermittedColumns();
         if (!empty($permittedColumns)) {
-            if (isset($permittedColumns['active']) && (!isset($this->active) || $this->active == '')) {
+            if (in_array('active', $permittedColumns) && (!isset($this->active) || $this->active == '')) {
                 $this->active = 1;
             }
 
-            if (isset($permittedColumns['parent']) && (!isset($this->parent) || $this->parent == '')) {
+            if (in_array('parent', $permittedColumns) && (!isset($this->parent) || $this->parent == '')) {
                 $this->parent = null;
             }
 
-            if (isset($permittedColumns['position']) && (!isset($this->position) || $this->position == '')) {
+            if (in_array('position', $permittedColumns) && (!isset($this->position) || $this->position == '')) {
                 $this->position = 0;
             }
         }
 
         // Attached files
         $attachedFiles = $this->getAttachedFiles();
-        foreach ($attachedFiles as $key => $attachedFile) {
-            if (isset($this->$key)) {
-                $uploadedFile = $this->$key;
-var_dump($this->$key);
-                $uploadedFile = $uploadedFile[0];
+        foreach ($attachedFiles as $key => $attachedFileInfo) {
+            $attachedFile = &$this->$key;
 
-                if ($uploadedFile['name'] != '') {
-                    $hasError = false;
-                    $type = isset($attachedFile['type']) ? $attachedFile['type'] : 'file';
-                    switch ($type) {
-                        case 'file':
-                            $errorFile = $this->validFile($uploadedFile);
-                            if ($errorFile !== true) {
-                                $hasError = true;
-                            }
-                            break;
+            if (isset($attachedFile->uploadedFile['name']) && $attachedFile->uploadedFile['name'] != '') {
+                $hasError = false;
+                $type = isset($attachedFileInfo['type']) ? $attachedFileInfo['type'] : 'file';
+                switch ($type) {
+                    case 'file':
+                        $errorFile = $this->validFile($attachedFile->uploadedFile);
+                        if ($errorFile !== true) {
+                            $hasError = true;
+                        }
+                        break;
 
-                        case 'image':
-                        case 'video':
-                        case 'audio':
-                            $errorFile = $this->validFile($uploadedFile, $type);
-                            if ($errorFile !== true) {
-                                $hasError = true;
-                            }
-                            break;
-                    }
-
-                    if ($hasError) {
-                        $this->$key = null;
-                        $this->errors[$key] = 'Erreur fichier : '.$errorFile;
-                    }
-                } else {
-                    $this->$key = null;
+                    case 'image':
+                    case 'video':
+                    case 'audio':
+                        $errorFile = $this->validFile($attachedFile->uploadedFile, $type);
+                        if ($errorFile !== true) {
+                            $hasError = true;
+                        }
+                        break;
                 }
+
+                if ($hasError) {
+                    $attachedFile->url = null;
+                    $attachedFile->uploadedFile = null;
+                    $this->errors[$key] = 'Erreur fichier : '.$errorFile;
+                }
+            } else {
+                $attachedFile->url = null;
+                $attachedFile->uploadedFile = null;
             }
         }
 
