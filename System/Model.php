@@ -405,7 +405,7 @@ class Model
 
     /**
      * Get list of attached files.
-     * 
+     *
      * @return mixed
      */
     public function getAttachedFiles()
