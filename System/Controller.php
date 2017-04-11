@@ -69,7 +69,16 @@ class Controller
         return false;
     }
 
-    public function render($view, $params = array())
+    /**
+     * Render the view
+     *
+     * @param string $view
+     * @param mixed $params
+     * @param bool $layout
+     *
+     * @return string
+     */
+    public function render($view, $params = array(), $layout = true)
     {
         $tpl = $this->findView($view);
         if ($tpl) {
@@ -80,31 +89,37 @@ class Controller
             $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
             $this->error('Erreur de template', $message);
         }
-        ob_start();
-        if (strpos($view, "/errors/") === 0) {
-            $layout = VIEW_DIR.DS.'layout'.DS.'error.php';
-        } else {
-            if (isset($this->layout) && $this->layout !== null) {
-                $layout = VIEW_DIR.DS.'layout'.DS.$this->layout.'.php';
+
+        if ($layout) {
+            ob_start();
+            if (strpos($view, "/errors/") === 0) {
+                $layout = VIEW_DIR.DS.'layout'.DS.'error.php';
             } else {
-                if (isset($this->request->prefix)) {
-                    $layout = VIEW_DIR.DS.'layout'.DS.$this->request->prefix.DS.'base.php';
+                if (isset($this->layout) && $this->layout !== null) {
+                    $layout = VIEW_DIR.DS.'layout'.DS.$this->layout.'.php';
                 } else {
-                    $layout = VIEW_DIR.DS.'layout'.DS.'base.php';
+                    if (isset($this->request->prefix)) {
+                        $layout = VIEW_DIR.DS.'layout'.DS.$this->request->prefix.DS.'base.php';
+                    } else {
+                        $layout = VIEW_DIR.DS.'layout'.DS.'base.php';
+                    }
+                }
+                
+                if (file_exists($layout)) {
+                    require_once $layout;
+                } else {
+                    $message = 'Le layout "'.$layout.'" n\'existe pas';
+                    $this->error('Erreur de layout', $message);
                 }
             }
-            
-            if (file_exists($layout)) {
-                require_once $layout;
-            } else {
-                $message = 'Le layout "'.$layout.'" n\'existe pas';
-                $this->error('Erreur de layout', $message);
-            }
+            $html = ob_get_clean();
+        } else {
+            $html = $yeslp;
         }
-        $html = ob_get_clean();
-        $templator = new Templator();
 
+        $templator = new Templator();
         $html = $templator->parse($html, $params);
+
         echo $html;
 
         Session::remove('redirect');
