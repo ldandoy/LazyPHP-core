@@ -545,6 +545,10 @@ class Model
                                 $value = lowercase($value);
                                 break;
 
+                            case 'ucfirst':
+                                $value = ucfirst($value);
+                                break;
+
                             default:
                                 break;
                         }
