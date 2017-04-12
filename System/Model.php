@@ -70,7 +70,7 @@ class Model
                         break;
                     case '+':
                     case '*':
-                        $this->$name = $class::findAll($association['key'].'='.$this->user_id);
+                        $this->$name = $class::findAll($association['key'].'='.$this->id);
                         break;
                     default:
                         $this->$name = null;
@@ -710,29 +710,28 @@ class Model
      *
      * @return mixed
      */
-    public static function getChildren($parent_id = null, $recursive = true, $level = 0, $flat = false, $parent_field = 'parent', $children_table = null)
+    public static function getChildren($parent_id = null, $recursive = true, $level = 0, $flat = true, $where = null)
     {
         $class = get_called_class();
-        if ($children_table == null) {
-            $children_table = $class::getTableName();
-        }
-
+        $children_table = $class::getTableName();
         $children = array();
 
         $query = new Query();
         $query->select('*');
         if ($parent_id === null) {
-            $query->where($parent_field.' is null');
+            $query->where('parent'.' is null');
         } else {
-            $query->where($parent_field.' = '.$parent_id);
+            $query->where('parent = '.$parent_id);
         }
-
-        if ($parent_field != 'parent') {
-            $query->where('parent is null');
+        
+        if ($where !== null) {
+            $query->where($where);
         }
 
         $query->order('position');
         $query->from($children_table);
+        // $query->showSql();
+
         $res = $query->executeAndFetchAll();
 
         if ($res !== false) {
@@ -748,7 +747,7 @@ class Model
                     while ($i < count($children)) {
                         $child = &$children[$i];
                         $child->childCount = 0;
-                        $child_children = self::getChildren($child->id, true, $level + 1, true, 'parent', $children_table);
+                        $child_children = self::getChildren($child->id, true, $level + 1, true, $where);
 
                         if (!empty($child_children)) {
                             array_splice($children, $i + 1, 0, $child_children);
@@ -774,9 +773,9 @@ class Model
         return $children;
     }
 
-    public static function getFlat($parent_id = null, $parent_label = 'parent', $children_model = null)
+    public static function getFlat($parent_id = null, $where = null)
     {
-        return self::getChildren($parent_id, true, 0, true, $parent_label, $children_model);
+        return self::getChildren($parent_id, true, 0, false, $where);
     }
 
     public static function getOptions($parent_id = null, $parent_label = 'parent', $children_model = null)
