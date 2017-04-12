@@ -8,7 +8,7 @@ use Helper\Bootstrap;
 use Helper\Html;
 use Helper\Form;
 
-use Widget\models\Widget;
+use Widget\Widget;
 
 class Templator
 {
@@ -170,6 +170,8 @@ class Templator
                     }
                 }
 
+                $replace = '';
+
                 switch ($tag) {
                     case 'link':
                         $replace = Html::link($attributes);
@@ -268,16 +270,16 @@ class Templator
                         $replace = Form::submit($attributes);
                         break;
 
-                    case 'widget_gallery':
-                        $replace = Widget::gallery($attributes);
-                        break;
-
-                    case 'widget_slider':
-                        $replace = Widget::slider($attributes);
+                    case 'widget':
+                        $type = isset($attributes['type']) ? $attributes['type'] : '';
+                        $id = isset($attributes['id']) ? (int)$attributes['id'] : '';
+                        if ($type != '' && $id != 0) {
+                            $replace = Widget::getWidget($type, $id);
+                        }
                         break;
 
                     default:
-                        $replace = '';
+                        break;
                 }
 
                 $html = str_replace($v[0], $replace, $html);
