@@ -695,10 +695,10 @@ class Model
     /**
      * Get category tree
      */
-    public static function findAllWithChildren()
+    /*public static function findAllWithChildren()
     {
         return self::getChildren(null, true, 0, false);
-    }
+    }*/
 
     /**
      * Get children tree
@@ -773,12 +773,12 @@ class Model
         return $children;
     }
 
-    public static function getFlat($parent_id = null, $where = null)
+    public static function getFlat($parent_id = null, $where = null, $flat = true)
     {
-        return self::getChildren($parent_id, true, 0, false, $where);
+        return self::getChildren($parent_id, true, 0, $flat, $where);
     }
 
-    public static function getOptions($parent_id = null, $parent_label = 'parent', $children_model = null)
+    public static function getOptions($parent_id = null)
     {
         $options = array(
             0 => array(
@@ -787,7 +787,7 @@ class Model
             )
         );
 
-        $itemsMenus = self::getFlat($parent_id, $parent_label, $children_model);
+        $itemsMenus = self::getFlat($parent_id);
 
         foreach ($itemsMenus as $item) {
             $options[$item->id] = array(
