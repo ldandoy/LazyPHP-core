@@ -106,7 +106,7 @@ class Templator
                 // var_dump($params[$options]);
                 $optionsList[] = array('label' => "---", 'value' => '');
                 foreach ($params[$options] as $value) {
-                    $optionsList[] = array('label' => $value->label, 'value' => $value->id);
+                    $optionsList[] = array('label' => $value->{$value->labelOption}, 'value' => $value->{$value->valueOption});
                 }
                 return $optionsList;
             } else {

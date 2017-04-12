@@ -30,6 +30,9 @@ class Model
 {
     public $errors = array();
 
+    public $labelOption = 'label';
+    public $valueOption = 'id';
+
     /**
      * Constructeur
      *
@@ -63,11 +66,11 @@ class Model
 
                 switch ($association['type']) {
                     case '1':
-                        $this->$name = $class::findById($association['key']);
+                        $this->$name = $class::findById($this->$association['key']);
                         break;
                     case '+':
                     case '*':
-                        $this->$name = $class::findAll($association['key'].'='.$this->id);
+                        $this->$name = $class::findAll($association['key'].'='.$this->user_id);
                         break;
                     default:
                         $this->$name = null;
