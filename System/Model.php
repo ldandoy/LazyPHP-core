@@ -486,36 +486,47 @@ class Model
         foreach ($attachedFiles as $key => $attachedFileInfo) {
             $attachedFile = &$this->$key;
 
-            if (isset($attachedFile->uploadedFile['name']) && $attachedFile->uploadedFile['name'] != '') {
-                $hasError = false;
-                $type = isset($attachedFileInfo['type']) ? $attachedFileInfo['type'] : 'file';
-                switch ($type) {
-                    case 'file':
-                        $errorFile = $this->validFile($attachedFile->uploadedFile);
-                        if ($errorFile !== true) {
-                            $hasError = true;
-                        }
-                        break;
-
-                    case 'image':
-                    case 'video':
-                    case 'audio':
-                        $errorFile = $this->validFile($attachedFile->uploadedFile, $type);
-                        if ($errorFile !== true) {
-                            $hasError = true;
-                        }
-                        break;
-                }
-
-                if ($hasError) {
-                    $attachedFile->url = null;
-                    $attachedFile->uploadedFile = null;
-                    $this->errors[$key] = 'Erreur fichier : '.$errorFile;
-                }
-            } else {
-                $attachedFile->url = null;
-                $attachedFile->uploadedFile = null;
+            $errorFile = $attachedFile->valid();
+            if ($errorFile !== true) {
+                $hasError = true;
             }
+
+            if ($hasError) {
+                //$attachedFile->url = null;
+                $attachedFile->uploadedFile = null;
+                $this->errors[$key] = 'Erreur fichier : '.$errorFile;
+            }
+
+            // if (isset($attachedFile->uploadedFile['name']) && $attachedFile->uploadedFile['name'] != '') {
+            //     $hasError = false;
+            //     $type = isset($attachedFileInfo['type']) ? $attachedFileInfo['type'] : 'file';
+            //     switch ($type) {
+            //         case 'file':
+            //             $errorFile = $this->validFile($attachedFile->uploadedFile);
+            //             if ($errorFile !== true) {
+            //                 $hasError = true;
+            //             }
+            //             break;
+
+            //         case 'image':
+            //         case 'video':
+            //         case 'audio':
+            //             $errorFile = $this->validFile($attachedFile->uploadedFile, $type);
+            //             if ($errorFile !== true) {
+            //                 $hasError = true;
+            //             }
+            //             break;
+            //     }
+
+            //     if ($hasError) {
+            //         $attachedFile->url = null;
+            //         $attachedFile->uploadedFile = null;
+            //         $this->errors[$key] = 'Erreur fichier : '.$errorFile;
+            //     }
+            // } else {
+            //     $attachedFile->url = null;
+            //     $attachedFile->uploadedFile = null;
+            // }
         }
 
         $validationList = $this->getValidations();
@@ -524,11 +535,19 @@ class Model
                 $validations = array($validations);
             }
 
+            $required = false;
+            foreach ($validations as $validation) {
+                if ($validation['type'] == 'required') {
+                    $required = true;
+                    break;
+                }
+            }
+
             foreach ($validations as $validation) {
                 $type = $validation['type'];
 
                 $value = isset($this->$key) ? $this->$key : '';
-                
+
                 $filters = isset($validation['filters']) ? $validation['filters'] : array();
                 if (!is_array($filters)) {
                     $filters = array($filters);
@@ -561,13 +580,13 @@ class Model
 
                 $hasError = false;
 
-                if ($type == 'required' && $value == '') {
+                if ($required && $value == '') {
                     if (array_key_exists('defaultValue', $validation)) {
                         $this->$key = $validation['defaultValue'];
                     } else {
                         $this->errors[$key] = $validation['error'];
                     }
-                } else {
+                } else if ($value != '') {
                     switch ($type) {
                         case 'int':
                             if (preg_match('/-?[0-9]+/', $value) === false) {
@@ -620,79 +639,6 @@ class Model
     }
 
     /**
-     * Valid a file : return true if OK, string with error message
-     *
-     * @param mixed $file
-     * @param string $type '' | 'image' | 'video' | 'audio'
-     *
-     * @return mixed
-     */
-    public function validFile($file, $type = '')
-    {
-        if ($file['error'] > UPLOAD_ERR_OK) {
-            switch ($file['error']) {
-                case UPLOAD_ERR_INI_SIZE:
-                    return 'The uploaded file exceeds the upload_max_filesize directive in php.ini';
-                    break;
-
-                case UPLOAD_ERR_FORM_SIZE:
-                    return 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form';
-                    break;
-
-                case UPLOAD_ERR_PARTIAL:
-                    return 'The uploaded file was only partially uploaded';
-                    break;
-
-                case UPLOAD_ERR_NO_FILE:
-                    return 'No file was uploaded';
-                    break;
-
-                case UPLOAD_ERR_NO_TMP_DIR:
-                    return 'Missing a temporary folder';
-                    break;
-
-                case UPLOAD_ERR_CANT_WRITE:
-                    return 'Failed to write file to disk';
-                    break;
-
-                case UPLOAD_ERR_EXTENSION:
-                    return 'A PHP extension stopped the file upload';
-                    break;
-
-                default:
-                    return 'Unknown error';
-                    break;
-            }
-        }
-
-        if ($type != '') {
-            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-            switch ($type) {
-                case 'image':
-                    if (!in_array($ext, array('jpg', 'jpeg', 'png', 'gif'))) {
-                        return 'Le fichier doit être une image (jpg, jpeg, png, gif)';
-                    }
-                    break;
-
-                case 'video':
-                    if (!in_array($ext, array('avi', 'mpg', 'mpeg', 'mp4', 'mkv'))) {
-                        return 'Le fichier doit être une video (avi, mpg, mpeg, mp4, mkv)';
-                    }
-                    break;
-
-                case 'audio':
-                    if (!in_array($ext, array('wav', 'mp3', 'mid', 'ogg'))) {
-                        return 'Le fichier doit être un fichier audio (wav, mp3, mid, ogg)';
-                    }
-                    break;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Get category tree
      */
     /*public static function findAllWithChildren()
@@ -730,7 +676,6 @@ class Model
 
         $query->order('position');
         $query->from($children_table);
-        // $query->showSql();
 
         $res = $query->executeAndFetchAll();
 
@@ -773,23 +718,16 @@ class Model
         return $children;
     }
 
-    public static function getFlat($parent_id = null, $where = null, $flat = true)
+    public static function getFlat($parent_id = null, $where = null)
     {
-        return self::getChildren($parent_id, true, 0, $flat, $where);
+        return self::getChildren($parent_id, true, 0, true, $where);
     }
 
     public static function getOptions($parent_id = null)
     {
-        $options = array(
-            0 => array(
-                'value' => '',
-                'label' => '---'
-            )
-        );
+        $items = self::getFlat($parent_id);
 
-        $itemsMenus = self::getFlat($parent_id);
-
-        foreach ($itemsMenus as $item) {
+        foreach ($items as $item) {
             $options[$item->id] = array(
                 'value' => $item->id,
                 'label' => str_repeat('&nbsp;', $item->level * 8).$item->label

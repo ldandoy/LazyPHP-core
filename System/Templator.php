@@ -102,9 +102,6 @@ class Templator
                 }
                 return $options;
             } else if (isset($params[$options])) {
-                // Here we do the check table/object...
-                // var_dump($params[$options]);
-                $optionsList[] = array('label' => "---", 'value' => '');
                 foreach ($params[$options] as $value) {
                     if (is_array($value)) {
                         $optionsList[] = array('label' => $value['label'], 'value' => $value['value']);
