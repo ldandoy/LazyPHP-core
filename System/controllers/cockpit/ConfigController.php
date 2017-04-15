@@ -33,7 +33,7 @@ class ConfigController extends CockpitController
         $this->config->setData($this->request->post);
 
         if ($this->config->valid()) {
-            if ($this->config->save() {
+            if ($this->config->save()) {
                 Session::addFlash('Paramètres enregistrés', 'success');
                 $this->redirect('cockpit_systems_config');
             } else {
