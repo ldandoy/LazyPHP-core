@@ -185,7 +185,7 @@ class Controller
         // JS dans bower -> bower_components
         foreach (Config::$config_js as $value) {
             echo "<link rel=\"stylesheet\" href=\"/bower_components/".$value."\" />\n";
-            echo '<script src="/bower_components/'.$value.'"></script>';
+            echo '<script src="/bower_components/'.$value.'" type="text/javascript"></script>';
         }
 
         // Script qui sont dans les dossiers assets
@@ -193,7 +193,7 @@ class Controller
             if ($handle = opendir(JS_DIR)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != "." && $entry != "..") {
-                        echo '<script src="/assets'.DS.'js'.DS.$entry.'"></script>';
+                        echo '<script src="/assets'.DS.'js'.DS.$entry.'" type="text/javascript"></script>';
                     }
                 }
                 closedir($handle);
@@ -208,7 +208,7 @@ class Controller
                 if ($handle = opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
                         if ($entry != "." && $entry != "..") {
-                            echo '<script src="'.$jsDir.'/'.$entry.'"></script>';
+                            echo '<script src="'.$jsDir.'/'.$entry.'" type="text/javascript"></script>';
                         }
                     }
                     closedir($handle);
