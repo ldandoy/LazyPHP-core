@@ -172,13 +172,15 @@ class Model
             }
         }
 
-        $query = new Query();
-        $query->update(array(
-            'table' => $this->getTable(),
-            'columns' => array_keys($data)
-        ));
-        $query->where('id = '.$this->id);
-        $query->execute($data);
+        if (!empty($data)) {
+            $query = new Query();
+            $query->update(array(
+                'table' => $this->getTable(),
+                'columns' => array_keys($data)
+            ));
+            $query->where('id = '.$this->id);
+            $query->execute($data);
+        }
     }
 
     /**
@@ -368,14 +370,6 @@ class Model
         $row = $query->executeAndFetch(array(''.$key => $value));
         
         $res = new $class($row);
-        /*if (isset($res->parent) && !empty($res->parent)) {
-            foreach ($res->parent as $k_parent => $v_parent) {
-                $parentClass = 'app\\models\\'.$k_parent;
-                $parent = $parentClass::findById($v_parent);
-                $res->$k_parent = $parent;
-            }
-        }*/
-
         return $res;
     }
 
@@ -536,6 +530,7 @@ class Model
         foreach ($attachedFiles as $key => $attachedFileInfo) {
             $attachedFile = &$this->$key;
 
+            $hasError = false;
             $errorFile = $attachedFile->valid();
             if ($errorFile !== true) {
                 $hasError = true;
@@ -546,37 +541,6 @@ class Model
                 $attachedFile->uploadedFile = null;
                 $this->errors[$key] = 'Erreur fichier : '.$errorFile;
             }
-
-            // if (isset($attachedFile->uploadedFile['name']) && $attachedFile->uploadedFile['name'] != '') {
-            //     $hasError = false;
-            //     $type = isset($attachedFileInfo['type']) ? $attachedFileInfo['type'] : 'file';
-            //     switch ($type) {
-            //         case 'file':
-            //             $errorFile = $this->validFile($attachedFile->uploadedFile);
-            //             if ($errorFile !== true) {
-            //                 $hasError = true;
-            //             }
-            //             break;
-
-            //         case 'image':
-            //         case 'video':
-            //         case 'audio':
-            //             $errorFile = $this->validFile($attachedFile->uploadedFile, $type);
-            //             if ($errorFile !== true) {
-            //                 $hasError = true;
-            //             }
-            //             break;
-            //     }
-
-            //     if ($hasError) {
-            //         $attachedFile->url = null;
-            //         $attachedFile->uploadedFile = null;
-            //         $this->errors[$key] = 'Erreur fichier : '.$errorFile;
-            //     }
-            // } else {
-            //     $attachedFile->url = null;
-            //     $attachedFile->uploadedFile = null;
-            // }
         }
 
         $validationList = $this->getValidations();
@@ -675,6 +639,16 @@ class Model
                             if (preg_match($validation['pattern'], $value) === false) {
                                 $hasError = true;
                             }
+                            break;
+                    }
+                } else {
+                    switch ($type) {
+                        case 'int':
+                        case 'float':
+                        case 'datetime':
+                        case 'date':
+                        case 'time':
+                            $this->$key = null;
                             break;
                     }
                 }

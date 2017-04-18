@@ -152,8 +152,8 @@ class Router
             }
 
             if (!$urlFound) {
-                $search = '/^'.str_replace('/', '\/', $route['url']).'/';
-                $search = preg_replace('/:([a-z0-9\-_]+)/', '(?P<${1}>[a-z0-9\-_]+)', $search);
+                $search = '/^'.str_replace('/', '\\/', $route['url']).'/';
+                $search = preg_replace('/:([A-Za-z0-9\-_]+)/', '(?P<${1}>[A-Za-z0-9\-_]+)', $search);
                 preg_match($search, $request->url, $match);
                 if (!empty($match)) {
                     $key = $k;

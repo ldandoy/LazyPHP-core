@@ -30,15 +30,10 @@ class ConfigController extends CockpitController
     public function saveAction($id)
     {
         $this->config = new Config();
-        $this->config->setData($this->request->post);
 
-        if ($this->config->valid()) {
-            if ($this->config->save()) {
-                Session::addFlash('Paramètres enregistrés', 'success');
-                $this->redirect('cockpit_systems_config');
-            } else {
-                Session::addFlash('Erreur mise à jour base de données', 'danger');
-            }
+        if ($this->config->save($this->request->post)) {
+            Session::addFlash('Paramètres enregistrés', 'success');
+            $this->redirect('cockpit_systems_config');
         } else {
             Session::addFlash('Erreur(s) dans le formulaire', 'danger');
         }
