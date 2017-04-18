@@ -330,6 +330,36 @@ class Model
     }
 
     /**
+     * Get a record from a table by id
+     *
+     * @param int $id
+     *
+     * @return \system\Model
+     */
+    public static function findBy($key = 'id', $value = 0)
+    {
+        $class = get_called_class();
+
+        $query = new Query();
+        $query->select('*');
+        $query->where($key.' = :'.$key);
+        $query->from($class::getTableName());
+
+        $row = $query->executeAndFetch(array(''.$key => $value));
+        
+        $res = new $class($row);
+        /*if (isset($res->parent) && !empty($res->parent)) {
+            foreach ($res->parent as $k_parent => $v_parent) {
+                $parentClass = 'app\\models\\'.$k_parent;
+                $parent = $parentClass::findById($v_parent);
+                $res->$k_parent = $parent;
+            }
+        }*/
+
+        return $res;
+    }
+
+    /**
      * Return the name of the table from the static class calling
      *
      * @return string The name of the table to return

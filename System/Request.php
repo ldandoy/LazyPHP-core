@@ -65,6 +65,8 @@ class Request
         if (isset($_SERVER['PATH_INFO'])) {
             $url = $_SERVER['PATH_INFO'];
 
+            $this->host = $_SERVER['HTTP_HOST'];
+
             $adminPrefix = Config::getValueG('admin_prefix');
 
             $tabUrl = deleteEmptyItem(explode('/', $url));

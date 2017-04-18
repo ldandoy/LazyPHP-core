@@ -100,7 +100,7 @@ class Router
                         } else {
                             $controller = $infos[sizeof($infos)-1];
                         }
-                        self::$routes[$key]['url'] = str_replace($prefix, $prefix.'/'.$package, self::$routes[$key]['url']);
+                        self::$routes[$key]['url'] = str_replace($prefix, $prefix.'/'.strtolower($package), self::$routes[$key]['url']);
                     } else {
                         $prefix = '';
                         $controller = $section;
