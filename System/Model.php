@@ -330,6 +330,26 @@ class Model
     }
 
     /**
+     * Get the number of record in a table
+     *
+     * @param int $id
+     *
+     * @return \system\Model
+     */
+    public static function count()
+    {
+        $class = get_called_class();
+
+        $query = new Query();
+        $query->select('COUNT(id) as total');
+        $query->from($class::getTableName());
+
+        $row = $query->executeAndFetch();
+        
+        return $row->total;
+    }
+
+    /**
      * Get a record from a table by id
      *
      * @param int $id
