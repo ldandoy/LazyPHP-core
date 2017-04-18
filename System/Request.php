@@ -61,11 +61,11 @@ class Request
         $defaultController = Config::getValueG('controller');
         $defaultAction = Config::getValueG('action');
 
+        $this->host = $_SERVER['HTTP_HOST'];
+
         /* We manage the request info */
         if (isset($_SERVER['PATH_INFO'])) {
             $url = $_SERVER['PATH_INFO'];
-
-            $this->host = $_SERVER['HTTP_HOST'];
 
             $adminPrefix = Config::getValueG('admin_prefix');
 
