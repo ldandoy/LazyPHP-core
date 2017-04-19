@@ -1,6 +1,6 @@
 <?php
 /**
- * File system\Query.php
+ * File System\Query.php
  *
  * @category System
  * @package  Netoverconsulting
@@ -117,6 +117,7 @@ class Query
         $this->from = '';
         $this->join = array();
         $this->where = array();
+        $this->order = array();
         $this->insert = '';
         $this->update = '';
         $this->delete = '';
@@ -128,7 +129,7 @@ class Query
      *
      * @param mixed $columns 'col1,col2,...' | array('col1', 'col2', ...)
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function select($columns = '*')
     {
@@ -149,7 +150,7 @@ class Query
      * @param string $table
      * @param string $alias
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function from($table, $alias = '')
     {
@@ -168,7 +169,7 @@ class Query
      *         'fkey_column' => 'col'
      *     )
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function join($join)
     {
@@ -197,7 +198,7 @@ class Query
      *         'value' => 'val'
      *     )
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function where($where = '')
     {
@@ -221,14 +222,16 @@ class Query
      *         'order' => 'asc' | 'desc'
      *     )
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function order($order = '')
     {
         if (is_array($order)) {
-            $this->order[] = $order['col'].' '.$order['order'];
+            $this->order[] = $order['column'].' '.$order['order'];
         } else {
-            $this->order[] = $order;
+            if ($order != '') {
+                $this->order[] = $order;
+            }
         }
 
         return $this;
@@ -243,7 +246,7 @@ class Query
      *         'columns' => array('col1', 'col2,...)
      *     )
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function insert($params = array())
     {
@@ -273,7 +276,7 @@ class Query
      *         'columns' => array('col1', 'col2,...)
      *     )
      *
-     * @return \system\Query
+     * @return \System\Query
      */
     public function update($params = array())
     {

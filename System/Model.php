@@ -192,9 +192,7 @@ class Model
      */
     public function save($data = array())
     {
-        if (!empty($data)) {
-            $this->setData($data);
-        }
+        $this->setData($data);
 
         if ($this->valid()) {
             if (isset($this->id)) {
@@ -204,7 +202,7 @@ class Model
                 }
             } else {
                 $res = $this->create((array)$this);
-                if (!$res) {
+                if ($res === false) {
                     return false;
                 }
                 $this->id = $res;
@@ -223,7 +221,7 @@ class Model
      *
      * @param mixed $data
      *
-     * @return bool
+     * @return mixed false on error or the last insert id
      */
     public function create($data = array())
     {
@@ -236,7 +234,11 @@ class Model
             'table' => $this->getTable(),
             'columns' => array_keys($permittedData)
         ));
+
         $res = $query->execute($permittedData);
+        if ($res) {
+            $res = $query->lastInsertId();
+        }
 
         return $res;
     }
@@ -274,7 +276,6 @@ class Model
         $query = new Query();
         $query->delete(array('table' => $this->getTable()));
         $query->where('id = :id');
-        $query->showSql();
         return $query->execute(array('id' => $this->id));
     }
 
@@ -282,10 +283,11 @@ class Model
      * Get all rows from a table
      *
      * @param mixed $where
+     * @param mixed $order
      *
      * @return mixed
      */
-    public static function findAll($where = '')
+    public static function findAll($where = '', $order = '')
     {
         $res = array();
         $class = get_called_class();
@@ -294,10 +296,13 @@ class Model
         $query->select('*');
         $query->from($class::getTableName());
         $query->where($where);
+        $query->order($order);
+
         $rows = $query->executeAndFetchAll();
         foreach ($rows as $row) {
             $res[] = new $class($row);
         }
+
         return $res;
     }
 
@@ -320,13 +325,6 @@ class Model
         $row = $query->executeAndFetch(array('id' => $id));
         
         $res = new $class($row);
-        /*if (isset($res->parent) && !empty($res->parent)) {
-            foreach ($res->parent as $k_parent => $v_parent) {
-                $parentClass = 'app\\models\\'.$k_parent;
-                $parent = $parentClass::findById($v_parent);
-                $res->$k_parent = $parent;
-            }
-        }*/
 
         return $res;
     }
@@ -334,9 +332,7 @@ class Model
     /**
      * Get the number of record in a table
      *
-     * @param int $id
-     *
-     * @return \system\Model
+     * @return int
      */
     public static function count()
     {
@@ -348,7 +344,7 @@ class Model
 
         $row = $query->executeAndFetch();
         
-        return $row->total;
+        return (int)$row->total;
     }
 
     /**
