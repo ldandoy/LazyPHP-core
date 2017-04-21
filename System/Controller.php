@@ -38,8 +38,6 @@ class Controller
             } else {
                 $this->controller = strtolower($this->request->controller);
             }
-
-            $this->connectedUser = Session::get('connected');
         }
     }
 
