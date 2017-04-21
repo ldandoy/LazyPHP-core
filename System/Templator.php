@@ -13,6 +13,24 @@ use Widget\Widget;
 class Templator
 {
     /**
+     * Get an object's property value or call an object's method
+     * @param mixed $obj
+     * @param string $key
+     *
+     * @return mixed
+     */
+    private function getValue($obj, $key)
+    {
+        if (isset($obj->$key)) {
+            return $obj->$key;
+        } else if (method_exists($obj, $key)) {
+            return call_user_func(array($obj, $key));
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * @param mixed $attributes
      *
      * @return mixed
@@ -31,7 +49,7 @@ class Templator
                         if (isset($params[$a[0]])) {
                             $obj = $params[$a[0]];
                             $key = $a[1];
-                            $replace = isset($obj->$key) ? $obj->$key : '';
+                            $replace = $this->getValue($obj, $key);
                         } else {
                             $replace = '';
                         }
@@ -63,8 +81,7 @@ class Templator
                 if (isset($params[$a[0]])) {
                     $obj = $params[$a[0]];
                     $key = $a[1];
-
-                    $value = isset($obj->$key) ? $obj->$key : '';
+                    $value = $this->getValue($obj, $key);
                     $error =  isset($obj->errors[$key]) ? $obj->errors[$key] : '';
                 } else {
                     return null;
@@ -294,7 +311,7 @@ class Templator
                     if (isset($params[$a[0]])) {
                         $obj = $params[$a[0]];
                         $key = $a[1];
-                        $replace = isset($obj->$key) ? $obj->$key : '';
+                        $replace = $this->getValue($obj, $key);
                     } else {
                         $replace = '';
                     }
