@@ -334,13 +334,14 @@ class Model
      *
      * @return int
      */
-    public static function count()
+    public static function count($where = null)
     {
         $class = get_called_class();
 
         $query = new Query();
         $query->select('COUNT(id) as total');
         $query->from($class::getTableName());
+        $query->where($where);
 
         $row = $query->executeAndFetch();
         
