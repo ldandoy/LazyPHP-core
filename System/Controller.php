@@ -182,7 +182,6 @@ class Controller
     {
         // JS dans bower -> bower_components
         foreach (Config::$config_js as $value) {
-            echo "<link rel=\"stylesheet\" href=\"/bower_components/".$value."\" />\n";
             echo '<script src="/bower_components/'.$value.'" type="text/javascript"></script>';
         }
 

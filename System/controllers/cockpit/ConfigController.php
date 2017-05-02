@@ -18,26 +18,33 @@ class ConfigController extends CockpitController
     public function indexAction()
     {
         if ($this->config === null) {
-            $this->config = new Config();
+            $this->config = Config::getAll();
         }
 
         $this->render('index', array(
-            'config' => $config,
-            'pageTitle' => '<i class="fa fa-columns"></i> Paramètres du site',
+            'config'        => $this->config,
+            'formConfig'    => url('cockpit_system_config_save'),
+            'titlePage'     => '<i class="fa fa-columns"></i> Gestion de la configuration',
         ));
     }
 
-    public function saveAction($id)
+    public function saveAction()
     {
-        $this->config = new Config();
-
-        if ($this->config->save($this->request->post)) {
-            Session::addFlash('Paramètres enregistrés', 'success');
-            $this->redirect('cockpit_systems_config');
-        } else {
-            Session::addFlash('Erreur(s) dans le formulaire', 'danger');
+        // var_dump($this->request->post);
+        $ini = "; Ceci est le fichier de configuration\n; Les commentaires commencent par ';', comme dans php.ini\n\n";
+        foreach ($this->request->post['config'] as $key => $value) {
+            $ini .= "[".$key."]"."\n";
+            foreach ($value as $key1 => $value1) {
+                $ini .= $key1." = ".$value1."\n";
+            }
+            $ini .= "\n";
         }
 
-        $this->indexAction();
+        // Write the ini file
+        $fp = fopen(CONFIG_DIR.DS."config.ini", 'w');
+        fwrite($fp, $ini);
+        fclose($fp);
+
+        // $this->indexAction();
     }
 }

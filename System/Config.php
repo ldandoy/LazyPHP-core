@@ -99,4 +99,9 @@ class Config
             return null;
         }
     }
+
+    public static function getAll()
+    {
+        return self::$config;
+    }
 }
