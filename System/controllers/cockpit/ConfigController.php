@@ -35,7 +35,7 @@ class ConfigController extends CockpitController
         foreach ($this->request->post['config'] as $key => $value) {
             $ini .= "[".$key."]"."\n";
             foreach ($value as $key1 => $value1) {
-                $ini .= $key1." = ".$value1."\n";
+                $ini .= $key1." = \"".$value1."\"\n";
             }
             $ini .= "\n";
         }
