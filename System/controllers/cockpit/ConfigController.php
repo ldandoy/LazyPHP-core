@@ -30,7 +30,7 @@ class ConfigController extends CockpitController
 
     public function saveAction()
     {
-        // var_dump($this->request->post);
+        var_dump($this->request->post);
         $ini = "; Ceci est le fichier de configuration\n; Les commentaires commencent par ';', comme dans php.ini\n\n";
         foreach ($this->request->post['config'] as $key => $value) {
             $ini .= "[".$key."]"."\n";
@@ -45,6 +45,8 @@ class ConfigController extends CockpitController
         fwrite($fp, $ini);
         fclose($fp);
 
+        Session::addFlash('Mise à jour de la configuration', 'success');
+        $this->redirect('cockpit_system_config_index');
         // $this->indexAction();
     }
 }

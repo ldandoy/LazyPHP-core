@@ -102,6 +102,6 @@ class Config
 
     public static function getAll()
     {
-        return self::$config;
+        return parse_ini_file(CONFIG_DIR.DS."config.ini", true);
     }
 }

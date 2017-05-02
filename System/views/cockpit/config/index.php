@@ -14,7 +14,12 @@
 		    </div>
 		    <div class="box-body">
 		    	<?php foreach ($value as $key1 => $value1) { ?>
-		    		{% input_text name="config[<?php echo $key; ?>][<?php echo $key1; ?>]" value="<?php echo $value1; ?>" label="<?php echo $key1; ?>" %}
+		    		<div class="form-group form-group-sm">
+		    			<label for="config[<?php echo $key; ?>][<?php echo $key1; ?>]" class="col-sm-2 control-label"><?php echo $key1; ?></label>
+		    			<div class="col-sm-10">
+		    				<input type="text" id="config[<?php echo $key; ?>][<?php echo $key1; ?>]" name="config[<?php echo $key; ?>][<?php echo $key1; ?>]" value="<?php echo $value1; ?>" class="form-control" placeholder="<?php echo $key1; ?>" />
+		    			</div>
+		    		</div>
 		    	<?php } ?>
 		    </div>
 		</div>
