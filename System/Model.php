@@ -698,7 +698,12 @@ class Model
         $query->order('position');
         $query->from($children_table);
 
-        $res = $query->executeAndFetchAll();
+        // $res = $query->executeAndFetchAll();
+        $rows = $query->executeAndFetchAll();
+        $res = false;
+        foreach ($rows as $row) {
+            $res[] = new $class($row);
+        }
 
         if ($res !== false) {
             $children = $res;

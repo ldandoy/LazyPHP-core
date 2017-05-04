@@ -80,6 +80,11 @@ class Controller
     {
         $tpl = $this->findView($view);
         if ($tpl) {
+            if (!empty($params)) {
+                foreach ($params as $key => $value) {
+                    $$key = $value;
+                }
+            }
             ob_start();
             require_once $tpl;
             $yeslp = ob_get_clean();

@@ -97,7 +97,8 @@ class Request
             $this->format = 'html';
         } else {
             /* If the url is just / */
-            $this->url = '/'.$defaultController.'/'.$defaultAction;
+            // $this->url = '/'.$defaultController.'/'.$defaultAction;
+            $this->url = Config::getValueG('root');
             $this->format = 'html';
         }
 
