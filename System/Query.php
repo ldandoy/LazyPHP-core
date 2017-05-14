@@ -429,6 +429,9 @@ class Query
             $this->preparedStatement = $res;
 
             foreach ($data as $k => $v) {
+                if (is_array($v)) {
+                    $v = implode(';', $v);
+                }
                 Db::bind($this->preparedStatement, $k, $v);
             }
 

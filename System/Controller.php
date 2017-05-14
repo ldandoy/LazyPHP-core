@@ -141,7 +141,7 @@ class Controller
                 header('HTTP/1.1 301 Move Permanently');
             }
             Session::set('redirect', $url);
-            Session::set('post', $this->request->post);
+            //Session::set('post', $this->request->post);
             header('Location: '.Router::url($url));
             exit;
         }

@@ -67,9 +67,9 @@ class Router
                 }
             }
         }
-        /*echo "<pre>";
-        var_dump(self::$routes);
-        echo "</pre>";*/
+        // echo "<pre>";
+        // var_dump(self::$routes);
+        // echo "</pre>";
     }
 
     private static function createRoute($section, $params, $package = '')
@@ -100,7 +100,7 @@ class Router
                         } else {
                             $controller = $infos[sizeof($infos)-1];
                         }
-                        self::$routes[$key]['url'] = str_replace($prefix, $prefix.'/'.strtolower($package), self::$routes[$key]['url']);
+                        self::$routes[$key]['url'] = str_replace($prefix, $prefix.rtrim('/'.strtolower($package), '/'), self::$routes[$key]['url']);
                     } else {
                         $prefix = '';
                         $controller = $section;
@@ -241,6 +241,12 @@ class Router
      */
     public static function url($string, $params = array())
     {
+        // direct file download
+        $path = PUBLIC_DIR.DS.ltrim($string, '/');
+        if (strpos($string, '/uploads') === 0 && file_exists($path)) {
+            return $string;
+        }
+
         $url = '/'.ltrim(str_replace('_', '/', $string), '/');
         if (!empty($params)) {
             $url .= '/'.implode('/', $params);

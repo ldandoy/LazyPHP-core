@@ -23,6 +23,7 @@ class AttachedFile
     {
         $this->url = $url;
         $this->uploadedFile = $uploadedFile;
+        $this->type = $type;
     }
 
     private function hasUploadedFile()

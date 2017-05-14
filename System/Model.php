@@ -122,8 +122,11 @@ class Model
                             $url = $v;
                             $uploadedFile = null;
                         }
+                    } else if (isset($data['_'.$column.'_'])) {
+                        $url = $data['_'.$column.'_'];
+                        $uploadedFile = null;
                     }
-                    $this->$column = new AttachedFile($url, $uploadedFile);
+                    $this->$column = new AttachedFile($url, $uploadedFile, $attachedFiles[$column]['type']);
                 } else {
                     if (isset($data[$column])) {
                         $this->$column = $data[$column];
