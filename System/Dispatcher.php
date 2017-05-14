@@ -49,19 +49,6 @@ class Dispatcher
 
         // $this->checkUrl();
 
-        // On set le site id dans la session
-        if (Config::getValueG('multisite') != null) {
-            if (Session::get('site_id') === null) {
-                $site = Site::findBy('host', $this->request->host);
-                if (!empty($site)) {
-                    Session::set('site_id', $site->id);
-                    $this->request->site_id = $site->id;
-                } else {
-                    $this->request->site_id = null;
-                }
-            }
-        }
-
         $this->controller = $this->request->controller;
         if (isset($this->request->prefix) && $this->request->prefix != '') {
             $this->controller = $this->request->prefix.'\\'.$this->controller;

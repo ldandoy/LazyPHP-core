@@ -12,6 +12,7 @@
 namespace System;
 
 use System\Session;
+use MultiSite\models\Site;
 
 /**
  * Class Request
@@ -44,6 +45,8 @@ class Request
      */
     public $method = 'get';
 
+    public $site_id = null;
+
     /**
      * @var string html|json
      */
@@ -62,6 +65,19 @@ class Request
         $defaultAction = Config::getValueG('action');
 
         $this->host = $_SERVER['HTTP_HOST'];
+
+        // On set le site id dans la session
+        if (Config::getValueG('multisite') != null) {
+            if (Session::get('site_id') === null) {
+                $site = Site::findBy('host', $this->host);
+                if (!empty($site)) {
+                    Session::set('site_id', $site->id);
+                    $this->site_id = $site->id;
+                }
+            } else {
+                $this->site_id = Session::get('site_id');
+            }
+        }
 
         /* We manage the request info */
         if (isset($_SERVER['PATH_INFO'])) {
@@ -98,7 +114,11 @@ class Request
         } else {
             /* If the url is just / */
             // $this->url = '/'.$defaultController.'/'.$defaultAction;
-            $this->url = Config::getValueG('root');
+            if (isset(Config::getSite($this->site_id)['root'])) { // On regarde s'il y a un route pour le site id
+                $this->url = Config::getSite($this->site_id)['root'];
+            } else { // Sinon on prend le root
+                $this->url = Config::getValueG('root');
+            }
             $this->format = 'html';
         }
 
