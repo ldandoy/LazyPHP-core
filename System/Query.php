@@ -65,6 +65,13 @@ class Query
     private $where = array();
 
     /**
+     * The "group by" part of the query
+     *
+     * @var string
+     */
+    private $group = '';
+
+    /**
      * The order part of the query
      *
      * @var string[]
@@ -117,6 +124,7 @@ class Query
         $this->from = '';
         $this->join = array();
         $this->where = array();
+        $this->group = '';
         $this->order = array();
         $this->insert = '';
         $this->update = '';
@@ -136,7 +144,7 @@ class Query
         $this->setQueryType('select');
 
         if (is_array($columns)) {
-            $this->select = 'SELECT '.explode(',', $columns);
+            $this->select = 'SELECT '.implode(',', $columns);
         } else {
             $this->select = 'SELECT '.$columns;
         }
@@ -208,6 +216,24 @@ class Query
             if ($where != '') {
                 $this->where[] = $where;
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Create the group part of the query
+     *
+     * @param mixed $columns 'col1,col2,...' | array('col1', 'col2', ...)
+     *
+     * @return \System\Query
+     */
+    public function group($columns = '')
+    {
+        if (is_array($columns)) {
+            $this->group = 'GROUP BY '.implode(',', $columns);
+        } else {
+            $this->group = 'GROUP BY '.$columns;
         }
 
         return $this;
@@ -342,6 +368,7 @@ class Query
                     $this->from.' '.
                     ltrim($join.' ').
                     $where.
+                    ltrim($this->group.' ').
                     $order;
 
                 break;

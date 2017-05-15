@@ -8,7 +8,7 @@ use Helper\Bootstrap;
 use Helper\Html;
 use Helper\Form;
 
-use Widget\Widget;
+use Widget\widgets\Widget;
 
 class Templator
 {
@@ -286,9 +286,8 @@ class Templator
 
                     case 'widget':
                         $type = isset($attributes['type']) ? $attributes['type'] : '';
-                        $id = isset($attributes['id']) ? (int)$attributes['id'] : '';
-                        if ($type != '' && $id != 0) {
-                            $replace = Widget::getWidget($type, $id);
+                        if ($type != '') {
+                            $replace = Widget::getWidgetHtml($type, $attributes);
                         }
                         break;
 
