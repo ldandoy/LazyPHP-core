@@ -56,7 +56,11 @@ class Controller
             if (isset($this->request->prefix) && $this->request->prefix != "") {
                 $tpl = dirname(dirname(dirname($file))).'/views'.DS.$this->request->prefix.DS.$controller.DS.$view.'.php';
             } else {
-                $tpl = dirname(dirname($file)).'/views'.DS.$controller.DS.$view.'.php';
+                if (file_exists(VIEW_DIR.DS.$controller.DS.$view.'.php')) {
+                    $tpl = VIEW_DIR.DS.$controller.DS.$view.'.php';
+                } else {
+                    $tpl = dirname(dirname($file)).'/views'.DS.$controller.DS.$view.'.php';
+                }
             }
             if (file_exists($tpl)) {
                 return $tpl;
