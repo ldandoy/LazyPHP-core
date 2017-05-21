@@ -113,9 +113,13 @@ class Templator
             if ($options[0] == '[') {
                 $a = explode(';', trim($options, '[]'));
                 $options = array();
-                foreach ($a as $v) {
-                    $b = explode(':', $v);
-                    $options[] = array('label' => $b[0], 'value' => $b[1]);
+                if (!empty($a)) {
+                    foreach ($a as $v) {
+                        if ($v != '') {
+                            $b = explode(':', $v);
+                            $options[] = array('label' => $b[0], 'value' => $b[1]);
+                        }
+                    }
                 }
                 return $options;
             } else if (isset($params[$options])) {
