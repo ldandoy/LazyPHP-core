@@ -162,7 +162,7 @@ class Controller
         if (file_exists(CSS_DIR)) {
             if ($handle = opendir(CSS_DIR)) {
                 while (false !== ($entry = readdir($handle))) {
-                    if ($entry != "." && $entry != "..") {
+                    if ($entry != '.' && $entry != '..' && !is_dir(CSS_DIR.DS.$entry)) {
                         echo "<link rel=\"stylesheet\" href=\"/assets".DS."css".DS.$entry."\" />\n";
                     }
                 }
