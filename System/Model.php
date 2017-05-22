@@ -327,7 +327,11 @@ class Model
 
         $row = $query->executeAndFetch(array('id' => $id));
         
-        $res = new $class($row);
+        if ($row !== false) {
+            $res = new $class($row);
+        } else {
+            $res = null;
+        }
 
         return $res;
     }
