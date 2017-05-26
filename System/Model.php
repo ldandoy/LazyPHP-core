@@ -126,7 +126,8 @@ class Model
                         $url = $data['_'.$column.'_'];
                         $uploadedFile = null;
                     }
-                    $this->$column = new AttachedFile($url, $uploadedFile, $attachedFiles[$column]['type']);
+                    $maxSize = isset($attachedFiles[$column]['maxSize']) ? (int)$attachedFiles[$column]['maxSize'] : null;
+                    $this->$column = new AttachedFile($url, $uploadedFile, $attachedFiles[$column]['type'], $maxSize);
                 } else {
                     if (isset($data[$column])) {
                         $this->$column = $data[$column];
