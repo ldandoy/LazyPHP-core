@@ -386,6 +386,9 @@ class Model
     public static function getTableName()
     {
         $tableName = strtolower(getLastElement(explode('\\', get_called_class()))).'s';
+        if (isset(Config::$config_db['PREFIX']) && Config::$config_db['PREFIX'] != "") {
+            $tableName = Config::$config_db['PREFIX']."_".$tableName;
+        }
         return $tableName;
     }
 
