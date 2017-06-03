@@ -101,6 +101,16 @@ class Session
     }
 
     /**
+     * Get a session variable
+     *
+     * @return mixed
+     */
+    public static function getAll()
+    {
+        return isset($_SESSION) ? $_SESSION : null;
+    }
+
+    /**
      * Remove a session variable
      *
      * @return void

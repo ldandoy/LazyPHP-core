@@ -59,6 +59,7 @@ class Router
         }
 
         foreach (Config::$packages as $key => $packages) {
+            // echo $packages."<br />";
             $route_ini_path = VENDOR_DIR.DS.$packages.DS.'config/route.ini';
             if (file_exists($route_ini_path)) {
                 $routeConf = parse_ini_file($route_ini_path, true);

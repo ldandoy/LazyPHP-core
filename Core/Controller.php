@@ -13,6 +13,7 @@ namespace Core;
 
 use Core\Session;
 use Core\Templator;
+use Core\Router;
 
 /**
  * Class gérant les Controllers du site
@@ -27,6 +28,9 @@ class Controller
 {
     public $request;
     public $controller;
+    public $routes = null;
+    public $config = null;
+    public $sessions = null;
     public $layout = null;
 
     public function __construct($request)
@@ -39,6 +43,10 @@ class Controller
                 $this->controller = strtolower($this->request->controller);
             }
         }
+
+        $this->routes = Router::$routes;
+        $this->config = Config::$config;
+        $this->session = Session::getAll();
     }
 
     /**
@@ -48,25 +56,57 @@ class Controller
      */
     private function findView($view)
     {
-        $class = get_class($this);
-        do {
-            $reflection = new \ReflectionClass($class);
-            $file = $reflection->getFileName();
-            $controller = strtolower(str_replace('Controller.php', '', basename($file)));
-            if (isset($this->request->prefix) && $this->request->prefix != "") {
-                $tpl = dirname(dirname(dirname($file))).'/views'.DS.$this->request->prefix.DS.$controller.DS.$view.'.php';
+        $viewArray = explode("::", $view);
+
+        switch (count($viewArray)) {
+            case 1:
+                $package = "app";
+                $directory = "defaults";
+                $tplName = $viewArray[0];
+                break;
+
+            case 2:
+                $package = "app";
+                $directory = $viewArray[0];
+                $tplName = $viewArray[1];
+                break;
+
+            case 3:
+                $package = $viewArray[0];
+                $directory = $viewArray[1];
+                $tplName = $viewArray[2];
+                break;
+            
+            default:
+                $package = "app";
+                $directory = "";
+                $tplName = $viewArray[0];
+                break;
+        }
+
+        if ($package == "app") {
+            if ($this->request->prefix == "") {
+                $tplFile = VIEW_DIR.DS.$directory.DS.$tplName.'.php';
             } else {
-                if (file_exists(VIEW_DIR.DS.$controller.DS.$view.'.php')) {
-                    $tpl = VIEW_DIR.DS.$controller.DS.$view.'.php';
-                } else {
-                    $tpl = dirname(dirname($file)).'/views'.DS.$controller.DS.$view.'.php';
-                }
+                $tplFile = VIEW_DIR.DS.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
             }
-            if (file_exists($tpl)) {
-                return $tpl;
+            if (file_exists($tplFile)) {
+                return $tplFile;
             }
-            $class = get_parent_class($class);
-        } while ($class !== false);
+        } else {
+            $package = $this->config["PACKAGES"][$package];
+            $tplFile = VENDOR_DIR.DS.$package.DS.'views'.DS.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
+            if (file_exists($tplFile)) {
+                return $tplFile;
+            }
+        }
+
+        foreach ($this->config["PACKAGES"] as $package) {
+            $tplFile = VENDOR_DIR.DS.$package.DS.'views'.DS.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
+            if (file_exists($tplFile)) {
+                return $tplFile;
+            }
+        }
 
         return false;
     }
@@ -99,26 +139,8 @@ class Controller
 
         if ($layout) {
             ob_start();
-            if (strpos($view, "/errors/") === 0) {
-                $layout = VIEW_DIR.DS.'layout'.DS.'error.php';
-            } else {
-                if (isset($this->layout) && $this->layout !== null) {
-                    $layout = VIEW_DIR.DS.'layout'.DS.$this->layout.'.php';
-                } else {
-                    if (isset($this->request->prefix)) {
-                        $layout = VIEW_DIR.DS.'layout'.DS.$this->request->prefix.DS.'base.php';
-                    } else {
-                        $layout = VIEW_DIR.DS.'layout'.DS.'base.php';
-                    }
-                }
-                
-                if (file_exists($layout)) {
-                    require_once $layout;
-                } else {
-                    $message = 'Le layout "'.$layout.'" n\'existe pas';
-                    $this->error('Erreur de layout', $message);
-                }
-            }
+            $layout = $this->loadLayout();
+            require_once $layout;
             $html = ob_get_clean();
         } else {
             $html = $yeslp;
@@ -247,5 +269,35 @@ class Controller
 
         // Sinon on retourne une erreur
         $this->error('Model error', 'Model "'.$modelName.'" was not found.');
+    }
+
+    public function loadLayout()
+    {
+        // Check the prefix
+        if (!isset($this->request->prefix) || $this->request->prefix === null) {
+            $prefix = "";
+        } else {
+            $prefix = $this->request->prefix;
+        }
+
+        // Check if there is a layout, ifnot we use base.html
+        if (!isset($this->layout) || $this->layout === null) {
+            $this->layout = 'base';
+        }
+
+        // We check if the file existe in app/view/layout
+        $layout = VIEW_DIR.DS.'layout'.DS.$prefix.DS.$this->layout.'.php';
+        if (file_exists($layout)) {
+            return $layout;
+        }
+
+        // We use the one of Core package
+        $layout = VENDOR_DIR.DS.$this->config["PACKAGES"]['core'].DS.'views'.DS.'layout'.DS.$this->layout.'.php';
+        if (file_exists($layout)) {
+            return $layout;
+        }
+
+        $message = 'Le layout "'.$layout.'" n\'existe pas';
+        $this->error('Erreur de layout', $message);
     }
 }

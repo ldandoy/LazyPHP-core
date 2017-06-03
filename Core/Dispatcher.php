@@ -76,22 +76,23 @@ class Dispatcher
 
     public function loadController()
     {
-        if (isset($this->package)) {
-            $namespace = '\\'.ucfirst($this->package);
-        } else {
-            // $dir = CONTROLLER_DIR;
-            $namespace = '\\app';
+        $controllerName = $this->controller;
+
+        // On regarde si le fichier est dans /app/modeles
+        $classController = '\\app\\controllers\\'.$controllerName.'Controller';
+        if (class_exists($classController)) {
+            $controllerName = new $classController($this->request);
+            return $controllerName;
         }
 
-        // $file = $dir.DS.$this->controller.'Controller.php';
-        $class = $namespace.'\\controllers\\'.$this->controller.'Controller';
-
-        if (class_exists($class)) {
-            $controller = new $class($this->request);
-            return $controller;
-        } else {
-            $this->error('Controller error', 'Controller "'.$class.'" was not found.');
+        // on regade si le fichier est dans le /package/models/
+        $classController = '\\'.ucfirst($this->package).'\\controllers\\'.$controllerName.'Controller';
+        if (class_exists($classController)) {
+            $controllerName = new $classController($this->request);
+            return $controllerName;
         }
+
+        $this->error('Controller error', 'Controller "'.$controllerName.'" was not found.');
     }
 
     public function error($title, $message)
