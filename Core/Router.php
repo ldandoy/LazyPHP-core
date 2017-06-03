@@ -1,20 +1,20 @@
 <?php
 /**
- * File system\Router.php
+ * File Core\Router.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
 /**
  * Class gérant les requètes arrivant au serveur
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU

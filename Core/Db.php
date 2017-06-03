@@ -1,22 +1,22 @@
 <?php
 /**
- * File system\Db.php
+ * File Core\Db.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
 use \PDO;
 
 /**
  * Class gérant les connextion à la base de données
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU

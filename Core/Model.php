@@ -1,26 +1,25 @@
 <?php
 /**
- * File System\Model.php
+ * File Core\Model.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
-use System\Config;
-use System\Query;
-use System\Db;
+use Core\Query;
+use Core\Db;
 
 use System\AttachedFile;
 
 /**
  * Class gérant les Models du site
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU

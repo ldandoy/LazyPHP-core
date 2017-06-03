@@ -1,22 +1,22 @@
 <?php
 /**
- * File system\Session.php
+ * File Core\Session.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
 use Helper\Bootstrap;
 
 /**
  * Class to manage session
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU

@@ -1,8 +1,8 @@
 <?php
 
-namespace System;
+namespace Core;
 
-use System\TemplatorParser;
+use Core\TemplatorParser;
 
 use Helper\Bootstrap;
 use Helper\Html;

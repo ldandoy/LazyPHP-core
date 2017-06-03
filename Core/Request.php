@@ -1,17 +1,16 @@
 <?php
 /**
- * File system\Request.php
+ * File Core\Request.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
-use System\Session;
 use MultiSite\models\Site;
 
 /**

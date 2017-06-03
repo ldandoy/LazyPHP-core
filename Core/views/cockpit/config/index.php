@@ -24,4 +24,5 @@
 		    </div>
 		</div>
 	<?php } ?>
+	{% input_submit name="submit" value="save" formId="formConfig" class="btn-primary" icon="floppy-o" label=" Enregister les modifications" %}
 {% form_close %}

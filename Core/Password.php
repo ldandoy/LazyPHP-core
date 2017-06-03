@@ -1,17 +1,15 @@
 <?php
 /**
- * File system\Password.php
+ * File Core\Password.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
-
-use System\Config;
+namespace Core;
 
 define('VALID_PASSWORD_LENGTH', 0);
 define('VALID_PASSWORD_LOWERCASE', 1);

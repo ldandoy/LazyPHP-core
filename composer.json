@@ -11,9 +11,9 @@
     "require": {},
     "autoload": {
         "psr-0": {
-            "System": "/",
-            "System\\controllers": "/controllers/",
-            "System\\models": "/models/"
+            "Core": "/",
+            "Core\\controllers": "/controllers/",
+            "Core\\models": "/models/"
         }
     }
 }

@@ -1,23 +1,23 @@
 <?php
 /**
- * File system\Controller.php
+ * File Core\Controller.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
-use System\Session;
-use System\Templator;
+use Core\Session;
+use Core\Templator;
 
 /**
  * Class gérant les Controllers du site
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
@@ -226,5 +226,26 @@ class Controller
     private function stripAccents($str)
     {
         return strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+    }
+
+    public function loadModel($modelName)
+    {
+        // On regarde si le fichier est dans /app/modeles
+        $classModel = '\\app\\models\\'.$modelName;
+        if (class_exists($classModel)) {
+            $modelName = new $classModel();
+            return $classModel;
+        }
+
+        // on regade si le fichier est dans le /package/models/
+        $classModel = '\\'.ucfirst($this->request->package).'\\models\\'.$modelName;
+        if (class_exists($classModel)) {
+            $modelName = new $classModel();
+            return $classModel;
+        }
+
+
+        // Sinon on retourne une erreur
+        $this->error('Model error', 'Model "'.$modelName.'" was not found.');
     }
 }

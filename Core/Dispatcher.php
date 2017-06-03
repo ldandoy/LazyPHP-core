@@ -1,22 +1,22 @@
 <?php
 /**
- * File system\Dispatcher.php
+ * File Core\Dispatcher.php
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
  * @link     http://overconsulting.net
  */
 
-namespace System;
+namespace Core;
 
 use MultiSite\models\Site;
 
 /**
  * Class qui appel le bon controller en fonction de la bonne url.
  *
- * @category System
+ * @category Core
  * @package  Netoverconsulting
  * @author   Loïc Dandoy <ldandoy@overconsulting.net>
  * @license  GNU
@@ -25,7 +25,7 @@ use MultiSite\models\Site;
 class Dispatcher
 {
     /**
-     * @var System\Request
+     * @var Core\Request
      */
     public $request = null;
 
@@ -46,8 +46,6 @@ class Dispatcher
         if (!Router::parse($this->request)) {
             $this->error('URL error', 'Requested URL was not found.');
         }
-
-        // $this->checkUrl();
 
         $this->controller = $this->request->controller;
         if (isset($this->request->prefix) && $this->request->prefix != '') {
@@ -76,21 +74,9 @@ class Dispatcher
         }
     }
 
-    /*public function checkUrl()
-    {
-        if (!isset($this->request->controller)) {
-            $this->error('Controller error', 'Controller not found or invalid');
-        }
-
-        if (!isset($this->request->action)) {
-            $this->error('Action error', 'Action not found or invalid');
-        }
-    }*/
-
     public function loadController()
     {
         if (isset($this->package)) {
-            // $dir = VENDOR_DIR.DS.Config::$packages[$this->package].DS.'controllers';
             $namespace = '\\'.ucfirst($this->package);
         } else {
             // $dir = CONTROLLER_DIR;
