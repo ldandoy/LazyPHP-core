@@ -19,11 +19,17 @@ class AttachedFile
      */
     public $type = '';
 
-    public function __construct($url = null, $uploadedFile = null, $type = '')
+    /**
+     * @var int
+     */
+    public $maxSize = null;
+
+    public function __construct($url = null, $uploadedFile = null, $type = '', $maxSize = null)
     {
         $this->url = $url;
         $this->uploadedFile = $uploadedFile;
         $this->type = $type;
+        $this->maxSize = $maxSize;
     }
 
     private function hasUploadedFile()
@@ -39,6 +45,11 @@ class AttachedFile
     public function valid()
     {
         if ($this->hasUploadedFile()) {
+            if ($this->maxSize !== null) {
+                if ($this->uploadedFile['size'] > $this->maxSize)
+                return 'Le fichier dépasse la taille maximale autorisée';
+            }
+
             if ($this->uploadedFile['error'] > UPLOAD_ERR_OK) {
                 switch ($this->uploadedFile['error']) {
                     case UPLOAD_ERR_INI_SIZE:

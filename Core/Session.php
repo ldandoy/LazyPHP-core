@@ -70,12 +70,13 @@ class Session
 
         $flash = self::get('flash');
         if ($flash !== null) {
+            $html .= '<div class="container"><div class="row"><div class="col-md-12">';
             foreach ($flash as $f) {
                 $html .= Bootstrap::alert($f['message'], $f['type'], $f['canClose']);
             }
+            $html .= '</div></div></div>';
             self::remove('flash');
         }
-
         return $html;
     }
 
