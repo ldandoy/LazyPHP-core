@@ -14,7 +14,7 @@ namespace Core;
 use Core\Query;
 use Core\Db;
 
-use System\AttachedFile;
+use Core\AttachedFile;
 
 /**
  * Class gérant les Models du site

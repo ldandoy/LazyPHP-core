@@ -1,17 +1,17 @@
 <?php
 
-namespace System\controllers\cockpit;
+namespace Core\controllers\cockpit;
 
 use app\controllers\cockpit\CockpitController;
 
-use System\Config;
-use System\Router;
-use System\Session;
+use Core\Config;
+use Core\Router;
+use Core\Session;
 
 class ConfigController extends CockpitController
 {
     /**
-     * @var System\Config
+     * @var Core\Config
     */
     public $config = null;
 

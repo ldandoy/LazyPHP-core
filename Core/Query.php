@@ -137,7 +137,7 @@ class Query
      *
      * @param mixed $columns 'col1,col2,...' | array('col1', 'col2', ...)
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function select($columns = '*')
     {
@@ -158,7 +158,7 @@ class Query
      * @param string $table
      * @param string $alias
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function from($table, $alias = '')
     {
@@ -177,7 +177,7 @@ class Query
      *         'fkey_column' => 'col'
      *     )
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function join($join)
     {
@@ -206,7 +206,7 @@ class Query
      *         'value' => 'val'
      *     )
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function where($where = '')
     {
@@ -226,7 +226,7 @@ class Query
      *
      * @param mixed $columns 'col1,col2,...' | array('col1', 'col2', ...)
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function group($columns = '')
     {
@@ -248,7 +248,7 @@ class Query
      *         'order' => 'asc' | 'desc'
      *     )
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function order($order = '')
     {
@@ -272,7 +272,7 @@ class Query
      *         'columns' => array('col1', 'col2,...)
      *     )
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function insert($params = array())
     {
@@ -302,7 +302,7 @@ class Query
      *         'columns' => array('col1', 'col2,...)
      *     )
      *
-     * @return \System\Query
+     * @return \Core\Query
      */
     public function update($params = array())
     {
