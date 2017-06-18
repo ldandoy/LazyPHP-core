@@ -21,7 +21,7 @@ class ConfigController extends CockpitController
             $this->config = Config::getAll();
         }
 
-        $this->render('index', array(
+        $this->render('core::config::index', array(
             'config'        => $this->config,
             'formConfig'    => url('cockpit_system_config_save'),
             'titlePage'     => '<i class="fa fa-columns"></i> Gestion de la configuration',

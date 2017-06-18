@@ -32,6 +32,9 @@ class Controller
     public $config = null;
     public $sessions = null;
     public $layout = null;
+    public $params = array();
+    public $renred = false;
+    public $title = null;
 
     public function __construct($request)
     {
@@ -47,6 +50,7 @@ class Controller
         $this->routes = Router::$routes;
         $this->config = Config::$config;
         $this->session = Session::getAll();
+        $this->title = isset($this->config["GENERAL"]["title"]) ? $this->config["GENERAL"]["title"] : "";
     }
 
     /**
@@ -76,7 +80,7 @@ class Controller
                 $directory = $viewArray[1];
                 $tplName = $viewArray[2];
                 break;
-            
+
             default:
                 $package = "app";
                 $directory = "";
@@ -122,36 +126,39 @@ class Controller
      */
     public function render($view, $params = array(), $layout = true)
     {
-        $tpl = $this->findView($view);
-        if ($tpl) {
-            if (!empty($params)) {
-                foreach ($params as $key => $value) {
-                    $$key = $value;
-                }
-            }
-            ob_start();
-            require_once $tpl;
-            $yeslp = ob_get_clean();
-        } else {
-            $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
-            $this->error('Erreur de template', $message);
+        if (!$this->renred) {
+          $tpl = $this->findView($view);
+          if ($tpl) {
+              if (!empty($params)) {
+                  foreach ($params as $key => $value) {
+                      $$key = $value;
+                  }
+              }
+              ob_start();
+              require_once $tpl;
+              $yeslp = ob_get_clean();
+          } else {
+              $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
+              $this->error('Erreur de template', $message);
+          }
+
+          if ($layout) {
+              ob_start();
+              $layout = $this->loadLayout();
+              require_once $layout;
+              $html = ob_get_clean();
+          } else {
+              $html = $yeslp;
+          }
+
+          $templator = new Templator();
+          $html = $templator->parse($html, $params);
+
+          echo $html;
+          $this->renred = true;
+
+          Session::remove('redirect');
         }
-
-        if ($layout) {
-            ob_start();
-            $layout = $this->loadLayout();
-            require_once $layout;
-            $html = ob_get_clean();
-        } else {
-            $html = $yeslp;
-        }
-
-        $templator = new Templator();
-        $html = $templator->parse($html, $params);
-
-        echo $html;
-
-        Session::remove('redirect');
     }
 
     public function error($title, $message)
@@ -266,6 +273,13 @@ class Controller
             return $classModel;
         }
 
+        foreach (Config::$packages as $packageName => $package) {
+          $classModel = '\\'.ucfirst($packageName).'\\models\\'.$modelName;
+          if (class_exists($classModel)) {
+              $modelName = new $classModel();
+              return $classModel;
+          }
+        }
 
         // Sinon on retourne une erreur
         $this->error('Model error', 'Model "'.$modelName.'" was not found.');
@@ -280,7 +294,7 @@ class Controller
             $prefix = $this->request->prefix;
         }
 
-        // Check if there is a layout, ifnot we use base.html
+        // Check if there is a layout, if not we use base.html
         if (!isset($this->layout) || $this->layout === null) {
             $this->layout = 'base';
         }

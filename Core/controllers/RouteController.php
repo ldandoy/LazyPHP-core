@@ -36,7 +36,7 @@ class RouteController extends FrontController
      */
     public function indexAction()
     {
-        $this->render('index', array(
+        $this->render('core::route::index', array(
             'routes'  => $this->routes
         ));
     }

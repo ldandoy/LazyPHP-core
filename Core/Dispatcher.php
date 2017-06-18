@@ -69,6 +69,8 @@ class Dispatcher
         $params = isset($this->request->params) ? $this->request->params : array();
 
         call_user_func_array(array($controller, $action), $params);
+        call_user_func_array(array($controller, 'render'), array(null, $controller->params));
+
         if (method_exists($controller, 'after')) {
             $controller->after();
         }
