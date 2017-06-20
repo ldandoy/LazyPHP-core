@@ -33,7 +33,7 @@ class Controller
     public $sessions = null;
     public $layout = null;
     public $params = array();
-    public $renred = false;
+    public $rendered = false;
     public $title = null;
 
     public function __construct($request)
@@ -126,7 +126,7 @@ class Controller
      */
     public function render($view, $params = array(), $layout = true)
     {
-        if (!$this->renred) {
+        if (!$this->rendered) {
           $tpl = $this->findView($view);
           if ($tpl) {
               if (!empty($params)) {
@@ -137,7 +137,7 @@ class Controller
               ob_start();
               require_once $tpl;
               $yeslp = ob_get_clean();
-          } else {
+          } else {var_dump($view);debug($this,false);
               $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
               $this->error('Erreur de template', $message);
           }
@@ -155,7 +155,7 @@ class Controller
           $html = $templator->parse($html, $params);
 
           echo $html;
-          $this->renred = true;
+          $this->rendered = true;
 
           Session::remove('redirect');
         }
