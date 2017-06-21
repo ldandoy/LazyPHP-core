@@ -137,7 +137,7 @@ class Controller
               ob_start();
               require_once $tpl;
               $yeslp = ob_get_clean();
-          } else {var_dump($view);debug($this,false);
+          } else {
               $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
               $this->error('Erreur de template', $message);
           }
