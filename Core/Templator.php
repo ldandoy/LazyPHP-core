@@ -280,6 +280,10 @@ class Templator
                         $replace = Form::audio($attributes);
                         break;
 
+                    case 'input_upload':
+                        $replace = Form::upload($attributes);
+                        break;
+
                     case 'input_media':
                         $replace = Form::media($attributes);
                         break;
