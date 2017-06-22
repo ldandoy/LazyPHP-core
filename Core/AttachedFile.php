@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Session;
+
 class AttachedFile
 {
     /**
@@ -119,24 +121,33 @@ class AttachedFile
         if ($this->hasUploadedFile()) {
             $ext = pathinfo($this->uploadedFile['name'], PATHINFO_EXTENSION);
 
-            $url = DS.'uploads'.DS.$model;
-            $idStr = (string)($id);
-            for ($i = 0; $i < strlen($idStr); $i++) {
-                $url .= '/'.$idStr[$i];
+            if ($model = 'tmp') {
+                $url = DS.'uploads'.DS.'tmp'.DS.Session::getSessionId();
+                $idStr = '';
+            } else {
+                $url = DS.'uploads'.DS.$model;
+                $idStr = (string)($id);
+                for ($i = 0; $i < strlen($idStr); $i++) {
+                    $url .= '/'.$idStr[$i];
+                }
             }
 
             $path = PUBLIC_DIR.$url;
             if (!file_exists($path)) {
-                mkdir($path, 0777, true);
+                mkdir($path, 0755, true);
+                chmod($path, 0755);
             }
 
             $path .= DS.$idStr.'_'.$name.'.'.$ext;
             $url .= DS.$idStr.'_'.$name.'.'.$ext;
 
-            if (file_exists($path)) {
+            if (file_exists($path)) {                
                 unlink($path);
             }
+            
             move_uploaded_file($this->uploadedFile['tmp_name'], $path);
+
+            chmod($path, 0664);
 
             $this->url = $url;
         }

@@ -196,6 +196,7 @@ class Model
     public function save($data = array())
     {
         $this->setData($data);
+        var_dump($this->image);
 
         if ($this->valid()) {
             if (isset($this->id)) {

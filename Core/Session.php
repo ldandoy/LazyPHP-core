@@ -143,4 +143,13 @@ class Session
         }
         return false;
     }
+
+    /**
+     * Get the session id
+     * @return string
+     */
+    public static function getSessionId()
+    {
+        return session_id();
+    }
 }
