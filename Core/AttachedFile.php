@@ -118,10 +118,28 @@ class AttachedFile
 
     public function saveUploadedFile($model, $id, $name)
     {
+        $isTmpFile = false;
+        if ($model != 'tmp') {
+            $a = parse_url($this->url);
+            if (isset($a['query'])) {
+                $q = array();
+                parse_str($a['query'], $q);
+
+                if (isset($q['tmp']) && $q['tmp'] == '1') {
+                    $this->uploadedFile = array(
+                        'name' => basename($a['path']),
+                        'tmp_name' => PUBLIC_DIR.$a['path']
+                    );
+                    $isTmpFile = true;
+                }
+            }
+            $this->url = $a['path'];
+        }
+
         if ($this->hasUploadedFile()) {
             $ext = pathinfo($this->uploadedFile['name'], PATHINFO_EXTENSION);
 
-            if ($model = 'tmp') {
+            if ($model == 'tmp') {
                 $url = DS.'uploads'.DS.'tmp'.DS.Session::getSessionId();
                 $idStr = '';
             } else {
@@ -139,15 +157,25 @@ class AttachedFile
             }
 
             $path .= DS.$idStr.'_'.$name.'.'.$ext;
-            $url .= DS.$idStr.'_'.$name.'.'.$ext;
 
-            if (file_exists($path)) {                
+            if (file_exists($path)) {
                 unlink($path);
             }
             
-            move_uploaded_file($this->uploadedFile['tmp_name'], $path);
-
+            if ($isTmpFile) {
+                if (file_exists($this->uploadedFile['tmp_name'])) {
+                    rename($this->uploadedFile['tmp_name'], $path);
+                    unlink($this->uploadedFile['tmp_name']);
+                }
+            } else {
+                move_uploaded_file($this->uploadedFile['tmp_name'], $path);
+            }
             chmod($path, 0664);
+
+            $url .= DS.$idStr.'_'.$name.'.'.$ext;
+            if ($model == 'tmp') {
+                $url .= '?tmp=1&ts='.time();
+            }
 
             $this->url = $url;
         }

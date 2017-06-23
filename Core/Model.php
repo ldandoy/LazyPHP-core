@@ -109,7 +109,7 @@ class Model
                 if (isset($attachedFiles[$column])) {
                     $url = null;
                     $uploadedFile = null;
-                    if (isset($data[$column])) {
+                    if (isset($data[$column]) && $data[$column] != '') {
                         $v = $data[$column];
                         if (is_array($v)) {
                             $url = null;
@@ -121,9 +121,9 @@ class Model
                             $url = $v;
                             $uploadedFile = null;
                         }
-                    } else if (isset($data['_'.$column.'_'])) {
+                    } else if (isset($data['_'.$column.'_']) && $data['_'.$column.'_'] != '') {
                         $url = $data['_'.$column.'_'];
-                        $uploadedFile = null;
+                        $uploadedFile = null;                        
                     }
                     $maxSize = isset($attachedFiles[$column]['maxSize']) ? (int)$attachedFiles[$column]['maxSize'] : null;
                     $this->$column = new AttachedFile($url, $uploadedFile, $attachedFiles[$column]['type'], $maxSize);
@@ -196,7 +196,6 @@ class Model
     public function save($data = array())
     {
         $this->setData($data);
-        var_dump($this->image);
 
         if ($this->valid()) {
             if (isset($this->id)) {
