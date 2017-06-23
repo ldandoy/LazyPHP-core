@@ -170,7 +170,10 @@ class AttachedFile
             } else {
                 move_uploaded_file($this->uploadedFile['tmp_name'], $path);
             }
-            chmod($path, 0664);
+
+            if (file_exists($path)) {
+                chmod($path, 0664);
+            }
 
             $url .= DS.$idStr.'_'.$name.'.'.$ext;
             if ($model == 'tmp') {
