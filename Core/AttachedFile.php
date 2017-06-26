@@ -161,11 +161,10 @@ class AttachedFile
             if (file_exists($path)) {
                 unlink($path);
             }
-            
+
             if ($isTmpFile) {
                 if (file_exists($this->uploadedFile['tmp_name'])) {
                     rename($this->uploadedFile['tmp_name'], $path);
-                    unlink($this->uploadedFile['tmp_name']);
                 }
             } else {
                 move_uploaded_file($this->uploadedFile['tmp_name'], $path);
