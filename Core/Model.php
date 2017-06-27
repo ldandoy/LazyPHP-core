@@ -601,16 +601,17 @@ class Model
 
                 $hasError = false;
 
-                if ($required && $value == '') {
+                if ($required && $value == '') {                    
                     if (array_key_exists('defaultValue', $validation)) {
                         $this->$key = $validation['defaultValue'];
                     } else {
-                        $this->errors[$key] = $validation['error'];
+                        $hasError = true;
                     }
-                } else if ($value != '') {
+                } else if ($value != '') {                    
                     switch ($type) {
                         case 'int':
-                            if (preg_match('/-?[0-9]+/', $value) === false) {
+                        case 'integer':
+                            if (preg_match('/-?[0-9]+/', $value) != 1) {
                                 $hasError = true;
                             }
                             break;
@@ -643,7 +644,7 @@ class Model
                             break;
 
                         case 'regex':
-                            if (preg_match($validation['pattern'], $value) === false) {
+                            if (preg_match($validation['pattern'], $value) != 1) {
                                 $hasError = true;
                             }
                             break;
@@ -662,6 +663,7 @@ class Model
 
                 if ($hasError) {
                     $this->errors[$key] = $validation['error'];
+                    break;
                 }
             }
         }
