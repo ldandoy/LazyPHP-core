@@ -28,10 +28,10 @@ class Db
     const FETCH_OBJ = PDO::FETCH_OBJ;
 
     /**
-    * Prepare a sql query on the server
-    * @param string $sql
-    * @return \PDOStatement
-    */
+     * Prepare a sql query on the server
+     * @param string $sql
+     * @return \PDOStatement
+     */
     public static function prepare($sql)
     {
         if (!isset(self::$db)) {
@@ -58,12 +58,12 @@ class Db
     }
 
     /**
-    * Bind a parameter
-    * @param \PDOStatement $statement
-    * @param string $param
-    * @param mixed $value
-    * @return bool
-    */
+     * Bind a parameter
+     * @param \PDOStatement $statement
+     * @param string $param
+     * @param mixed $value
+     * @return bool
+     */
     public static function bind($statement, $param, $value)
     {
         try {

@@ -532,6 +532,14 @@ class Model
             }
         }
 
+        // Associations
+        $associations = $this->getAssociations();
+        foreach ($associations as $association) {            
+            if ($association['type'] == '1' && isset($this->$association['key']) && $this->$association['key'] === '') {
+                $this->$association['key'] = null;
+            }
+        }
+
         // Attached files
         $attachedFiles = $this->getAttachedFiles();
         foreach ($attachedFiles as $key => $attachedFileInfo) {
@@ -581,11 +589,11 @@ class Model
                                 break;
                             
                             case 'uppercase':
-                                $value = uppercase($value);
+                                $value = mb_strtoupper($value);
                                 break;
 
                             case 'lowercase':
-                                $value = lowercase($value);
+                                $value = mb_strtolower($value);
                                 break;
 
                             case 'ucfirst':
