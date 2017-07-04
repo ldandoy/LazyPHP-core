@@ -283,6 +283,20 @@ class Model
     }
 
     /**
+     * Delete all rows in a table
+     *
+     * @return bool
+     */
+    public static function deleteAll()
+    {
+        $class = get_called_class();
+
+        $query = new Query();
+        $query->deleteAll(array('table' => $class::getTableName()));
+        return $query->execute();
+    }
+
+    /**
      * Get all rows from a table
      *
      * @param mixed $where

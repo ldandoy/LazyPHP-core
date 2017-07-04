@@ -23,7 +23,7 @@ namespace Core;
 class Query
 {
     /**
-     * The query type ('select' | 'insert' | 'update' | 'delete')
+     * The query type ('select' | 'insert' | 'update' | 'delete' | 'deleteAll')
      *
      * @var string
      */
@@ -335,6 +335,20 @@ class Query
     }
 
     /**
+     * Create the delete part of the query
+     *
+     * @param mixed $params
+     *
+     * @return void
+     */
+    public function deleteAll($params = array())
+    {
+        $this->setQueryType('deleteAll');
+
+        $this->delete = 'DELETE FROM '.$params['table'];
+    }
+
+    /**
      * Create the sql text with all part of the query
      *
      * Create the sql text with all part of the query and put it in $this->sql
@@ -399,6 +413,10 @@ class Query
                 $this->sql =
                     $this->delete.' '.
                     $where;
+
+            case 'deleteAll':
+                $this->sql =
+                    $this->delete;
         }
     }
 
