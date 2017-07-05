@@ -30,7 +30,7 @@ class Controller
     public $controller;
     public $routes = null;
     public $config = null;
-    public $sessions = null;
+    public $session = null;
     public $layout = null;
     public $params = array();
     public $rendered = false;
