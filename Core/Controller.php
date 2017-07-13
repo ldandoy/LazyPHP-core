@@ -35,6 +35,7 @@ class Controller
     public $params = array();
     public $rendered = false;
     public $title = null;
+    public $site =  null;
 
     public function __construct($request)
     {
@@ -51,6 +52,9 @@ class Controller
         $this->config = Config::$config;
         $this->session = Session::getAll();
         $this->title = isset($this->config["GENERAL"]["title"]) ? $this->config["GENERAL"]["title"] : "";
+
+        $siteModel = $this->loadModel('Site');
+        $this->site = $siteModel::findById($this->session["site_id"]);
     }
 
     /**
@@ -126,6 +130,9 @@ class Controller
      */
     public function render($view, $params = array(), $layout = true)
     {
+        // On merge tous les paramètres que l'on a passé à la vue.
+        $params = array_merge($this->params, $params);
+
         if (!$this->rendered) {
           $tpl = $this->findView($view);
           if ($tpl) {
@@ -136,6 +143,9 @@ class Controller
               }
               ob_start();
               require_once $tpl;
+
+              // On pourrait peut-être faire les trucs ici de replace, genre un get_content, et on refait un ob_start après ?
+
               $yeslp = ob_get_clean();
           } else {
               $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';

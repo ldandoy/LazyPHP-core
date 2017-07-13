@@ -112,9 +112,8 @@ class Request
             $this->format = 'html';
         } else {
             /* If the url is just / */
-            // $this->url = '/'.$defaultController.'/'.$defaultAction;
-            if (isset(Config::getSite($this->site_id)['root'])) { // On regarde s'il y a un route pour le site id
-                $this->url = Config::getSite($this->site_id)['root'];
+            if (isset($site)) {
+                $this->url = $site->root_path;
             } else { // Sinon on prend le root
                 $this->url = Config::getValueG('root');
             }

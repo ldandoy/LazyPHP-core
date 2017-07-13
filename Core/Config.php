@@ -104,10 +104,4 @@ class Config
     {
         return parse_ini_file(CONFIG_DIR.DS."config.ini", true);
     }
-
-    public static function getSite($id)
-    {
-        $config = parse_ini_file(CONFIG_DIR.DS."config.ini", true);
-        return $config['SITE'.$id];
-    }
 }

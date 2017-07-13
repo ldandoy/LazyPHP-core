@@ -2,10 +2,10 @@
 	<h1 class="page-title">
 		{{ titlePage }}
 		<div class="pull-right">
-			{% input_submit name="submit" value="save" formId="formConfig" class="btn-primary btn-xs" icon="floppy-o" label="" %}
+			{% input_submit name="submit" value="save" formId="formConfig" class="btn-primary btn-sm" icon="floppy-o" label="" %}
 		</div>
 	</h1>
-	
+
 
 	<?php foreach ($params['config'] as $key => $value) { ?>
 		<div class="box box-warning">

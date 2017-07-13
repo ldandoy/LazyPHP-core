@@ -65,7 +65,7 @@ class Model
 
                 switch ($association['type']) {
                     case '1':
-                        $this->$name = $class::findById($this->$association['key']);
+                        $this->$name = $class::findById($association['key']);
                         break;
                     case '+':
                     case '*':
@@ -123,7 +123,7 @@ class Model
                         }
                     } else if (isset($data['_'.$column.'_']) && $data['_'.$column.'_'] != '') {
                         $url = $data['_'.$column.'_'];
-                        $uploadedFile = null;                        
+                        $uploadedFile = null;
                     }
                     $maxSize = isset($attachedFiles[$column]['maxSize']) ? (int)$attachedFiles[$column]['maxSize'] : null;
                     $this->$column = new AttachedFile($url, $uploadedFile, $attachedFiles[$column]['type'], $maxSize);
@@ -340,7 +340,7 @@ class Model
         $query->from($class::getTableName());
 
         $row = $query->executeAndFetch(array('id' => $id));
-        
+
         if ($row !== false) {
             $res = new $class($row);
         } else {
@@ -365,7 +365,7 @@ class Model
         $query->where($where);
 
         $row = $query->executeAndFetch();
-        
+
         return (int)$row->total;
     }
 
@@ -386,7 +386,7 @@ class Model
         $query->from($class::getTableName());
 
         $row = $query->executeAndFetch(array(''.$key => $value));
-        
+
         $res = new $class($row);
         return $res;
     }
@@ -548,7 +548,7 @@ class Model
 
         // Associations
         $associations = $this->getAssociations();
-        foreach ($associations as $association) {            
+        foreach ($associations as $association) {
             if ($association['type'] == '1' && isset($this->$association['key']) && $this->$association['key'] === '') {
                 $this->$association['key'] = null;
             }
@@ -601,7 +601,7 @@ class Model
                             case 'trim':
                                 $value = trim($value);
                                 break;
-                            
+
                             case 'uppercase':
                                 $value = mb_strtoupper($value);
                                 break;
@@ -623,13 +623,13 @@ class Model
 
                 $hasError = false;
 
-                if ($required && $value == '') {                    
+                if ($required && $value == '') {
                     if (array_key_exists('defaultValue', $validation)) {
                         $this->$key = $validation['defaultValue'];
                     } else {
                         $hasError = true;
                     }
-                } else if ($value != '') {                    
+                } else if ($value != '') {
                     switch ($type) {
                         case 'int':
                         case 'integer':
@@ -724,7 +724,7 @@ class Model
         } else {
             $query->where('parent = '.$parent_id);
         }
-        
+
         if ($where !== null) {
             $query->where($where);
         }
