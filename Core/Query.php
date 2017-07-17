@@ -279,13 +279,15 @@ class Query
         $this->setQueryType('insert');
 
         $sqlParams = [];
+        $columns = [];
         foreach ($params['columns'] as $c) {
+            $columns[] = '`'.$c.'`';
             $sqlParams[] = ':'.$c;
         }
 
         $this->insert =
             'INSERT INTO '.$params['table'].'('.
-            implode(',', $params['columns']).
+            implode(',', $columns).
             ') VALUES ('.
             implode(',', $sqlParams).
             ')';
@@ -310,7 +312,7 @@ class Query
 
         $sqlColumnsParams = array();
         foreach ($params['columns'] as $c) {
-            $sqlColumnsParams[] = $c.' = :'.$c;
+            $sqlColumnsParams[] = '`'.$c.'` = :'.$c;
         }
 
         $this->update =
