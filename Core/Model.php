@@ -277,7 +277,7 @@ class Model
     {
         $query = new Query();
         $query->delete(array('table' => $this->getTable()));
-        $query->where('id = :id');
+        $query->where('id = :id');        
         return $query->execute(array('id' => $this->id));
     }
 

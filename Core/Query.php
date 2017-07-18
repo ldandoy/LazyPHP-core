@@ -415,10 +415,12 @@ class Query
                 $this->sql =
                     $this->delete.' '.
                     $where;
+                break;
 
             case 'deleteAll':
                 $this->sql =
                     $this->delete;
+                break;
         }
     }
 
