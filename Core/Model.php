@@ -104,8 +104,8 @@ class Model
 
         $attachedFiles = $this->getAttachedFiles();
         $permittedColumns = $this->getPermittedColumns();
-        if (!empty($this->permittedColumns)) {
-            foreach ($this->permittedColumns as $column) {
+        if (!empty($permittedColumns)) {
+            foreach ($permittedColumns as $column) {
                 if (isset($attachedFiles[$column])) {
                     $url = null;
                     $uploadedFile = null;
