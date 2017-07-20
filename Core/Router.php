@@ -145,8 +145,6 @@ class Router
      */
     public static function parse($request)
     {
-        // var_dump($request);
-
         $urlFound = false;
         foreach (self::$routes as $k => $route) {
             if ($request->url == $route['url']) {
