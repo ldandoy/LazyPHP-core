@@ -64,7 +64,8 @@ class Model
                 $class = $association['model'];
                 switch ($association['type']) {
                     case '1':
-                        $this->$name = $class::findById($this->$association['key']);
+                        $key = $association['key'];
+                        $this->$name = $class::findById($this->$key);
                         break;
                     case '+':
                     case '*':
