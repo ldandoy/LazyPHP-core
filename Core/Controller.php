@@ -197,6 +197,8 @@ class Controller
             echo "<link rel=\"stylesheet\" href=\"/bower_components/".$value."\" />\n";
         }
 
+        echo "<link rel=\"stylesheet\" href=\"/assets".DS."css".DS."theme".DS.$this->site->theme.".css\" />\n";
+
         // CSS qui sont dans les dossiers assets
         if (file_exists(CSS_DIR)) {
             if ($handle = opendir(CSS_DIR)) {
