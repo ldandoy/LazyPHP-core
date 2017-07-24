@@ -64,7 +64,7 @@ class Model
                 $class = $association['model'];
                 switch ($association['type']) {
                     case '1':
-                        $this->$name = $class::findById($this->$association['key']);
+                        $this->$name = $class::findById($association['key']);
                         break;
                     case '+':
                     case '*':
@@ -278,7 +278,7 @@ class Model
     {
         $query = new Query();
         $query->delete(array('table' => $this->getTable()));
-        $query->where('id = :id');        
+        $query->where('id = :id');
         return $query->execute(array('id' => $this->id));
     }
 
