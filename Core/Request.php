@@ -74,9 +74,15 @@ class Request
                     $this->site_id = $site->id;
                 }
             } else {
-                $this->site_id = Session::get('site_id');
+                $site = Site::findBy('host', $this->host);
+                if (!empty($site)) {
+                    Session::set('site_id', $site->id);
+                    $this->site_id = $site->id;
+                }
             }
         }
+
+
 
         /* We manage the request info */
         if (isset($_SERVER['PATH_INFO'])) {
