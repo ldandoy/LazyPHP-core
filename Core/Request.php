@@ -74,11 +74,8 @@ class Request
                     $this->site_id = $site->id;
                 }
             } else {
-                $site = Site::findBy('host', $this->host);
-                if (!empty($site)) {
-                    Session::set('site_id', $site->id);
-                    $this->site_id = $site->id;
-                }
+                $this->site_id = Session::get('site_id');
+                $site = Site::findById($this->site_id);
             }
         }
 
