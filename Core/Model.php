@@ -550,7 +550,8 @@ class Model
         // Associations
         $associations = $this->getAssociations();
         foreach ($associations as $association) {
-            if ($association['type'] == '1' && isset($this->$association['key']) && $this->$association['key'] === '') {
+            $key = $association['key'];
+            if ($association['type'] == '1' && isset($this->$key) && $this->$key === '') {
                 $this->$association['key'] = null;
             }
         }
