@@ -13,8 +13,8 @@ namespace Core;
 
 use Core\Query;
 use Core\Db;
-
 use Core\AttachedFile;
+use Helper\Datetime;
 
 /**
  * Class gérant les Models du site
@@ -647,9 +647,9 @@ class Model
 
                         case 'datetime':
                         case 'date':
-                        case 'time':
+                        case 'time':                            
                             $d = \DateTime::createFromFormat($validation['format'], $value);
-                            if (!is_numeric($value)) {
+                            if ($d === false) {
                                 $hasError = true;
                             }
                             break;
@@ -796,5 +796,10 @@ class Model
         }
 
         return $options;
+    }
+
+    public function formatDatetime($dateTime, $format = DateTime::FORMAT_DATETIME)
+    {
+        return DateTime::format($dateTime, $format);
     }
 }
