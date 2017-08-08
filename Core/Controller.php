@@ -14,6 +14,7 @@ namespace Core;
 use Core\Session;
 use Core\Templator;
 use Core\Router;
+use Helper\Bootstrap;
 
 /**
  * Class gérant les Controllers du site
@@ -26,20 +27,64 @@ use Core\Router;
  */
 class Controller
 {
-    public $request;
-    public $controller;
-    public $routes = null;
-    public $config = null;
+    /*
+     * @var Core\Session
+     */
     public $session = null;
-    public $layout = null;
-    public $params = array();
-    public $rendered = false;
-    public $title = null;
+
+    /*
+     * @var Core\Request
+     */
+    public $request;
+
+    /*
+     * @var MultiSite\Site
+     */
     public $site =  null;
+
+    /*
+     * @var string
+     */
+    public $controller;
+
+    /*
+     * @var mixed
+     */
+    public $params = array();
+
+    /*
+     * @var bool
+     */
+    public $rendered = false;
+
+    /*
+     * @var string
+     */
+    public $layout = null;
+
+    /*
+     * @var mixed
+     */
+    public $routes = null;
+
+    /*
+     * @var Core\Config
+     */
+    public $config = null;
+
+    /*
+     * @var string
+     */
+    public $title = null;
 
     public function __construct($request)
     {
         $this->request = $request;
+
+        $this->session = Session::$session;
+
+        $this->site = $this->session->get('site');
+
         if (isset($this->request->controller)) {
             if (isset($this->request->prefix)) {
                 $this->controller = $this->request->prefix.DS.strtolower($this->request->controller);
@@ -50,11 +95,7 @@ class Controller
 
         $this->routes = Router::$routes;
         $this->config = Config::$config;
-        $this->session = Session::getAll();
         $this->title = isset($this->config["GENERAL"]["title"]) ? $this->config["GENERAL"]["title"] : "";
-
-        $siteModel = $this->loadModel('Site');
-        $this->site = $siteModel::findById($this->session["site_id"]);
     }
 
     /**
@@ -94,9 +135,9 @@ class Controller
 
         if ($package == "app") {
             if ($this->request->prefix == "") {
-                $tplFile = VIEW_DIR.DS.$directory.DS.$tplName.'.php';
+                $tplFile = APP_DIR.DS.'views'.DS.$directory.DS.$tplName.'.php';
             } else {
-                $tplFile = VIEW_DIR.DS.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
+                $tplFile = APP_DIR.DS.'views'.DS.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
             }
             if (file_exists($tplFile)) {
                 return $tplFile;
@@ -184,7 +225,6 @@ class Controller
                 header('HTTP/1.1 301 Move Permanently');
             }
             Session::set('redirect', $url);
-            //Session::set('post', $this->request->post);
             header('Location: '.Router::url($url));
             exit;
         }
@@ -312,7 +352,7 @@ class Controller
         }
 
         // We check if the file existe in app/view/layout
-        $layout = VIEW_DIR.DS.'layout'.DS.$prefix.DS.$this->layout.'.php';
+        $layout = APP_DIR.DS.'views'.DS.'layout'.DS.$prefix.DS.$this->layout.'.php';
         if (file_exists($layout)) {
             return $layout;
         }
@@ -325,5 +365,51 @@ class Controller
 
         $message = 'Le layout "'.$layout.'" n\'existe pas';
         $this->error('Erreur de layout', $message);
+    }
+
+    /**
+     * Add a flash message
+     *
+     * @param string $message Message to display
+     * @param string $type Message type (danger|success|warning|info)
+     * @param bool $canClose
+     *
+     * @return void
+     */
+    public function addFlash($message, $type, $canClose = true)
+    {
+        $flash = $this->session->get('flash');
+        if ($flash === null) {
+            $flash = array();
+        }
+
+        $flash[] = array(
+            'message' => $message,
+            'type' => $type,
+            'canClose' => $canClose
+        );
+
+        $this->session->set('flash', $flash);
+    }
+
+    /**
+     * Get the html for flash messages
+     *
+     * @return string
+     */
+    public function getFlash()
+    {
+        $html = '';
+
+        $flash = $this->session->get('flash');
+        if ($flash !== null) {
+            $html .= '<div class="container"><div class="row"><div class="col-md-12">';
+            foreach ($flash as $f) {
+                $html .= Bootstrap::alert($f['message'], $f['type'], $f['canClose']);
+            }
+            $html .= '</div></div></div>';
+            $this->session->remove('flash');
+        }
+        return $html;
     }
 }

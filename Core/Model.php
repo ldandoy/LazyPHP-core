@@ -11,9 +11,8 @@
 
 namespace Core;
 
+use Core\Utils;
 use Core\Query;
-use Core\Db;
-
 use Core\AttachedFile;
 
 /**
@@ -371,9 +370,10 @@ class Model
     }
 
     /**
-     * Get a record from a table by id
+     * Get a record from a table by $key
      *
-     * @param int $id
+     * @param string $key
+     * @param mixed $value
      *
      * @return \system\Model
      */
@@ -387,8 +387,12 @@ class Model
         $query->from($class::getTableName());
 
         $row = $query->executeAndFetch(array(''.$key => $value));
+        if ($row !== false) {
+            $res = new $class($row);
+        } else {
+            $res = null;
+        }
 
-        $res = new $class($row);
         return $res;
     }
 
@@ -399,7 +403,7 @@ class Model
      */
     public static function getTableName()
     {
-        $tableName = strtolower(getLastElement(explode('\\', get_called_class()))).'s';
+        $tableName = strtolower(Utils::getLastElement(explode('\\', get_called_class()))).'s';
         if (isset(Config::$config_db['PREFIX']) && Config::$config_db['PREFIX'] != "") {
             $tableName = Config::$config_db['PREFIX']."_".$tableName;
         }

@@ -58,14 +58,6 @@ class Config
         self::$config_css = self::$config['CSS'];
         self::$config_js = self::$config['JS'];
         self::$packages = self::$config['PACKAGES'];
-
-        spl_autoload_register(function ($class) {
-            $class = str_replace('\\', '/', $class);
-            $file = ROOT_DIR.DS.$class.'.php';
-            if (file_exists($file)) {
-                require_once $file;
-            }
-        });
     }
 
     /**

@@ -11,6 +11,7 @@
 
 namespace Core;
 
+use Core\Utils;
 use MultiSite\models\Site;
 
 /**
@@ -65,21 +66,11 @@ class Request
 
         $this->host = $_SERVER['HTTP_HOST'];
 
-        // On set le site id dans la session
-        if (Config::getValueG('multisite') != null) {
-            if (Session::get('site_id') === null) {
-                $site = Site::findBy('host', $this->host);
-                if (!empty($site)) {
-                    Session::set('site_id', $site->id);
-                    $this->site_id = $site->id;
-                }
-            } else {
-                $this->site_id = Session::get('site_id');
-                $site = Site::findById($this->site_id);
-            }
+        $site = Session::get('site');
+        if ($site === null) {
+            $site = Site::findBy('host', $this->host);
+            Session::set('site', $site);
         }
-
-
 
         /* We manage the request info */
         if (isset($_SERVER['PATH_INFO'])) {
@@ -87,7 +78,7 @@ class Request
 
             $adminPrefix = Config::getValueG('admin_prefix');
 
-            $tabUrl = deleteEmptyItem(explode('/', $url));
+            $tabUrl = Utils::removeEmptyElements(explode('/', $url));
             $controller = array_shift($tabUrl);
 
             if ($controller == $adminPrefix) {
@@ -114,7 +105,7 @@ class Request
             $this->url = '/'.(isset($prefix) ? $prefix.'/' : '').(isset($package) ? $package.'/' : '').$controller.'/'.$action.(count($params) > 0 ? '/'.implode('/', $params) : '');
             $this->format = 'html';
         } else {
-            /* If the url is just / */
+            /* If the url is just "/" */
             if (isset($site)) {
                 $this->url = $site->root_path;
             } else { // Sinon on prend le root
@@ -123,14 +114,7 @@ class Request
             $this->format = 'html';
         }
 
-        /* We manage the request method */
         $this->method = strtolower($_SERVER['REQUEST_METHOD']);
-
-        /* We manage the request params */
-        $sessionPost = Session::getAndRemove('post');
-        if ($sessionPost !== null) {
-            $_POST = array_merge($_POST, $sessionPost);
-        }
 
         if (isset($_FILES) && !empty($_FILES)) {
             $files = array();

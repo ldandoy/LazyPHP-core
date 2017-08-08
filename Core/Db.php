@@ -44,7 +44,7 @@ class Db
 
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             } catch (PDOException $e) {
-                die('Erreur : '.$e->getMessage());
+                throw new \Exception('PDOException : '.$e->getMessage(), $e->getCode());
                 return false;
             }
         }
@@ -52,7 +52,7 @@ class Db
         try {
             return self::$db->prepare($sql);
         } catch (PDOException $e) {
-            die('Erreur : '.$e->getMessage());
+            throw new \Exception('PDOException : '.$e->getMessage(), $e->getCode());
             return false;
         }
     }
@@ -69,7 +69,7 @@ class Db
         try {
             return $statement->bindParam(':'.$param, $value);
         } catch (PDOException $e) {
-            die('Erreur : '.$e->getMessage());
+            throw new \Exception('PDOException : '.$e->getMessage(), $e->getCode());
             return false;
         }
     }

@@ -11,8 +11,6 @@
 
 namespace Core;
 
-use MultiSite\models\Site;
-
 /**
  * Class qui appel le bon controller en fonction de la bonne url.
  *
@@ -44,7 +42,7 @@ class Dispatcher
         $this->request = new Request();
 
         if (!Router::parse($this->request)) {
-            $this->error('URL error', 'Requested URL was not found.');
+            throw new \Exception('URL error => Requested URL was not found.');
         }
 
         $this->controller = $this->request->controller;
@@ -63,7 +61,7 @@ class Dispatcher
 
         $action = $this->request->action.'Action';
         if (!in_array($action, get_class_methods($controller))) {
-            $this->error('Action error', 'Method "'.$action.'" was not found in controller "'.$this->controller.'".');
+            throw new \Exception('Action error => Method "'.$action.'" was not found in controller "'.$this->controller.'".');
         }
 
         $params = isset($this->request->params) ? $this->request->params : array();
@@ -94,11 +92,6 @@ class Dispatcher
             return $controllerName;
         }
 
-        $this->error('Controller error', 'Controller "'.$controllerName.'" was not found.');
-    }
-
-    public function error($title, $message)
-    {
-        die($title.'<br />'.$message);
+        throw new \Exception('Controller error => Controller "'.$controllerName.'" was not found.');
     }
 }

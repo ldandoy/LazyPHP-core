@@ -11,8 +11,6 @@
 
 namespace Core;
 
-use Helper\Bootstrap;
-
 /**
  * Class to manage session
  *
@@ -24,60 +22,25 @@ use Helper\Bootstrap;
  */
 class Session
 {
+    public static $session = null;
+
     /**
      * Init
      *
-     * @return void
+     * @return \Core\Session
      */
     public static function init()
     {
         session_start();
+        self::$session = new Session();
     }
 
-    /**
-     * Add a flash message
-     *
-     * @param string $message Message to display
-     * @param string $type Message type (danger|success|warning|info)
-     * @param bool $canClose
-     *
-     * @return void
-     */
-    public static function addFlash($message, $type, $canClose = true)
+    public function __call($name, $arguments)
     {
-        $flash = self::get('flash');
-        if ($flash === null) {
-            $flash = array();
+        $class = get_called_class();
+        if (method_exists($class, $name)) {
+            call_user_func_array(array($class, $name), $arguments);
         }
-
-        $flash[] = array(
-            'message' => $message,
-            'type' => $type,
-            'canClose' => $canClose
-        );
-
-        self::set('flash', $flash);
-    }
-
-    /**
-     * Get the html for flash messages
-     *
-     * @return string
-     */
-    public static function flash()
-    {
-        $html = '';
-
-        $flash = self::get('flash');
-        if ($flash !== null) {
-            $html .= '<div class="container"><div class="row"><div class="col-md-12">';
-            foreach ($flash as $f) {
-                $html .= Bootstrap::alert($f['message'], $f['type'], $f['canClose']);
-            }
-            $html .= '</div></div></div>';
-            self::remove('flash');
-        }
-        return $html;
     }
 
     /**
@@ -101,7 +64,7 @@ class Session
     }
 
     /**
-     * Get a session variable
+     * Get all session variable
      *
      * @return mixed
      */
@@ -130,18 +93,6 @@ class Session
         $value = self::get($name);
         self::remove($name);
         return $value;
-    }
-
-    /**
-     * Check if use is connected
-     * @return bool
-     */
-    public static function isConnected($search)
-    {
-        if (Session::get($search)) {
-            return true;
-        }
-        return false;
     }
 
     /**

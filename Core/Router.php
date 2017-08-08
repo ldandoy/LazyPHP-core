@@ -11,6 +11,8 @@
 
 namespace Core;
 
+use Core\Utils;
+
 /**
  * Class gérant les requètes arrivant au serveur
  *
@@ -196,7 +198,7 @@ class Router
 
         $adminPrefix = Config::getValueG('admin_prefix');
 
-        $tabUrl = deleteEmptyItem(explode('/', $url));
+        $tabUrl = Utils::removeEmptyelements(explode('/', $url));
 
         $controller = array_shift($tabUrl);
 

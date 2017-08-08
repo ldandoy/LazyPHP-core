@@ -484,10 +484,14 @@ class Query
                 Db::bind($this->preparedStatement, $k, $v);
             }
 
-            if ($this->preparedStatement->execute()) {
-                return true;
-            } else {
-                return false;
+            try {
+                if ($this->preparedStatement->execute()) {                    
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (PDOException $e) {
+                throw new \Exception('PDOException : '.$e->getMessage(), $e->getCode());
             }
         } else {
             return false;

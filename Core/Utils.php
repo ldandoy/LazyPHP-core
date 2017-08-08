@@ -3,6 +3,43 @@ namespace Core;
 
 class Utils
 {
+    /**
+     * Return the last element of an array
+     *
+     * @param array $a
+     *
+     * @return array $lastElement
+     */
+    public static function getLastElement($a)
+    {
+        return $a[count($a) - 1];
+    }
+
+    /**
+     * Test if not empty
+     *
+     * @param mixed $v value to test
+     *
+     * @return boolean
+     */
+    public static function notEmpty($v)
+    {
+        return empty($v) ? false : true;
+    }
+
+    /**
+     * Function called to remove empty elements in an array
+     *
+     * @param mixed $a
+     *
+     * @return boolean
+     */
+    public static function removeEmptyElements($a)
+    {
+        return array_filter($a, array(get_called_class(), 'notEmpty'));
+    }
+
+
     public static function bytesToHumanReadable($bytes, $unit = '')
     {
         $units = array(
