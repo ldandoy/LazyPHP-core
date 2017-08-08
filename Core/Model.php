@@ -14,6 +14,7 @@ namespace Core;
 use Core\Utils;
 use Core\Query;
 use Core\AttachedFile;
+use Helper\Datetime;
 
 /**
  * Class gérant les Models du site
@@ -554,7 +555,8 @@ class Model
         // Associations
         $associations = $this->getAssociations();
         foreach ($associations as $association) {
-            if ($association['type'] == '1' && isset($this->$association['key']) && $this->$association['key'] === '') {
+            $key = $association['key'];
+            if ($association['type'] == '1' && isset($this->$key) && $this->$key === '') {
                 $this->$association['key'] = null;
             }
         }
@@ -651,9 +653,9 @@ class Model
 
                         case 'datetime':
                         case 'date':
-                        case 'time':
+                        case 'time':                            
                             $d = \DateTime::createFromFormat($validation['format'], $value);
-                            if (!is_numeric($value)) {
+                            if ($d === false) {
                                 $hasError = true;
                             }
                             break;
@@ -800,5 +802,10 @@ class Model
         }
 
         return $options;
+    }
+
+    public function formatDatetime($dateTime, $format = DateTime::FORMAT_DATETIME)
+    {
+        return DateTime::format($dateTime, $format);
     }
 }

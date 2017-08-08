@@ -84,6 +84,16 @@ class Session
     }
 
     /**
+     * Remove a session variable
+     *
+     * @return void
+     */
+    public static function removeAll()
+    {
+        unset($_SESSION);
+    }
+
+    /**
      * Get and remove a session variable
      *
      * @return mixed
