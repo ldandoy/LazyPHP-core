@@ -13,7 +13,7 @@ class ConfigController extends CockpitController
     /**
      * @var Core\Config
     */
-    public $config = null;
+    private $config = null;
 
     public function indexAction()
     {
@@ -21,11 +21,14 @@ class ConfigController extends CockpitController
             $this->config = Config::getAll();
         }
 
-        $this->render('core::config::index', array(
-            'config'        => $this->config,
-            'formConfig'    => url('cockpit_system_config_save'),
-            'titlePage'     => '<i class="fa fa-columns"></i> Gestion de la configuration',
-        ));
+        $this->render(
+            'core::config::index',
+            array(
+                'config' => $this->config,
+                'formAction' => Router::url('cockpit_system_config_save'),
+                'pageTitle' => '<i class="fa fa-columns"></i> Gestion de la configuration',
+            )
+        );
     }
 
     public function saveAction()
@@ -45,7 +48,7 @@ class ConfigController extends CockpitController
         fwrite($fp, $ini);
         fclose($fp);
 
-        Session::addFlash('Mise à jour de la configuration', 'success');
+        $this->addFlash('Mise à jour de la configuration', 'success');
         $this->redirect('cockpit_system_config_index');
         // $this->indexAction();
     }

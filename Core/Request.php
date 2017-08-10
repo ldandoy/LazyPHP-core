@@ -12,7 +12,7 @@
 namespace Core;
 
 use Core\Utils;
-use MultiSite\models\Site;
+use Core\models\Site;
 
 /**
  * Class Request

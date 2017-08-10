@@ -30,7 +30,7 @@ class Db
     /**
      * Prepare a sql query on the server
      * @param string $sql
-     * @return \PDOStatement
+     * @return \PDOStatement | bool
      */
     public static function prepare($sql)
     {
@@ -44,7 +44,7 @@ class Db
 
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
             } catch (PDOException $e) {
-                throw new \Exception('PDOException : '.$e->getMessage(), $e->getCode());
+                throw new \Exception('PDOException (PDO::__construct) : '.$e->getMessage(), $e->getCode());
                 return false;
             }
         }
@@ -52,7 +52,7 @@ class Db
         try {
             return self::$db->prepare($sql);
         } catch (PDOException $e) {
-            throw new \Exception('PDOException : '.$e->getMessage(), $e->getCode());
+            throw new \Exception('PDOException (PDO::prepare) : '.$e->getMessage(), $e->getCode());
             return false;
         }
     }

@@ -53,12 +53,13 @@ class SystemController extends FrontController
      */
     public function errorAction()
     {
-        $exception = $this->session->get('error');
+        $exception = $this->session->getAndRemove('error');
+        $error = $exception !== null ? $exception->getMessage() : '';
 
         $this->render(
             'core::system::error',
             array(
-                'error' => $exception->getMessage()
+                'error' => $error
             )
         );
     }

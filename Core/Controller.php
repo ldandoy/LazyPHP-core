@@ -38,7 +38,7 @@ class Controller
     public $request;
 
     /*
-     * @var MultiSite\Site
+     * @var Core\Site
      */
     public $site =  null;
 
