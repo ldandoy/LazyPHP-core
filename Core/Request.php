@@ -72,9 +72,10 @@ class Request
             Session::set('site', $site);
         }
 
-        /* We manage the request info */
-        if (isset($_SERVER['PATH_INFO'])) {
-            $url = $_SERVER['PATH_INFO'];
+        $requestUri = $_SERVER['REQUEST_URI'];
+        $path = parse_url($requestUri,  PHP_URL_PATH);
+        if (isset($path)) {
+            $url = $path;
 
             $adminPrefix = Config::getValueG('admin_prefix');
 

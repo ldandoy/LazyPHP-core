@@ -43,7 +43,8 @@ class LazyPHP
 
     public static function error($e)
     {
-        echo '<pre>'.$e.'</pre>';
+        Session::set('error', $e);
+        header('Location: /error');
     }
 }
 

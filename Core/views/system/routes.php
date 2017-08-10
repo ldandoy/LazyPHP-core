@@ -4,13 +4,13 @@
 			<h1>Liste des urls disponible</h1>
 			<table class="table">
 				<thead>
-				<tr>
-					<th>method</th>
-					<th>url</th>
-					<th>Package</th>
-					<th>Prefix</th>
-					<th>Controler#Action</th>
-				</tr>
+					<tr>
+						<th>method</th>
+						<th>url</th>
+						<th>Package</th>
+						<th>Prefix</th>
+						<th>Controler#Action</th>
+					</tr>
 				</thead>
 				<tbody>
 					<?php foreach ($routes as $route) { ?>
