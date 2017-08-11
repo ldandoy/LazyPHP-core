@@ -33,7 +33,7 @@ class LazyPHP
 
         try {
             self::init();
-            new Dispatcher();
+            $dispatcher = new Dispatcher();
         } catch (\Exception $e) {
             self::error($e);
         }
@@ -59,7 +59,7 @@ class LazyPHP
 function debug($data, $displayBacktrace = true)
 {
     $html =
-        '<div class="well">';
+        '<div>';
 
     if ($displayBacktrace) {
         $html .=

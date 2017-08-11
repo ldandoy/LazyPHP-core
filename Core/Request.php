@@ -45,8 +45,6 @@ class Request
      */
     public $method = 'get';
 
-    public $site_id = null;
-
     /**
      * @var string html|json
      */
@@ -73,7 +71,18 @@ class Request
         }
 
         $requestUri = $_SERVER['REQUEST_URI'];
-        $path = parse_url($requestUri,  PHP_URL_PATH);
+        $parsedUrl = parse_url($requestUri);
+        $pathinfo = pathinfo($parsedUrl['path']);
+        $path = rtrim($pathinfo['dirname'], '/').'/'.$pathinfo['filename'];
+
+        $allowedFormats = array('html', 'json');
+        if (isset($pathinfo['extension'])) {
+            $ext = $pathinfo['extension'];
+            $this->format = in_array($ext, $allowedFormats) ? $ext : 'html';
+        } else {
+            $this->format = 'html';
+        }
+
         if (isset($path)) {
             $url = $path;
 
@@ -104,7 +113,6 @@ class Request
             }
 
             $this->url = '/'.(isset($prefix) ? $prefix.'/' : '').(isset($package) ? $package.'/' : '').$controller.'/'.$action.(count($params) > 0 ? '/'.implode('/', $params) : '');
-            $this->format = 'html';
         } else {
             /* If the url is just "/" */
             if (isset($site)) {
@@ -112,7 +120,6 @@ class Request
             } else { // Sinon on prend le root
                 $this->url = Config::getValueG('root');
             }
-            $this->format = 'html';
         }
 
         $this->method = strtolower($_SERVER['REQUEST_METHOD']);

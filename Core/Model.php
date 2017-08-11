@@ -405,7 +405,7 @@ class Model
     public static function getTableName()
     {
         $tableName = strtolower(Utils::getLastElement(explode('\\', get_called_class()))).'s';
-        if (defined(DB_PREFIX) && DB_PREFIX != '') {
+        if (defined('DB_PREFIX') && DB_PREFIX != '') {
             $tableName = DB_PREFIX.'_'.$tableName;
         }
         return $tableName;

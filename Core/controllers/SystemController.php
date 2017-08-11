@@ -1,27 +1,9 @@
 <?php
 
-/**
- * File Core\controllers\RouteController.php
- *
- * @category Core
- * @package  Netoverconsulting
- * @author   Loïc Dandoy <ldandoy@overconsulting.net>
- * @license  GNU
- * @link     http://overconsulting.net
- */
 namespace Core\controllers;
 
 use Core\Controller;
 
-/**
- * Class manage routes of the application
- *
- * @category Core
- * @package  Netoverconsulting
- * @author   Loïc Dandoy <ldandoy@overconsulting.net>
- * @license  GNU
- * @link     http://overconsulting.net
- */
 class SystemController extends Controller
 {
 
@@ -36,12 +18,16 @@ class SystemController extends Controller
      */
     public function routesAction()
     {
-        $this->render(
-            'core::system::routes',
-            array(
-                'routes'  => $this->routes
-            )
-        );
+        if (defined('DEBUG') && DEBUG) {
+            $this->render(
+                'core::system::routes',
+                array(
+                    'routes'  => $this->routes
+                )
+            );
+        } else {
+            $this->redirect('/');
+        }
     }
 
     /**
@@ -53,8 +39,11 @@ class SystemController extends Controller
      */
     public function errorAction()
     {
-        $exception = $this->session->getAndRemove('error');
-        $error = $exception !== null ? $exception->getMessage() : '';
+        $error = '';
+        if (defined('DEBUG') && DEBUG) {
+            $exception = $this->session->getAndRemove('error');
+            $error = $exception !== null ? $exception->getMessage() : '';
+        }
 
         $this->render(
             'core::system::error',

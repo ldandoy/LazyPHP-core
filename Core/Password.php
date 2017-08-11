@@ -180,9 +180,10 @@ class Password
      * @return string
      */
     public static function crypt($str)
-    {
-        $salt = Config::getValueG('salt');
-        return crypt($str, $salt);
+    {    	
+        // $salt = defined('SALT') ? SALT : '';
+        // return crypt($str, $salt);
+        return password_hash($str);
     }
 
     /**
@@ -195,7 +196,8 @@ class Password
      */
     public static function check($str, $cryptedStr)
     {
-        $salt = Config::getValueG('salt');
-        return crypt($str, $salt) == $cryptedStr;
+        // $salt = defined('SALT') ? SALT : '';
+        // return crypt($str, $salt) == $cryptedStr;
+        return password_verify($str, $cryptedStr);
     }
 }

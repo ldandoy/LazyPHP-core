@@ -176,40 +176,46 @@ class Controller
         $params = array_merge($this->params, $params);
 
         if (!$this->rendered) {
-          $tpl = $this->findView($view);
-          if ($tpl) {
-              if (!empty($params)) {
-                  foreach ($params as $key => $value) {
-                      $$key = $value;
-                  }
-              }
-              ob_start();
-              require_once $tpl;
+            if ($this->request->format == 'json') {
+                header('Content-Type: application/json');
+                echo json_encode($params);
+            } else {
+                $tpl = $this->findView($view);
+                if ($tpl) {
+                    if (!empty($params)) {
+                        foreach ($params as $key => $value) {
+                            $$key = $value;
+                        }
+                    }
+                    ob_start();
+                    require_once $tpl;
 
-              // On pourrait peut-être faire les trucs ici de replace, genre un get_content, et on refait un ob_start après ?
+                    // On pourrait peut-être faire les trucs ici de replace, genre un get_content, et on refait un ob_start après ?
 
-              $yeslp = ob_get_clean();
-          } else {
-              $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
-              $this->error('Erreur de template', $message);
-          }
+                    $yeslp = ob_get_clean();
+                } else {
+                    $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
+                    $this->error('Erreur de template', $message);
+                }
 
-          if ($layout) {
-              ob_start();
-              $layout = $this->loadLayout();
-              require_once $layout;
-              $html = ob_get_clean();
-          } else {
-              $html = $yeslp;
-          }
+                if ($layout) {
+                    ob_start();
+                    $layout = $this->loadLayout();
+                    require_once $layout;
+                    $html = ob_get_clean();
+                } else {
+                    $html = $yeslp;
+                }
 
-          $templator = new Templator();
-          $html = $templator->parse($html, $params);
+                $templator = new Templator();
+                $html = $templator->parse($html, $params);
 
-          echo $html;
-          $this->rendered = true;
+                echo $html;
+            }
 
-          $this->session->remove('redirect');
+            $this->rendered = true;
+
+            $this->session->remove('redirect');
         }
     }
 
@@ -235,17 +241,17 @@ class Controller
     {
         // CSS dans bower -> bower_components
         foreach (Config::$config_css as $value) {
-            echo '<link rel="stylesheet" href="/bower_components/'.$value.'" />'."\n";
+            echo '<link rel="stylesheet" href="/bower_components/'.$value.'" />'.LF;
         }
 
-        echo '<link rel="stylesheet" href="/assets/css/theme/'.$this->site->theme.'.css" />'."\n";
+        echo '<link rel="stylesheet" href="/assets/css/theme/'.$this->site->theme.'.css" />'.LF;
 
         // CSS qui sont dans les dossiers assets
         if (file_exists(CSS_DIR)) {
             if ($handle = opendir(CSS_DIR)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != '.' && $entry != '..' && !is_dir(CSS_DIR.DS.$entry)) {
-                        echo '<link rel="stylesheet" href="/assets/css/'.$entry.'" />'."\n";
+                        echo '<link rel="stylesheet" href="/assets/css/'.$entry.'" />'.LF;
                     }
                 }
                 closedir($handle);
@@ -260,7 +266,7 @@ class Controller
                 if ($handle = opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
                         if ($entry != "." && $entry != "..") {
-                            echo '<link rel="stylesheet" href="'.$cssDir.'/'.$entry.'" />'."\n";
+                            echo '<link rel="stylesheet" href="'.$cssDir.'/'.$entry.'" />'.LF;
                         }
                     }
                     closedir($handle);
@@ -273,7 +279,7 @@ class Controller
     {
         // JS dans bower -> bower_components
         foreach (Config::$config_js as $value) {
-            echo '<script src="/bower_components/'.$value.'" type="text/javascript"></script>'."\n";
+            echo '<script src="/bower_components/'.$value.'" type="text/javascript"></script>'.LF;
         }
 
         // Script qui sont dans les dossiers assets
@@ -281,7 +287,7 @@ class Controller
             if ($handle = opendir(JS_DIR)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != "." && $entry != "..") {
-                        echo '<script src="/assets'.DS.'js'.DS.$entry.'" type="text/javascript"></script>'."\n";
+                        echo '<script src="/assets'.DS.'js'.DS.$entry.'" type="text/javascript"></script>'.LF;
                     }
                 }
                 closedir($handle);
@@ -296,7 +302,7 @@ class Controller
                 if ($handle = opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
                         if ($entry != "." && $entry != "..") {
-                            echo '<script src="'.$jsDir.'/'.$entry.'" type="text/javascript"></script>'."\n";
+                            echo '<script src="'.$jsDir.'/'.$entry.'" type="text/javascript"></script>'.LF;
                         }
                     }
                     closedir($handle);
