@@ -11,7 +11,7 @@
  */
 namespace Core\controllers;
 
-use app\controllers\FrontController;
+use Core\Controller;
 
 /**
  * Class manage routes of the application
@@ -22,7 +22,7 @@ use app\controllers\FrontController;
  * @license  GNU
  * @link     http://overconsulting.net
  */
-class SystemController extends FrontController
+class SystemController extends Controller
 {
 
     public $layout = 'error';

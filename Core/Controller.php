@@ -171,6 +171,7 @@ class Controller
      */
     public function render($view, $params = array(), $layout = true)
     {
+    	
         // On merge tous les paramètres que l'on a passé à la vue.
         $params = array_merge($this->params, $params);
 
@@ -218,7 +219,7 @@ class Controller
     }
 
     public function redirect($url, $code = null)
-    {
+    {    	
         $redirect = $this->session->getAndRemove('redirect');
         if ($redirect === null || $redirect != $url) {
             if ($code == 301) {
@@ -234,17 +235,17 @@ class Controller
     {
         // CSS dans bower -> bower_components
         foreach (Config::$config_css as $value) {
-            echo "<link rel=\"stylesheet\" href=\"/bower_components/".$value."\" />\n";
+            echo '<link rel="stylesheet" href="/bower_components/'.$value.'" />'."\n";
         }
 
-        echo "<link rel=\"stylesheet\" href=\"/assets".DS."css".DS."theme".DS.$this->site->theme.".css\" />\n";
+        echo '<link rel="stylesheet" href="/assets/css/theme/'.$this->site->theme.'.css" />'."\n";
 
         // CSS qui sont dans les dossiers assets
         if (file_exists(CSS_DIR)) {
             if ($handle = opendir(CSS_DIR)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != '.' && $entry != '..' && !is_dir(CSS_DIR.DS.$entry)) {
-                        echo "<link rel=\"stylesheet\" href=\"/assets".DS."css".DS.$entry."\" />\n";
+                        echo '<link rel="stylesheet" href="/assets/css/'.$entry.'" />'."\n";
                     }
                 }
                 closedir($handle);
@@ -259,7 +260,7 @@ class Controller
                 if ($handle = opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
                         if ($entry != "." && $entry != "..") {
-                            echo '<link rel="stylesheet" href="'.$cssDir.'/'.$entry.'" />';
+                            echo '<link rel="stylesheet" href="'.$cssDir.'/'.$entry.'" />'."\n";
                         }
                     }
                     closedir($handle);
@@ -272,7 +273,7 @@ class Controller
     {
         // JS dans bower -> bower_components
         foreach (Config::$config_js as $value) {
-            echo '<script src="/bower_components/'.$value.'" type="text/javascript"></script>';
+            echo '<script src="/bower_components/'.$value.'" type="text/javascript"></script>'."\n";
         }
 
         // Script qui sont dans les dossiers assets
@@ -280,7 +281,7 @@ class Controller
             if ($handle = opendir(JS_DIR)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != "." && $entry != "..") {
-                        echo '<script src="/assets'.DS.'js'.DS.$entry.'" type="text/javascript"></script>';
+                        echo '<script src="/assets'.DS.'js'.DS.$entry.'" type="text/javascript"></script>'."\n";
                     }
                 }
                 closedir($handle);
@@ -295,7 +296,7 @@ class Controller
                 if ($handle = opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
                         if ($entry != "." && $entry != "..") {
-                            echo '<script src="'.$jsDir.'/'.$entry.'" type="text/javascript"></script>';
+                            echo '<script src="'.$jsDir.'/'.$entry.'" type="text/javascript"></script>'."\n";
                         }
                     }
                     closedir($handle);

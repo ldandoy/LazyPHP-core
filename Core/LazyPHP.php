@@ -33,7 +33,7 @@ class LazyPHP
 
         try {
             self::init();
-            new Dispatcher();            
+            new Dispatcher();
         } catch (\Exception $e) {
             self::error($e);
         }

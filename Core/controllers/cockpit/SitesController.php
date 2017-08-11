@@ -11,7 +11,7 @@ class SitesController extends CockpitController
 {
     /**
      * @var Core\models\Site
-     * _ because $this->site exists in parent "Controller" class
+     * _site because $this->site exists in parent "Controller" class
      */
     private $_site = null;
 
