@@ -208,7 +208,7 @@ class Controller
           echo $html;
           $this->rendered = true;
 
-          Session::remove('redirect');
+          $this->session->remove('redirect');
         }
     }
 
@@ -219,12 +219,12 @@ class Controller
 
     public function redirect($url, $code = null)
     {
-        $redirect = Session::getAndRemove('redirect');
+        $redirect = $this->session->getAndRemove('redirect');
         if ($redirect === null || $redirect != $url) {
             if ($code == 301) {
                 header('HTTP/1.1 301 Move Permanently');
             }
-            Session::set('redirect', $url);
+            $this->session->set('redirect', $url);
             header('Location: '.Router::url($url));
             exit;
         }

@@ -23,7 +23,6 @@ namespace Core;
 class Config
 {
     public static $config;
-    public static $config_db;
     public static $config_general;
     public static $config_css;
     public static $config_js;
@@ -53,7 +52,6 @@ class Config
             }
         }
 
-        self::$config_db = self::$config['DB'];
         self::$config_general = self::$config['GENERAL'];
         self::$config_css = self::$config['CSS'];
         self::$config_js = self::$config['JS'];
