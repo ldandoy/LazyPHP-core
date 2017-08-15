@@ -7,18 +7,18 @@
         </div>
     </div>
     <div class="box-body">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th width="1%">ID</th>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="1%">ID</th>
                     <th width="20%">Label</th>
                     <th width="40%">Host</th>
                     <th width="10%">Thème</th>
                     <th width="10%">Status</th>
-					<th width="10%">Actions</th>
-				</tr>
-			</thead>
-			<tbody>
+                    <th width="10%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
 <?php
 
 foreach ($params['sites'] as $site) {
@@ -45,7 +45,7 @@ foreach ($params['sites'] as $site) {
         '</tr>';
 }
 ?>
-			</tbody>
-		</table>
-	</div>
+            </tbody>
+        </table>
+    </div>
 </div>

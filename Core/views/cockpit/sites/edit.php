@@ -11,9 +11,9 @@
         </div>
     </div>
     <div class="box-body">
-		{% form_open id="formMenu" action="formAction" %}
-		    {% input_text name="label" model="site.label" label="Label" %}
-		    {% input_text name="host" model="site.host" label="Host" %}
+        {% form_open id="formSite" action="formAction" %}
+            {% input_text name="label" model="site.label" label="Label" %}
+            {% input_text name="host" model="site.host" label="Host" %}
             {% input_select name="theme" model="site.theme" options="themeOptions" label="Thème" %}
             {% input_textarea name="description" model="site.description" label="Description" rows="10" %}
 
@@ -23,7 +23,7 @@
             {% input_text name="googleplus" model="site.googleplus" label="Google +" %}
 
             {% input_checkbox name="active" model="site.active" label="Actif" %}
-		    {% input_submit name="submit" value="save" formId="formMenu" class="btn-primary" icon="save" label="Enregistrer" %}
-		{% form_close %}
-	</div>
+            {% input_submit name="submit" value="save" formId="formSite" class="btn-primary" icon="save" label="Enregistrer" %}
+        {% form_close %}
+    </div>
 </div>

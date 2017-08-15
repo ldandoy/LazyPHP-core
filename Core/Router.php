@@ -132,6 +132,9 @@ class Router
                 self::$routes[$key]['controller'] = $params['controller'];
                 self::$routes[$key]['action'] = $params['action'];
                 self::$routes[$key]['package'] = $package;
+                if (isset($params['format'])) {
+                    self::$routes[$key]['format'] = $params['format'];
+                }
                 break;
         }
     }
@@ -179,6 +182,10 @@ class Router
 
             if (isset($params) && !empty($params)) {
                 $request->params = $params;
+            }
+
+            if (isset($route['format'])) {
+                $request->format = $route['format'];
             }
         }
 
