@@ -39,6 +39,10 @@ class Dispatcher
 
     public function __construct()
     {
+    }
+
+    public function run()
+    {
         $this->request = new Request();
 
         if (!Router::parse($this->request)) {

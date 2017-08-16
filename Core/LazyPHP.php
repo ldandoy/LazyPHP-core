@@ -19,6 +19,11 @@ class LazyPHP
      */
     public static $endTime = 0;
 
+    /**
+     * @var Core\Dispatcher
+     */
+    private static $dispatcher = null;
+
     public static function init()
     {
         spl_autoload_register(function($class) {
@@ -40,7 +45,8 @@ class LazyPHP
 
         try {
             self::init();
-            $dispatcher = new Dispatcher();
+            self::$dispatcher = new Dispatcher();
+            self::$dispatcher->run();
         } catch (\Exception $e) {
             self::error($e);
         }
@@ -50,6 +56,21 @@ class LazyPHP
 
     public static function error($e)
     {
+        if (self::$dispatcher !== null) {
+            if (self::$dispatcher->request !== null) {
+                if (self::$dispatcher->request->format == 'json') {
+                    header('Content-Type: application/json');
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                    return;
+                }
+            }
+        }
+
         Session::set('error', $e);
         header('Location: /error');
     }
