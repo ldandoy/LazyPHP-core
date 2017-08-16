@@ -124,11 +124,7 @@ class Templator
                 return $options;
             } else if (isset($params[$options])) {
                 foreach ($params[$options] as $value) {
-                    if (is_array($value)) {
-                        $optionsList[] = array('label' => $value['label'], 'value' => $value['value']);
-                    } else {
-                        $optionsList[] = array('label' => $value->{$value->labelOption}, 'value' => $value->{$value->valueOption});
-                    }
+                    $optionsList[] = array('label' => $value['label'], 'value' => $value['value']);
                 }
                 return $optionsList;
             } else {

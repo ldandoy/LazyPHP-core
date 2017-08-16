@@ -29,9 +29,6 @@ class Model
 {
     public $errors = array();
 
-    public $labelOption = 'label';
-    public $valueOption = 'id';
-
     /**
      * Constructeur
      *

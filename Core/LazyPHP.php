@@ -9,7 +9,14 @@ use Core\Dispatcher;
 
 class LazyPHP
 {
+    /**
+     * @var int
+     */
     public static $startTime = 0;
+
+    /**
+     * @var int
+     */
     public static $endTime = 0;
 
     public static function init()

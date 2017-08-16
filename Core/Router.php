@@ -119,6 +119,9 @@ class Router
                     self::$routes[$key]['package'] = $package;
                     self::$routes[$key]['controller'] = $controller;
                     self::$routes[$key]['action'] = $actionName;
+                    if (isset($params['format'])) {
+                        self::$routes[$key]['format'] = $params['format'];
+                    }
                 }
                 break;
 

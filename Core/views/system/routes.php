@@ -5,8 +5,9 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th>method</th>
-						<th>url</th>
+						<th>Method</th>
+                        <th>Format</th>
+						<th>URL</th>
 						<th>Package</th>
 						<th>Prefix</th>
 						<th>Controler#Action</th>
@@ -15,9 +16,12 @@
 				<tbody>
 					<?php foreach ($routes as $route) { ?>
 						<tr>
-							<td>
-								<?php echo $route['method']; ?>
-							</td>
+                            <td>
+                                <?php echo $route['method']; ?>
+                            </td>
+                            <td>
+                                <?php echo isset($route['format']) ? $route['format'] : 'html'; ?>
+                            </td>
 							<td>
 								<?php echo $route['url']; ?>
 							</td>
