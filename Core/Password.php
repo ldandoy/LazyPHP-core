@@ -183,7 +183,7 @@ class Password
     {    	
         // $salt = defined('SALT') ? SALT : '';
         // return crypt($str, $salt);
-        return password_hash($str);
+        return password_hash($str, PASSWORD_DEFAULT);
     }
 
     /**
