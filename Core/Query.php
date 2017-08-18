@@ -79,6 +79,13 @@ class Query
     private $order = array();
 
     /**
+     * The limit part of the query
+     *
+     * @var string
+     */
+    private $limit = '';
+
+    /**
      * The insert part of the query
      *
      * @var string
@@ -181,11 +188,14 @@ class Query
      */
     public function join($join)
     {
-        if (is_array($join)) {
+        if (is_array($join)) {            
+            $table = explode(' ', $join['table']);
+            $joinTable = isset($table[1]) ? $table[1] : $table[0];
+
             $sqlJoin =
                 $join['jointure'].' '.
                 $join['table'].' '.
-                'ON '.$join['table'].'.id = '.
+                'ON '.$joinTable.'.id = '.
                 $join['fkey_table'].'.'.$join['fkey_column'];
         } else {
             $sqlJoin = $join;
@@ -258,6 +268,25 @@ class Query
             if ($order != '') {
                 $this->order[] = $order;
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Create the limit part of the query
+     *
+     * @param int $length
+     * @param int $offset
+     *
+     * @return \Core\Query
+     */
+    public function limit($length = 0, $offset = 0)
+    {
+        if ($length != 0) {
+            $this->limit = 'LIMIT '.$offset.','.$length;
+        } else {
+            $this->limit = '';
         }
 
         return $this;
@@ -362,13 +391,13 @@ class Query
         switch ($this->queryType) {
             case 'select':
                 if (count($this->join) > 0) {
-                    $join = implode(' ', $this->join);
+                    $join = ' '.implode(' ', $this->join);
                 } else {
                     $join = '';
                 }
 
                 if (count($this->where) > 0) {
-                    $where = 'WHERE '.implode(' AND ', $this->where);
+                    $where = ' WHERE '.implode(' AND ', $this->where);
                 } else {
                     $where = '';
                 }
@@ -379,13 +408,18 @@ class Query
                     $order = '';
                 }
 
+                $group = $this->group != '' ? ' '.$this->group : '';
+
+                $limit = $this->limit != '' ? ' '.$this->limit : '';
+
                 $this->sql =
                     $this->select.' '.
-                    $this->from.' '.
-                    ltrim($join.' ').
+                    $this->from.
+                    $join.
                     $where.
-                    ltrim($this->group.' ').
-                    $order;
+                    $group.
+                    $order.
+                    $limit;
 
                 break;
 
@@ -395,25 +429,25 @@ class Query
 
             case 'update':
                 if (count($this->where) > 0) {
-                    $where = 'WHERE '.implode(' AND ', $this->where);
+                    $where = ' WHERE '.implode(' AND ', $this->where);
                 } else {
-                    $where = 'WHERE id = 0';
+                    $where = ' WHERE id = 0';
                 }
 
                 $this->sql =
-                    $this->update.' '.
+                    $this->update.
                     $where;
                 break;
 
             case 'delete':
                 if (count($this->where) > 0) {
-                    $where = 'WHERE '.implode(' AND ', $this->where);
+                    $where = ' WHERE '.implode(' AND ', $this->where);
                 } else {
-                    $where = 'WHERE id = 0';
+                    $where = ' WHERE id = 0';
                 }
 
                 $this->sql =
-                    $this->delete.' '.
+                    $this->delete.
                     $where;
                 break;
 

@@ -41,6 +41,11 @@ class Request
     public $post = null;
 
     /**
+     * @var mixed
+     */
+    public $get = null;
+
+    /**
      * @var string get|post
      */
     public $method = 'get';
@@ -150,5 +155,7 @@ class Request
         }
 
         $this->post = $_POST;
+
+        $this->get = $_GET;
     }
 }
