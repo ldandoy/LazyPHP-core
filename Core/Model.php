@@ -384,7 +384,8 @@ class Model
         $query->where($key.' = :'.$key);
         $query->from($class::getTableName());
 
-        $row = $query->executeAndFetch(array(''.$key => $value));
+        $row = $query->executeAndFetch(array($key => $value));
+
         if ($row !== false) {
             $res = new $class($row);
         } else {
@@ -650,7 +651,7 @@ class Model
 
                         case 'datetime':
                         case 'date':
-                        case 'time':                            
+                        case 'time':
                             $d = \DateTime::createFromFormat($validation['format'], $value);
                             if ($d === false) {
                                 $hasError = true;
