@@ -7,12 +7,16 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?php echo $error; ?>
+            <p>
+                <?php echo $error; ?>
+            </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <a href="/">Retour à l'accueil</a>
+            <p>
+                <a href="/">Retour à l'accueil</a>
+            </p>
         </div>
     </div>
 </div>
