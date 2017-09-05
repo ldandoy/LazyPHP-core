@@ -184,6 +184,10 @@ class Templator
                     }
                 }
 
+                if ($tag == 'widget') {
+                    $attributes['_controller'] = $params['_controller'];
+                }
+
                 $replace = '';
 
                 switch ($tag) {

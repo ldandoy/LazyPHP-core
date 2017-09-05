@@ -175,6 +175,10 @@ class Controller
         // On merge tous les paramètres que l'on a passé à la vue.
         $params = array_merge($this->params, $params);
 
+        if (!isset($params['_controller'])) {
+           $params['_controller'] = $this; 
+        }
+
         if (!$this->rendered) {
             if ($this->request->format == 'json') {
                 header('Content-Type: application/json');

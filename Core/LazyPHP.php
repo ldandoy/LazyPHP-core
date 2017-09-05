@@ -43,13 +43,13 @@ class LazyPHP
     {
         self::$startTime = microtime(true);
 
-        try {
+        //try {
             self::init();
             self::$dispatcher = new Dispatcher();
             self::$dispatcher->run();
-        } catch (\Exception $e) {
+        /*} catch (\Exception $e) {
             self::error($e);
-        }
+        }*/
 
         self::$endTime = microtime(true);
     }
@@ -87,23 +87,35 @@ class LazyPHP
 function debug($data, $displayBacktrace = true)
 {
     $html =
-        '<div>';
+        '<pre>';
 
     if ($displayBacktrace) {
         $html .=
             '<ol>';
         $backtraces = debug_backtrace();
         foreach ($backtraces as $backtrace) {
-            $html .=
-                '<li><strong>'.$backtrace['file'].'</strong> '.$backtrace['line'].'</li>';
+            $cta = 
+                (isset($backtrace['class']) ? $backtrace['class'] : '').
+                (isset($backtrace['type']) ? $backtrace['type'] : '').
+                (isset($backtrace['function']) ? $backtrace['function'] : '');
+            if ($cta == '') {
+                $cta = '?';
+            }
+
+            if (isset($backtrace['file'])) {
+                $html .=
+                    '<li><strong>'.$backtrace['file'].'</strong> '.$backtrace['line'].' : '.$cta.'</li>';
+            } else {
+                $html .= '<li>'.$cta.'</li>';
+            }
         }
         $html .=
             '</ol>';
     }
 
     $html .=
-            '<pre>'.print_r($data, true).'</pre>'.
-        '</div>';
+            print_r($data, true).
+        '</pre>';
 
     echo $html;
 }
