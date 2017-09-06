@@ -275,6 +275,19 @@ class Model
     public function delete()
     {
         $query = new Query();
+
+        $associations = $this->getAssociations();
+        foreach ($associations as $association) {
+            if ($association['type'] == '*') {                
+                $class = $association['model'];
+                $table = $class::getTableName();
+                $key = $association['key'];
+                $query->delete(array('table' => $table));
+                $query->where($key.' = :id');
+                $query->execute(array('id' => $this->id));
+            }
+        }
+
         $query->delete(array('table' => $this->getTable()));
         $query->where('id = :id');
         return $query->execute(array('id' => $this->id));
