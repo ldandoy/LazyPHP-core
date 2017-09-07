@@ -277,14 +277,12 @@ class Model
         $query = new Query();
 
         $associations = $this->getAssociations();
-        foreach ($associations as $association) {
+        foreach ($associations as $name => $association) {
             if ($association['type'] == '*') {                
-                $class = $association['model'];
-                $table = $class::getTableName();
-                $key = $association['key'];
-                $query->delete(array('table' => $table));
-                $query->where($key.' = :id');
-                $query->execute(array('id' => $this->id));
+                $children = $this->$name;
+                foreach ($children as $child) {
+                    $child->delete();
+                }
             }
         }
 
