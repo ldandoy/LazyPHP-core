@@ -799,14 +799,44 @@ class Model
         return self::getChildren($parent_id, true, 0, true, $where);
     }
 
-    public static function getOptions($parent_id = null)
+    /**
+     * Get options for input select,...
+     * @param $params
+     *      'fieldValue' => string, default 'id'
+     *      'fieldLabel' => string, default 'label'
+     *      'emptyValue' => bool,  default true
+     */
+    public static function getOptions($params = array())
     {
-        $items = self::getFlat($parent_id);
+        $options = array();
 
+        if (isset($params['emptyValue']) && $params['emptyValue']) {
+            $options[0] = array(
+                'value' => '',
+                'label' => '---'
+            );
+        }
+
+        $fieldValue = isset($params['fieldValue']) ? $params['fieldValue'] : 'id';
+        $fieldLabel = isset($params['fieldLabel']) ? $params['fieldLabel'] : 'label';
+
+        $items = self::findAll();
         foreach ($items as $item) {
+            if (method_exists($item, 'getOptionValue')) {
+                $value = call_user_func(array($item, 'getOptionValue'));
+            } else {
+                $value = $item->$fieldValue;
+            }
+
+            if (method_exists($item, 'getOptionLabel')) {
+                $label = call_user_func(array($item, 'getOptionLabel'));
+            } else {
+                $label = $item->$fieldLabel;
+            }
+
             $options[$item->id] = array(
-                'value' => $item->id,
-                'label' => str_repeat('&nbsp;', $item->level * 8).$item->label
+                'value' => $value,
+                'label' => $label
             );
         }
 

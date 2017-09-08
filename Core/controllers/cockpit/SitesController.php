@@ -144,7 +144,10 @@ class SitesController extends CockpitController
 
     public function changehostAction()
     {
-        $this->session->set('site_id', $this->request->post['site_id']);
-        $this->redirect($this->request->post['redirect']);
+        $site = Site::findById($this->request->post['site_id']);
+        if ($site !== null) {
+            $this->session->set('site', $site);
+            $this->redirect($this->request->post['redirect']);
+        }
     }
 }
