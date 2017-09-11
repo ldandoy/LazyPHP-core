@@ -26,6 +26,13 @@ class AttachedFile
      */
     public $maxSize = null;
 
+    /**
+     * Class constructor
+     * @param string $url
+     * @param mixed $uploadedFile file from post data
+     * @param string $type 'image' | 'video' | 'audio', if it's an extension (start with '.') the file must have this extension
+     * @param string $url
+     */
     public function __construct($url = null, $uploadedFile = null, $type = '', $maxSize = null)
     {
         $this->url = $url;
@@ -107,6 +114,14 @@ class AttachedFile
                     case 'audio':
                         if (!in_array($ext, array('wav', 'mp3', 'mid', 'ogg'))) {
                             return 'Le fichier doit être un fichier audio (wav, mp3, mid, ogg)';
+                        }
+                        break;
+
+                    default:
+                        if (strpos($this->type, '.') === 0) {
+                            if ('.'.$ext != $this->type) {
+                                return 'Le fichier doit avoir l\'extension '.$this->type;
+                            }
                         }
                         break;
                 }

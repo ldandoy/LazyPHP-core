@@ -566,7 +566,7 @@ class Model
         foreach ($associations as $association) {
             $key = $association['key'];
             if ($association['type'] == '1' && isset($this->$key) && $this->$key === '') {
-                $this->$association['key'] = null;
+                $this->$key = null;
             }
         }
 

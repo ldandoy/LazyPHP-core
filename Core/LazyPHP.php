@@ -43,13 +43,13 @@ class LazyPHP
     {
         self::$startTime = microtime(true);
 
-        //try {
+        try {
             self::init();
             self::$dispatcher = new Dispatcher();
             self::$dispatcher->run();
-        /*} catch (\Exception $e) {
+        } catch (\Exception $e) {
             self::error($e);
-        }*/
+        }
 
         self::$endTime = microtime(true);
     }
