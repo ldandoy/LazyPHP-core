@@ -1,6 +1,6 @@
 {% form_open id="formConfig" action="formConfig" %}
 	<h1 class="page-title">
-		{{ titlePage }}
+		{{ pageTitle }}
 		<div class="pull-right">
 			{% input_submit name="submit" value="save" formId="formConfig" class="btn-primary btn-sm" icon="floppy-o" label="" %}
 		</div>
