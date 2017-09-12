@@ -3,7 +3,7 @@
     <div class="box-header">
         <h3 class="box-title">{{ boxTitle }}</h3>
         <div class="box-tools pull-right">
-            {% button url="cockpit_core_sites_new" type="success" size="sm" icon="plus" hint="Nouveau site" %}
+            {% button url="cockpit_core_sites_new" type="success" size="sm" icon="plus" hint="Ajouter" %}
         </div>
     </div>
     <div class="box-body">
@@ -36,9 +36,9 @@ foreach ($params['sites'] as $site) {
             '<td>'.$site->theme.'</td>'.
             '<td>'.$active.'</td>'.
             '<td>';?>
-                {% button url="cockpit_core_sites_show_<?php echo $site->id; ?>" type="secondary" size="sm" icon="eye" hint="" %}
-                {% button url="cockpit_core_sites_edit_<?php echo $site->id; ?>" type="info" size="sm" icon="pencil" %}
-                {% button url="cockpit_core_sites_delete_<?php echo $site->id; ?>" type="danger" size="sm" icon="trash-o" confirmation="Vous confirmer vouloir supprimer ce site ?" %}
+                {% button url="cockpit_core_sites_show_<?php echo $site->id; ?>" type="secondary" size="sm" icon="eye" hint="Modifier" %}
+                {% button url="cockpit_core_sites_edit_<?php echo $site->id; ?>" type="info" size="sm" icon="pencil" hint="Modifier" %}
+                {% button url="cockpit_core_sites_delete_<?php echo $site->id; ?>" type="danger" size="sm" icon="trash-o" confirmation="Vous confirmer vouloir supprimer ce site ?" hint="Supprimer" %}
 <?php
     echo
             '</td>'.
