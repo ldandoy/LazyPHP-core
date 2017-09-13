@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="box-body">
-        <table class="table table-hover">
+        <table class="table table-hover table-sm">
             <thead>
                 <tr>
                     <th width="1%">ID</th>
