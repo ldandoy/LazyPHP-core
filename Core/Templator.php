@@ -114,10 +114,10 @@ class Templator
                 $a = explode(';', trim($options, '[]'));
                 $options = array();
                 if (!empty($a)) {
-                    foreach ($a as $v) {
+                    foreach ($a as $k => $v) {
                         if ($v != '') {
                             $b = explode(':', $v);
-                            $options[] = array('label' => $b[0], 'value' => $b[1]);
+                            $options[] = array('label' => $b[0], 'value' => isset($b[1]) ? $b[1] : $k);
                         }
                     }
                 }
