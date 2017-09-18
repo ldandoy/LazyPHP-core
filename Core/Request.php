@@ -121,7 +121,7 @@ class Request
         } else {
             /* If the url is just "/" */
             if (isset($site)) {
-                $this->url = $site->root_path;
+                $this->url = $site->home_page;
             } else { // Sinon on prend le root
                 $this->url = Config::getValueG('root');
             }

@@ -71,8 +71,13 @@ class LazyPHP
             }
         }
 
-        Session::set('error', $e);
-        header('Location: /error');
+        if (Session::get('error') === null) {
+            Session::set('error', $e);
+            header('Location: /error');
+        } else {
+            echo $e->getMessage();
+            exit;
+        }
     }
 }
 

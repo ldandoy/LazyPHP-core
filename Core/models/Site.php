@@ -14,7 +14,7 @@ class Site extends Model
         'active',
         'logo_access_user',
         'logo_access_admin',
-        'root_path',
+        'home_page',
         'facebook',
         'twitter',
         'pinterest',
