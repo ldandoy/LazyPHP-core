@@ -54,7 +54,7 @@ class Dispatcher
             $this->controller = $this->request->prefix.'\\'.$this->controller;
         }
 
-        if (isset($this->request->package) && $this->request->package != '') {
+        if (isset($this->request->package) && $this->request->package != '') {            
             $this->package = $this->request->package;
         }
 
