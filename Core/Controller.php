@@ -171,7 +171,7 @@ class Controller
      */
     public function render($view, $params = array(), $layout = true)
     {
-    	
+
         // On merge tous les paramètres que l'on a passé à la vue.
         $params = array_merge($this->params, $params);
 
@@ -229,7 +229,7 @@ class Controller
     }
 
     public function redirect($url, $code = null)
-    {    	
+    {
         $redirect = $this->session->getAndRemove('redirect');
         if ($redirect === null || $redirect != $url) {
             if ($code == 301) {
