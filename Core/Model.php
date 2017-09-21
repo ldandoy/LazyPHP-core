@@ -98,7 +98,7 @@ class Model
 
         if (isset($data['id'])) {
             $this->id = $data['id'];
-        }
+        }        
 
         $attachedFiles = $this->getAttachedFiles();
         $permittedColumns = $this->getPermittedColumns();

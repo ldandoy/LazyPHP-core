@@ -184,31 +184,32 @@ class Controller
                 header('Content-Type: application/json');
                 echo json_encode($params);
             } else {
-                $tpl = $this->findView($view);
-                if ($tpl) {
-                    if (!empty($params)) {
-                        foreach ($params as $key => $value) {
-                            $$key = $value;
+                if ($this->request->format == 'raw') {
+                    $html = $view;
+                } else {
+                    $tpl = $this->findView($view);
+                    if ($tpl) {
+                        if (!empty($params)) {
+                            foreach ($params as $key => $value) {
+                                $$key = $value;
+                            }
                         }
+                        ob_start();
+                        require_once $tpl;
+                        $yeslp = ob_get_clean();
+                    } else {
+                        $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
+                        $this->error('Erreur de template', $message);
                     }
-                    ob_start();
-                    require_once $tpl;
 
-                    // On pourrait peut-être faire les trucs ici de replace, genre un get_content, et on refait un ob_start après ?
-
-                    $yeslp = ob_get_clean();
-                } else {
-                    $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
-                    $this->error('Erreur de template', $message);
-                }
-
-                if ($layout) {
-                    ob_start();
-                    $layout = $this->loadLayout();
-                    require_once $layout;
-                    $html = ob_get_clean();
-                } else {
-                    $html = $yeslp;
+                    if ($layout) {
+                        ob_start();
+                        $layout = $this->loadLayout();
+                        require_once $layout;
+                        $html = ob_get_clean();
+                    } else {
+                        $html = $yeslp;
+                    }
                 }
 
                 $templator = new Templator();
