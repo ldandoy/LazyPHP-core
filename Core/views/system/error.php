@@ -15,6 +15,9 @@
     <div class="row">
         <div class="col-md-12">
             <p>
+                <a href="<?php echo $url; ?>">Recharger la page</a>
+            </p>
+            <p>
                 <a href="/">Retour à l'accueil</a>
             </p>
         </div>

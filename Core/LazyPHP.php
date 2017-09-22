@@ -58,6 +58,7 @@ class LazyPHP
     {
         if (self::$dispatcher !== null) {
             if (self::$dispatcher->request !== null) {
+                Session::set('errorUrl', self::$dispatcher->request->url);
                 if (self::$dispatcher->request->format == 'json') {
                     header('Content-Type: application/json');
                     echo json_encode(

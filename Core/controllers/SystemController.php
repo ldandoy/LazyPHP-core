@@ -45,10 +45,13 @@ class SystemController extends Controller
             $error = $exception !== null ? $exception->getMessage() : '';
         }
 
+        $url = $this->session->getAndRemove('errorUrl');
+
         $this->render(
             'core::system::error',
             array(
-                'error' => $error
+                'error' => $error,
+                'url' => $url
             )
         );
     }
