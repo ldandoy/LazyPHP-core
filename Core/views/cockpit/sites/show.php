@@ -5,7 +5,7 @@
         <div class="box-tools pull-right">
             {% button url="cockpit_core_sites_edit_<?php echo $site->id; ?>" type="info" size="sm" icon="pencil" %}
             {% button url="cockpit_core_sites_delete_<?php echo $site->id; ?>" type="danger" size="sm" icon="trash-o" confirmation="Vous confirmer vouloir supprimer ce site ?" %}
-            <?php if ($this->current_administrator !== null && $this->current_administrator->site_id === null) { ?>
+            <?php if ($this->current_user !== null && $this->current_user->site_id === null) { ?>
                 {% link url="cockpit_sites_index" type="secondary" size="sm" icon="arrow-left" hint="retour" %}
             <?php } ?>
         </div>

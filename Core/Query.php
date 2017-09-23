@@ -113,7 +113,7 @@ class Query
      */
     private $preparedStatement = null;
 
-    /*
+    /**
      * @var string
      */
     public $lastError = '';

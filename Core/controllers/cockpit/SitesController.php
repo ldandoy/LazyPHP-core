@@ -122,10 +122,10 @@ class SitesController extends CockpitController
 
         if ($this->_site->save($this->request->post)) {
             $this->addFlash('Site modifiée', 'success');
-            if ($this->current_administrator->site_id === null) {
+            if ($this->current_user->site_id === null) {
                 $this->redirect('cockpit_core_sites_index');
             } else {
-                $this->redirect('cockpit_core_sites_show_'.$this->current_administrator->site_id);
+                $this->redirect('cockpit_core_sites_show_'.$this->current_user->site_id);
             }
         } else {
             $this->addFlash('Erreur(s) dans le formulaire', 'danger');

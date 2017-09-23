@@ -3,10 +3,10 @@
     <div class="box-header">
         <h3 class="box-title">{{ boxTitle }}</h3>
         <div class="box-tools pull-right">
-            <?php if ($this->current_administrator !== null && $this->current_administrator->site_id === null) { ?>
+            <?php if ($this->current_user !== null && $this->current_user->site_id === null) { ?>
                 {% button url="cockpit_core_sites_index" type="secondary" size="sm" icon="arrow-left" hint="Retour" %}
             <?php } else { ?>
-                {% button url="cockpit_core_sites_show_<?php echo $this->current_administrator->site_id; ?>" type="secondary" size="sm" icon="arrow-left" hint="Retour" %}
+                {% button url="cockpit_core_sites_show_<?php echo $this->current_user->site_id; ?>" type="secondary" size="sm" icon="arrow-left" hint="Retour" %}
             <?php } ?>
         </div>
     </div>

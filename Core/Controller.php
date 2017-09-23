@@ -27,52 +27,52 @@ use Helper\Bootstrap;
  */
 class Controller
 {
-    /*
+    /**
      * @var Core\Session
      */
     public $session = null;
 
-    /*
+    /**
      * @var Core\Request
      */
     public $request;
 
-    /*
+    /**
      * @var Core\Site
      */
     public $site =  null;
 
-    /*
+    /**
      * @var string
      */
     public $controller;
 
-    /*
+    /**
      * @var mixed
      */
     public $params = array();
 
-    /*
+    /**
      * @var bool
      */
     public $rendered = false;
 
-    /*
+    /**
      * @var string
      */
     public $layout = null;
 
-    /*
+    /**
      * @var mixed
      */
     public $routes = null;
 
-    /*
+    /**
      * @var Core\Config
      */
     public $config = null;
 
-    /*
+    /**
      * @var string
      */
     public $title = null;
