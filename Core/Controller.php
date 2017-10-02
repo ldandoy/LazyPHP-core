@@ -365,13 +365,13 @@ class Controller
         }
 
         // We check if the file existe in app/view/layout
-        $layout = APP_DIR.DS.'views'.DS.'layout'.DS.$prefix.$this->layout.'.php';
+        $layout = APP_DIR.DS.'views'.DS.'layout'.DS.$prefix.DS.$this->layout.'.php';
         if (file_exists($layout)) {
             return $layout;
         }
 
         // We use the one of Core package
-        $layout = VENDOR_DIR.DS.$this->config["PACKAGES"]['core'].DS.'views'.DS.'layout'.$this->layout.'.php';
+        $layout = VENDOR_DIR.DS.$this->config["PACKAGES"]['core'].DS.'views'.DS.'layout'.DS.$this->layout.'.php';
         if (file_exists($layout)) {
             return $layout;
         }
