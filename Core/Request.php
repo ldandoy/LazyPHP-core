@@ -78,7 +78,7 @@ class Request
         $requestUri = $_SERVER['REQUEST_URI'];
         $parsedUrl = parse_url($requestUri);
         $pathinfo = pathinfo($parsedUrl['path']);
-        $path = rtrim($pathinfo['dirname'], '/').'/'.$pathinfo['filename'];
+        $path = rtrim(str_replace('\\', '/', $pathinfo['dirname']), '/').'/'.$pathinfo['filename'];
 
         $allowedFormats = array('html', 'json', 'raw');
         if (isset($pathinfo['extension'])) {
@@ -90,7 +90,6 @@ class Request
 
         if (isset($path)) {
             $url = $path;
-
             $adminPrefix = Config::getValueG('admin_prefix');
 
             $tabUrl = Utils::removeEmptyElements(explode('/', $url));

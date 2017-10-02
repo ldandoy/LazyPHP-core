@@ -144,7 +144,8 @@ class Controller
             }
         } else {
             $package = $this->config["PACKAGES"][$package];
-            $tplFile = VENDOR_DIR.DS.$package.DS.'views'.DS.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
+            $package = str_replace('/', DS, $package);
+            $tplFile = VENDOR_DIR.DS.$package.DS.'views'.$this->request->prefix.DS.$directory.DS.$tplName.'.php';
             if (file_exists($tplFile)) {
                 return $tplFile;
             }
@@ -180,6 +181,7 @@ class Controller
         }
 
         if (!$this->rendered) {
+        
             if ($this->request->format == 'json') {
                 header('Content-Type: application/json');
                 echo json_encode($params);
@@ -211,6 +213,7 @@ class Controller
                         $html = $yeslp;
                     }
                 }
+
 
                 $templator = new Templator();
                 $html = $templator->parse($html, $params);
@@ -364,13 +367,13 @@ class Controller
         }
 
         // We check if the file existe in app/view/layout
-        $layout = APP_DIR.DS.'views'.DS.'layout'.DS.$prefix.DS.$this->layout.'.php';
+        $layout = APP_DIR.DS.'views'.DS.'layout'.DS.$prefix.$this->layout.'.php';
         if (file_exists($layout)) {
             return $layout;
         }
 
         // We use the one of Core package
-        $layout = VENDOR_DIR.DS.$this->config["PACKAGES"]['core'].DS.'views'.DS.'layout'.DS.$this->layout.'.php';
+        $layout = VENDOR_DIR.DS.$this->config["PACKAGES"]['core'].DS.'views'.DS.'layout'.$this->layout.'.php';
         if (file_exists($layout)) {
             return $layout;
         }
