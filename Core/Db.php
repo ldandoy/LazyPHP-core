@@ -71,7 +71,7 @@ class Db
         try {
             return $statement->bindParam(':'.$param, $value);
         } catch (PDOException $e) {
-            throw new \Exception('PDOException (PDOStatement::bind) : '.$e->getMessage(), $e->getCode());
+            throw new \Exception('PDOException (PDOStatement::bindParam) : '.$e->getMessage(), $e->getCode());
             return false;
         }
     }
