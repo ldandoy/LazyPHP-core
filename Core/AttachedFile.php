@@ -161,7 +161,7 @@ class AttachedFile
                 $url = DS.'uploads'.DS.$model;
                 $idStr = (string)($id);
                 for ($i = 0; $i < strlen($idStr); $i++) {
-                    $url .= '/'.$idStr[$i];
+                    $url .= DS.$idStr[$i];
                 }
             }
 
