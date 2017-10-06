@@ -288,6 +288,10 @@ class Templator
                         $replace = Form::media($attributes);
                         break;
 
+                    case 'input_datetime':
+                        $replace = Form::datetime($attributes);
+                        break;
+
                     case 'input_magicsuggest':                        
                         $attributes['options'] = isset($params[$attributes['options']]) ? $params[$attributes['options']] : array();
                         $replace = Form::magicsuggest($attributes);

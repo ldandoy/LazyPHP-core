@@ -250,7 +250,9 @@ class Controller
             echo '<link rel="stylesheet" href="/bower_components/'.$value.'" />'.LF;
         }
 
-        echo '<link rel="stylesheet" href="/assets/css/theme/'.$this->site->theme.'.css" />'.LF;
+        if ($this->site->theme != '') {
+            echo '<link rel="stylesheet" href="/assets/css/theme/'.$this->site->theme.'.css" />'.LF;
+        }
 
         // CSS qui sont dans les dossiers assets
         if (file_exists(CSS_DIR)) {
