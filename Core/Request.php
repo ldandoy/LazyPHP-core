@@ -153,7 +153,7 @@ class Request
             $_POST = array_merge($_POST, $files);
         }
 
-        $this->post = $_POST;
+        $this->post = array_merge($_POST, $_GET);
 
         $this->get = $_GET;
     }

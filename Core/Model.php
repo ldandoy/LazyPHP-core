@@ -547,16 +547,17 @@ class Model
 
         // Special or common fields
         $permittedColumns = $this->getPermittedColumns();
+
         if (!empty($permittedColumns)) {
-            if (in_array('active', $permittedColumns) && (!isset($this->active) || $this->active == '')) {
+            if (in_array('active', $permittedColumns) && (!isset($this->active) || $this->active === '')) {
                 $this->active = 1;
             }
 
-            if (in_array('parent', $permittedColumns) && (!isset($this->parent) || $this->parent == '')) {
+            if (in_array('parent', $permittedColumns) && (!isset($this->parent) || $this->parent === '')) {
                 $this->parent = null;
             }
 
-            if (in_array('position', $permittedColumns) && (!isset($this->position) || $this->position == '')) {
+            if (in_array('position', $permittedColumns) && (!isset($this->position) || $this->position === '')) {
                 $this->position = 0;
             }
         }
