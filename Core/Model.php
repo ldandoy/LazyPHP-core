@@ -805,7 +805,8 @@ class Model
      * @param $params
      *      'fieldValue' => string, default 'id'
      *      'fieldLabel' => string, default 'label'
-     *      'emptyValue' => bool,  default true
+     *      'emptyValue' => bool, default true
+     *      'where' => string
      */
     public static function getOptions($params = array())
     {
@@ -820,8 +821,9 @@ class Model
 
         $fieldValue = isset($params['fieldValue']) ? $params['fieldValue'] : 'id';
         $fieldLabel = isset($params['fieldLabel']) ? $params['fieldLabel'] : 'label';
+        $where = isset($params['where']) ? $params['where'] : '';
 
-        $items = self::findAll();
+        $items = self::findAll($where);
         foreach ($items as $item) {
             if (method_exists($item, 'getOptionValue')) {
                 $value = call_user_func(array($item, 'getOptionValue'));
