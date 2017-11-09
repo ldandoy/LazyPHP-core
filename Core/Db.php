@@ -69,11 +69,7 @@ class Db
     public static function bind($statement, $param, $value)
     {
         try {
-            if ($value === null) {                
-                return $statement->bindValue(':'.$param, $value, \PDO::PARAM_NULL);
-            } else {
-                return $statement->bindValue(':'.$param, $value);
-            }
+            return $statement->bindParam(':'.$param, $value);
         } catch (PDOException $e) {
             throw new \Exception('PDOException (PDOStatement::bindParam) : '.$e->getMessage(), $e->getCode());
             return false;
