@@ -491,7 +491,7 @@ class Query
     public function showSql()
     {
         $this->checkCreateSql();
-        debug($this->sql);
+        var_dump($this->sql);
     }
 
     /**
@@ -503,6 +503,8 @@ class Query
      */
     public function execute($data = array())
     {
+
+        //$this->showSql(); die;
         $this->checkCreateSql();
 
         $this->lastError = '';

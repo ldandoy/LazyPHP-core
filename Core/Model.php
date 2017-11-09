@@ -196,6 +196,7 @@ class Model
         $this->setData($data);
 
         if ($this->valid()) {
+            echo "passer1";
             if (isset($this->id)) {
                 $res = $this->update((array)$this);
                 if (!$res) {
@@ -209,6 +210,7 @@ class Model
                 $this->id = $res;
             }
         } else {
+            echo"passer 2 ";
             return false;
         }
 
