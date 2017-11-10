@@ -93,34 +93,39 @@ class Request
             $adminPrefix = Config::getValueG('admin_prefix');
 
             $tabUrl = Utils::removeEmptyElements(explode('/', $url));
-            $controller = array_shift($tabUrl);
-
-            if ($controller == $adminPrefix) {
-                $prefix = $adminPrefix;
+            if (empty($tabUrl) && isset($site)) {
+                $this->url = $site->home_page;
+            } else {
                 $controller = array_shift($tabUrl);
+
+                if ($controller == $adminPrefix) {
+                    $prefix = $adminPrefix;
+                    $controller = array_shift($tabUrl);
+                }
+
+                if (isset(Config::$packages[$controller])) {
+                    $package = $controller;
+                    $controller = array_shift($tabUrl);
+                }
+
+                $action = array_shift($tabUrl);
+                $params = $tabUrl;
+
+                if ($controller === null) {
+                    $controller = $defaultController;
+                }
+
+                if ($action === null) {
+                    $action = $defaultAction;
+                }
+
+                $this->url = '/'.(isset($prefix) ? $prefix.'/' : '').(isset($package) ? $package.'/' : '').$controller.'/'.$action.(count($params) > 0 ? '/'.implode('/', $params) : '');
             }
-
-            if (isset(Config::$packages[$controller])) {
-                $package = $controller;
-                $controller = array_shift($tabUrl);
-            }
-
-            $action = array_shift($tabUrl);
-            $params = $tabUrl;
-
-            if ($controller === null) {
-                $controller = $defaultController;
-            }
-
-            if ($action === null) {
-                $action = $defaultAction;
-            }
-
-            $this->url = '/'.(isset($prefix) ? $prefix.'/' : '').(isset($package) ? $package.'/' : '').$controller.'/'.$action.(count($params) > 0 ? '/'.implode('/', $params) : '');
         } else {
             /* If the url is just "/" */
             if (isset($site)) {
                 $this->url = $site->home_page;
+
             } else { // Sinon on prend le root
                 $this->url = Config::getValueG('root');
             }
