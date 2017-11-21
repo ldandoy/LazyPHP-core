@@ -806,6 +806,7 @@ class Model
      *      'fieldValue' => string, default 'id'
      *      'fieldLabel' => string, default 'label'
      *      'emptyValue' => bool, default true
+     *      'emptyValueLabel' => string, default '---'
      *      'where' => string
      */
     public static function getOptions($params = array())
@@ -813,9 +814,10 @@ class Model
         $options = array();
 
         if (isset($params['emptyValue']) && $params['emptyValue']) {
+            $emptyValueLabel = isset($params['emptyValueLabel']) ? $params['emptyValueLabel'] : '---';
             $options[0] = array(
                 'value' => '',
-                'label' => '---'
+                'label' => $emptyValueLabel
             );
         }
 

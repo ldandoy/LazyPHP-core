@@ -503,13 +503,12 @@ class Query
      */
     public function execute($data = array())
     {
-
-        //$this->showSql(); die;
         $this->checkCreateSql();
 
         $this->lastError = '';
 
         $res = Db::prepare($this->sql);
+
         if ($res !== false) {
             $this->preparedStatement = $res;
 
