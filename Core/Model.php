@@ -848,8 +848,8 @@ class Model
         return $options;
     }
 
-    public function formatDatetime($dateTime, $format = DateTime::FORMAT_DATETIME)
+    public function formatDatetime($sqlDateTime, $format = Datetime::FORMAT_DATETIME)
     {
-        return DateTime::format($dateTime, $format);
+        return Datetime::format($sqlDateTime, $format);
     }
 }
