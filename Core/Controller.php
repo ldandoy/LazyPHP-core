@@ -14,6 +14,7 @@ namespace Core;
 use Core\Session;
 use Core\Templator;
 use Core\Router;
+use Core\Model;
 use Helper\Bootstrap;
 
 /**
@@ -324,32 +325,9 @@ class Controller
         return strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
     }
 
-    public function loadModel($modelName)
+    public function loadModel($modelName, $packageName = '')
     {
-        // On regarde si le fichier est dans /app/modeles
-        $classModel = '\\app\\models\\'.$modelName;
-        if (class_exists($classModel)) {
-            $modelName = new $classModel();
-            return $classModel;
-        }
-
-        // on regade si le fichier est dans le /package/models/
-        $classModel = '\\'.ucfirst($this->request->package).'\\models\\'.$modelName;
-        if (class_exists($classModel)) {
-            $modelName = new $classModel();
-            return $classModel;
-        }
-
-        foreach (Config::$packages as $packageName => $package) {
-          $classModel = '\\'.ucfirst($packageName).'\\models\\'.$modelName;
-          if (class_exists($classModel)) {
-              $modelName = new $classModel();
-              return $classModel;
-          }
-        }
-
-        // Sinon on retourne une erreur
-        $this->error('Model error', 'Model "'.$modelName.'" was not found.');
+        return Model::loadModel($modelName, $packageName);
     }
 
     public function loadLayout()

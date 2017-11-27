@@ -12,7 +12,7 @@
 namespace Core;
 
 use Core\Utils;
-use Core\models\Site;
+use Core\Model;
 
 /**
  * Class Request
@@ -71,7 +71,8 @@ class Request
 
         $site = Session::get('site');
         if ($site === null) {
-            $site = Site::findBy('host', $this->host);
+            $siteClass = Model::loadModel('site');
+            $site = $siteClass::findBy('host', $this->host);
             Session::set('site', $site);
         }
 

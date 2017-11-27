@@ -852,4 +852,30 @@ class Model
     {
         return Datetime::format($sqlDateTime, $format);
     }
+
+    public static function loadModel($modelName, $packageName = '')
+    {
+        $modelName = ucfirst($modelName);
+
+        $className = '\\app\\models\\'.$modelName;
+        if (class_exists($className)) {
+            return $className;
+        }
+
+        if ($packageName != '') {
+            $className = '\\'.ucfirst($packageName).'\\models\\'.$modelName;
+            if (class_exists($className)) {
+                return $className;
+            }
+        } else {
+            foreach (Config::$packages as $packageName => $package) {
+              $className = '\\'.ucfirst($packageName).'\\models\\'.$modelName;
+              if (class_exists($className)) {
+                  return $className;
+              }
+            }
+        }
+
+        throw new \Exception('Model error => Model "'.$modelName.'" was not found.');
+    }
 }
