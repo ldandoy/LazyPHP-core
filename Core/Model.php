@@ -59,6 +59,7 @@ class Model
             $association = $this->getAssociation($name);
             if ($association !== null) {
                 $class = $association['model'];
+                $order = isset($association['order']) ? $association['order'] : '';
                 switch ($association['type']) {
                     case '1':
                         $key = $association['key'];
@@ -66,7 +67,7 @@ class Model
                         break;
                     case '+':
                     case '*':
-                        $this->$name = $class::findAll($association['key'].'='.$this->id);
+                        $this->$name = $class::findAll($association['key'].'='.$this->id, $order);
                         break;
                     default:
                         $this->$name = null;
@@ -848,11 +849,6 @@ class Model
         return $options;
     }
 
-    public function formatDatetime($sqlDateTime, $format = Datetime::FORMAT_DATETIME)
-    {
-        return Datetime::format($sqlDateTime, $format);
-    }
-
     public static function loadModel($modelName, $packageName = '')
     {
         $modelName = ucfirst($modelName);
@@ -877,5 +873,10 @@ class Model
         }
 
         throw new \Exception('Model error => Model "'.$modelName.'" was not found.');
+    }
+
+    public function formatDatetime($sqlDateTime, $format = Datetime::FORMAT_DATETIME)
+    {
+        return Datetime::format($sqlDateTime, $format);
     }
 }
