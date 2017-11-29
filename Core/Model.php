@@ -82,6 +82,19 @@ class Model
     }
 
     /**
+     * Magic method __call
+     * @param string $name
+     * @param mixed $arguments
+     */
+    public function __call($name, $arguments)
+    {
+        $class = get_called_class();
+        if (method_exists($class, $name)) {
+            call_user_func_array(array($class, $name), $arguments);
+        }
+    }
+
+    /**
      * Ajout les données dans l'objet
      *
      * Cette fonction est appelé à l'instanciation de la classe pour

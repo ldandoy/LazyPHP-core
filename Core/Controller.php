@@ -405,4 +405,15 @@ class Controller
         }
         return $html;
     }
+
+    /**
+     * Get curent_user permissions
+     *
+     * @return mixed
+     */
+    public function checkPermission($roleCode)
+    {
+        $userClass = $this->loadModel('user');
+        return $userClass::checkPermission($this->current_user, $roleCode);
+    }
 }
