@@ -888,6 +888,17 @@ class Model
         throw new \Exception('Model error => Model "'.$modelName.'" was not found.');
     }
 
+    public static function getCmsStatusOptions()
+    {
+        return array(
+            'draft' => array('value' => 'draft', 'label' => 'Brouillon', 'badge' => 'warning'),
+            'pending' => array('value' => 'pending', 'label' => 'À valider', 'badge' => 'warning'),
+            'published' => array('value' => 'published', 'label' => 'Publié', 'badge' => 'success'),
+            'tomodify' => array('value' => 'tomodify', 'label' => 'À modifier', 'badge' => 'warning'),
+            'deleted' => array('value' => 'deleted', 'label' => 'Supprimé', 'badge' => 'danger'),
+        );
+    }
+
     public function formatDatetime($sqlDateTime, $format = Datetime::FORMAT_DATETIME)
     {
         return Datetime::format($sqlDateTime, $format);
