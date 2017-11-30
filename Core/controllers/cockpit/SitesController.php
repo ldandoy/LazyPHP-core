@@ -57,7 +57,7 @@ class SitesController extends CockpitController
             $this->_site = new $siteClass();
         }
 
-        $themeOptions = $siteClass::getThemesOptions();
+        $themeOptions = $siteClass::getThemeOptions();
 
         $this->render(
             'core::sites::edit',
@@ -77,7 +77,7 @@ class SitesController extends CockpitController
             $this->_site = $siteClass::findById($id);
         }
 
-        $themeOptions = $siteClass::getThemesOptions();
+        $themeOptions = $siteClass::getThemeOptions();
 
         $this->render(
             'core::sites::edit',

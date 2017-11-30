@@ -22,6 +22,18 @@ class Site extends Model
         'theme'
     );
 
+    public function getAttachedFiles()
+    {
+        return array_merge(
+            parent::getAttachedFiles(),
+            array(
+                'brand_logo' => array(
+                    'type' => 'image'
+                )
+            )
+        );
+    }
+
     public static function getThemeOptions()
     {
         $themeOptions = array();

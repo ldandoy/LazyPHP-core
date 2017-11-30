@@ -18,6 +18,9 @@
             <b>Host</b>: <?php echo $site->host; ?>
         </p>
         <p>
+            <b>Logo</b>: <img src="<?php echo $site->brand_logo->url; ?>" alt="Logo" />
+        </p>
+        <p>
             <b>Theme</b>: <?php echo $site->theme; ?>
         </p>
         <p>
