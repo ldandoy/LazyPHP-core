@@ -34,28 +34,36 @@ class Site extends Model
         );
     }
 
-    public static function getThemeOptions()
+    public function getThemeOptions()
     {
         $themeOptions = array();
 
-        // if ($handle = opendir(APP_DIR.DS.'widgets')) {
-        //     while (false !== ($entry = readdir($handle))) {
-        //         if(!is_dir(APP_DIR.DS.'widgets'.DS.$entry)) {
-        //             require APP_DIR.DS.'widgets'.DS.$entry;
-        //         }
-        //     }
-        // }
-
-        // return $themeOptions;
-        return array(
-            0 => array(
-                'value' => 'default',
-                'label' => 'Thème par défault'
-            ),
-            1 => array(
-                'value' => 'dark',
-                'label' => 'Thème dark'
-            )
+        $themeDirs = array(
+            '',
+            $this->id
         );
+
+        foreach ($themeDirs as $themeDir) {
+            $dir = CSS_DIR.DS.'theme'.DS.$themeDir;
+            if (file_exists($dir) && is_dir($dir)) {
+                if ($handle = opendir($dir)) {
+                    while (false !== ($entry = readdir($handle))) {
+                        if ($entry != '.' && $entry != '..' && !is_dir($dir.'/'.$entry)) {
+                            $value = str_replace('.css', '', $entry);
+                            $label = $value;
+
+                            $value = ltrim($themeDir.'/', '/').$value;
+
+                            $themeOptions[] = array(
+                                'value' => $value,
+                                'label' => $label
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        return $themeOptions;
     }
 }
