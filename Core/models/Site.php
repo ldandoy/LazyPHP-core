@@ -43,6 +43,10 @@ class Site extends Model
             1 => array(
                 'value' => 'dark',
                 'label' => 'Thème dark'
+            ),
+            2 => array(
+                'value' => 'panthera',
+                'label' => 'Thème panthera'
             )
         );
     }
