@@ -54,7 +54,7 @@ class Site extends Model
 
                             $value = ltrim($themeDir.'/', '/').$value;
 
-                            $themeOptions[] = array(
+                            $themeOptions[$value] = array(
                                 'value' => $value,
                                 'label' => $label
                             );

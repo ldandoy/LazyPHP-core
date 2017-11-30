@@ -34,7 +34,7 @@ foreach ($params['sites'] as $site) {
             '<td>'.$site->id.'</td>'.
             '<td>'.$site->label.'</td>'.
             '<td>'.$site->host.'</td>'.
-            '<td>'.$site->theme.'</td>'.
+            '<td>'.$themOptions[$site->theme]['label'].'</td>'.
             '<td>'.$site->home_page.'</td>'.
             '<td>'.$active.'</td>'.
             '<td>';?>

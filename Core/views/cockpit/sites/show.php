@@ -21,7 +21,7 @@
             <b>Logo</b>: <img src="<?php echo $site->brand_logo->url; ?>" alt="Logo" />
         </p>
         <p>
-            <b>Theme</b>: <?php echo $site->theme; ?>
+            <b>Theme</b>: <?php echo $themeOptions[$site->theme]['label']; ?>
         </p>
         <p>
             <b>Page d'accueil</b>: <?php echo $site->home_page; ?>

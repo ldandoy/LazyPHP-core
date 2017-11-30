@@ -25,12 +25,15 @@ class SitesController extends CockpitController
         $siteClass = $this->loadModel('Site');
         $sites = $siteClass::findAll();
 
+        $themeOptions = $this->_site->getThemeOptions();
+
         $this->render(
             'core::sites::index',
             array(
                 'sites' => $sites,
                 'pageTitle' => $this->pageTitle,
-                'boxTitle' => 'Liste des sites'
+                'boxTitle' => 'Liste des sites',
+                'themeOptions' => $themeOptions
             )
         );
     }
@@ -40,12 +43,15 @@ class SitesController extends CockpitController
         $siteClass = $this->loadModel('Site');
         $this->_site = $siteClass::findById($id);
 
+        $themeOptions = $this->_site->getThemeOptions();
+
         $this->render(
             'core::sites::show',
             array(
                 'site' => $this->_site,
                 'pageTitle' => $this->pageTitle,
                 'boxTitle' => 'Fiche du site : '.$this->_site->label,
+                'themeOptions' => $themeOptions
             )
         );
     }
@@ -65,6 +71,7 @@ class SitesController extends CockpitController
                 'pageTitle' => $this->pageTitle,
                 'boxTitle' => 'Nouveau site',
                 'site' => $this->_site,
+                'themeOptions' => $themeOptions,
                 'formAction' => Router::url('cockpit_core_sites_create')
             )
         );
