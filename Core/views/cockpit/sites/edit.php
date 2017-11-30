@@ -16,12 +16,11 @@
             {% input_text name="host" model="site.host" label="Host" %}
             {% input_select name="theme" model="site.theme" options="themeOptions" label="Thème" %}
             {% input_textarea name="description" model="site.description" label="Description" rows="10" %}
-
+            {% input_text name="home_page" model="site.home_page" label="Page d'accueil" %}
             {% input_text name="facebook" model="site.facebook" label="Facebook" %}
             {% input_text name="twitter" model="site.twitter" label="Twitter" %}
             {% input_text name="printerest" model="site.printerest" label="Printerest" %}
             {% input_text name="googleplus" model="site.googleplus" label="Google +" %}
-
             {% input_checkbox name="active" model="site.active" label="Actif" %}
             {% input_submit name="submit" value="save" formId="formSite" class="btn-primary" icon="save" label="Enregistrer" %}
         {% form_close %}

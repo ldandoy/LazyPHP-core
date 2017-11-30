@@ -71,7 +71,7 @@ class Request
 
         $site = Session::get('site');
         if ($site === null) {
-            $siteClass = Model::loadModel('site');
+            $siteClass = Model::loadModel('Site');
             $site = $siteClass::findBy('host', $this->host);
             Session::set('site', $site);
         }

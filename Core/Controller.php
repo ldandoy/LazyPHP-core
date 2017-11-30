@@ -413,7 +413,7 @@ class Controller
      */
     public function checkPermission($roleCode)
     {
-        $userClass = $this->loadModel('user');
+        $userClass = $this->loadModel('User');
         return $userClass::checkPermission($this->current_user, $roleCode);
     }
 }

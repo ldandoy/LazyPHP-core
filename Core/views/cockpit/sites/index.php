@@ -7,14 +7,15 @@
         </div>
     </div>
     <div class="box-body">
-        <table class="table table-hover table-sm">
+        <table class="table table-hover table-sm datatables">
             <thead>
                 <tr>
-                    <th width="1%">ID</th>
-                    <th width="20%">Label</th>
-                    <th width="40%">Host</th>
-                    <th width="10%">Thème</th>
-                    <th width="10%">Status</th>
+                    <th width="10%">#</th>
+                    <th>Nom</th>
+                    <th>Host</th>
+                    <th>Thème</th>
+                    <th>Page d'accueil</th>
+                    <th>Status</th>
                     <th width="10%">Actions</th>
                 </tr>
             </thead>
@@ -34,6 +35,7 @@ foreach ($params['sites'] as $site) {
             '<td>'.$site->label.'</td>'.
             '<td>'.$site->host.'</td>'.
             '<td>'.$site->theme.'</td>'.
+            '<td>'.$site->home_page.'</td>'.
             '<td>'.$active.'</td>'.
             '<td>';?>
                 {% button url="cockpit_core_sites_show_<?php echo $site->id; ?>" type="secondary" size="sm" icon="eye" hint="Modifier" %}

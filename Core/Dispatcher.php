@@ -45,7 +45,7 @@ class Dispatcher
     {
         $this->request = new Request();
 
-        if (!Router::parse($this->request)) {
+        if (!Router::parse($this->request)) {            
             throw new \Exception('URL error => Requested URL "'.$this->request->url.'" was not found.');
         }
 

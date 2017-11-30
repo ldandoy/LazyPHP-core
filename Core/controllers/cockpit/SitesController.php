@@ -22,7 +22,8 @@ class SitesController extends CockpitController
 
     public function indexAction()
     {
-        $sites = Site::findAll();
+        $siteClass = $this->loadModel('Site');
+        $sites = $siteClass::findAll();
 
         $this->render(
             'core::sites::index',
@@ -36,7 +37,8 @@ class SitesController extends CockpitController
 
     public function showAction($id)
     {
-        $this->_site = Site::findById($id);
+        $siteClass = $this->loadModel('Site');
+        $this->_site = $siteClass::findById($id);
 
         $this->render(
             'core::sites::show',
@@ -50,9 +52,12 @@ class SitesController extends CockpitController
 
     public function newAction()
     {
+        $siteClass = $this->loadModel('Site');
         if (!isset($this->_site)) {
-            $this->_site = new Site();
+            $this->_site = new $siteClass();
         }
+
+        $themeOptions = $siteClass::getThemesOptions();
 
         $this->render(
             'core::sites::edit',
@@ -67,20 +72,12 @@ class SitesController extends CockpitController
 
     public function editAction($id)
     {
+        $siteClass = $this->loadModel('Site');
         if (!isset($this->_site)) {
-            $this->_site = Site::findById($id);
+            $this->_site = $siteClass::findById($id);
         }
 
-        $themeOptions = array(
-            0 => array(
-                'value' => 'default',
-                'label' => 'Thème par défault'
-            ),
-            1 => array(
-                'value' => 'dark',
-                'label' => 'Thème dark'
-            ),
-        );
+        $themeOptions = $siteClass::getThemesOptions();
 
         $this->render(
             'core::sites::edit',
@@ -96,7 +93,8 @@ class SitesController extends CockpitController
 
     public function createAction()
     {
-        $this->_site = new Site();
+        $siteClass = $this->loadModel('Site');
+        $this->_site = new $siteClass();
 
         if (!isset($this->request->post['active'])) {
             $this->request->post['active'] = 0;
@@ -114,7 +112,8 @@ class SitesController extends CockpitController
 
     public function updateAction($id)
     {
-        $this->_site = Site::findById($id);
+        $siteClass = $this->loadModel('Site');
+        $this->_site = $siteClass::findById($id);
 
         if (!isset($this->request->post['active'])) {
             $this->request->post['active'] = 0;
@@ -136,7 +135,8 @@ class SitesController extends CockpitController
 
     public function deleteAction($id)
     {
-        $site = Site::findById($id);
+        $siteClass = $this->loadModel('Site');
+        $site = $siteClass::findById($id);
         $site->delete();
         $this->addFlash('Site supprimé', 'success');
         $this->redirect('cockpit_core_sites_index');
@@ -144,7 +144,8 @@ class SitesController extends CockpitController
 
     public function changehostAction()
     {
-        $site = Site::findById($this->request->post['site_id']);
+        $siteClass = $this->loadModel('Site');
+        $site = $siteClass::findById($this->request->post['site_id']);
         if ($site !== null) {
             $this->session->set('site', $site);
             $this->redirect($this->request->post['redirect']);
