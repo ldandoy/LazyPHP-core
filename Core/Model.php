@@ -891,7 +891,7 @@ class Model
     public static function getCmsStatusOptions()
     {
         return array(
-            'draft' => array('value' => 'draft', 'label' => 'Brouillon', 'badge' => 'warning'),
+            'draft' => array('value' => 'draft', 'label' => 'Brouillon', 'badge' => 'secondary'),
             'pending' => array('value' => 'pending', 'label' => 'À valider', 'badge' => 'warning'),
             'published' => array('value' => 'published', 'label' => 'Publié', 'badge' => 'success'),
             'tomodify' => array('value' => 'tomodify', 'label' => 'À modifier', 'badge' => 'warning'),
