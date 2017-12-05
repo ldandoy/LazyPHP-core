@@ -14,7 +14,7 @@ namespace Core;
 use Core\Utils;
 use Core\Query;
 use Core\AttachedFile;
-use Helper\Datetime;
+use Helper\DatetimeUtils;
 
 /**
  * Class gérant les Models du site
@@ -899,8 +899,8 @@ class Model
         );
     }
 
-    public function formatDatetime($sqlDateTime, $format = Datetime::FORMAT_DATETIME)
+    public function formatDatetime($sqlDateTime, $format = DatetimeUtils::FORMAT_DATETIME)
     {
-        return Datetime::format($sqlDateTime, $format);
+        return DatetimeUtils::format($sqlDateTime, $format);
     }
 }
