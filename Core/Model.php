@@ -58,7 +58,11 @@ class Model
         } else {
             $association = $this->getAssociation($name);
             if ($association !== null) {
-                $class = $association['model'];
+                if (strpos($association['model'], '\\') !== false) {
+                    $class = $association['model'];
+                } else {
+                    $class = self::loadModel($association['model']);
+                }
                 $order = isset($association['order']) ? $association['order'] : '';
                 switch ($association['type']) {
                     case '1':
