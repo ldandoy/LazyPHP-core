@@ -27,13 +27,14 @@ class SitesController extends CockpitController
 
         $site = new $siteClass();
         $themeOptions = $site->getThemeOptions();
+
         $this->render(
             'core::sites::index',
             array(
-                'sites' => $sites,
-                'pageTitle' => $this->pageTitle,
-                'boxTitle' => 'Liste des sites',
-                'themeOptions' => $themeOptions
+                'sites'         => $sites,
+                'pageTitle'     => $this->pageTitle,
+                'boxTitle'      => 'Liste des sites',
+                'themeOptions'  => $themeOptions
             )
         );
     }
@@ -48,10 +49,10 @@ class SitesController extends CockpitController
         $this->render(
             'core::sites::show',
             array(
-                'site' => $this->_site,
-                'pageTitle' => $this->pageTitle,
-                'boxTitle' => 'Fiche du site : '.$this->_site->label,
-                'themeOptions' => $themeOptions
+                'site'          => $this->_site,
+                'pageTitle'     => $this->pageTitle,
+                'boxTitle'      => 'Fiche du site : '.$this->_site->label,
+                'themeOptions'  => $themeOptions,
             )
         );
     }
@@ -65,14 +66,19 @@ class SitesController extends CockpitController
 
         $themeOptions = $this->_site->getThemeOptions();
 
+        $pageClass = $this->loadModel('Page');
+        $page = new $pageClass();
+        $pageOptions = $page->getPageOptions();
+
         $this->render(
             'core::sites::edit',
             array(
-                'pageTitle' => $this->pageTitle,
-                'boxTitle' => 'Nouveau site',
-                'site' => $this->_site,
-                'themeOptions' => $themeOptions,
-                'formAction' => Router::url('cockpit_core_sites_create')
+                'pageTitle'     => $this->pageTitle,
+                'boxTitle'      => 'Nouveau site',
+                'site'          => $this->_site,
+                'themeOptions'  => $themeOptions,
+                'formAction'    => Router::url('cockpit_core_sites_create'),
+                'pageOptions'   => $pageOptions
             )
         );
     }
@@ -86,14 +92,19 @@ class SitesController extends CockpitController
 
         $themeOptions = $this->_site->getThemeOptions();
 
+        $pageClass = $this->loadModel('Page');
+        $page = new $pageClass();
+        $pageOptions = $page->getPageOptions($id);
+
         $this->render(
             'core::sites::edit',
             array(
-                'pageTitle' => $this->pageTitle,
-                'boxTitle' => 'Edition du site: '.$this->_site->label,
-                'site' => $this->_site,
-                'themeOptions' => $themeOptions,
-                'formAction' => Router::url('cockpit_core_sites_update_'.$id)
+                'pageTitle'     => $this->pageTitle,
+                'boxTitle'      => 'Edition du site: '.$this->_site->label,
+                'site'          => $this->_site,
+                'themeOptions'  => $themeOptions,
+                'formAction'    => Router::url('cockpit_core_sites_update_'.$id),
+                'pageOptions'   => $pageOptions
             )
         );
     }
@@ -105,6 +116,10 @@ class SitesController extends CockpitController
 
         if (!isset($this->request->post['active'])) {
             $this->request->post['active'] = 0;
+        }
+
+        if (!isset($this->request->post['reducbox_opt'])) {
+            $this->request->post['reducbox_opt'] = 0;
         }
 
         if ($this->_site->save($this->request->post)) {
@@ -124,6 +139,10 @@ class SitesController extends CockpitController
 
         if (!isset($this->request->post['active'])) {
             $this->request->post['active'] = 0;
+        }
+
+        if (!isset($this->request->post['reducbox_opt'])) {
+            $this->request->post['reducbox_opt'] = 0;
         }
 
         if ($this->_site->save($this->request->post)) {
