@@ -173,7 +173,6 @@ class Controller
      */
     public function render($view, $params = array(), $layout = true)
     {
-
         // On merge tous les paramètres que l'on a passé à la vue.
         $params = array_merge($this->params, $params);
 
@@ -203,7 +202,6 @@ class Controller
                         $message = 'Le template "'.DS.$this->controller.DS.$view.'.php" n\'existe pas';
                         $this->error('Erreur de template', $message);
                     }
-
                     if ($layout) {
                         ob_start();
                         $layout = $this->loadLayout();

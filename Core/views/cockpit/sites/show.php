@@ -6,7 +6,7 @@
             {% button url="cockpit_core_sites_edit_<?php echo $site->id; ?>" type="info" size="sm" icon="pencil" %}
             {% button url="cockpit_core_sites_delete_<?php echo $site->id; ?>" type="danger" size="sm" icon="trash-o" confirmation="Vous confirmer vouloir supprimer ce site ?" %}
             <?php if ($this->current_user !== null && $this->current_user->site_id === null) { ?>
-                {% button url="cockpit_sites_index" type="secondary" size="sm" icon="arrow-left" hint="retour" %}
+                {% button url="cockpit_core_sites_index" type="secondary" size="sm" icon="arrow-left" hint="retour" %}
             <?php } ?>
         </div>
     </div>
