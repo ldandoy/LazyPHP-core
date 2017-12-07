@@ -38,10 +38,24 @@ class Site extends Model
     {
         $themeOptions = array();
 
-        $themeDirs = array(
-            '',
-            $this->id
-        );
+        $current_user = $_SESSION['current_user'];
+
+        if ($current_user->site_id == null) {
+            $themeDirs = array(
+                '',
+            );
+
+            $siteClass = $this->loadModel('Site');
+            $sites = $siteClass::findAll();
+            foreach ($sites as $value) {
+                $themeDirs[] = $value->id;
+            }
+        } else {
+            $themeDirs = array(
+                '',
+                $this->id
+            );
+        }
 
         foreach ($themeDirs as $themeDir) {
             $dir = CSS_DIR.DS.'theme'.DS.$themeDir;

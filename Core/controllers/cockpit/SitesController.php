@@ -25,8 +25,8 @@ class SitesController extends CockpitController
         $siteClass = $this->loadModel('Site');
         $sites = $siteClass::findAll();
 
-        $themeOptions = $this->_site->getThemeOptions();
-
+        $site = new $siteClass();
+        $themeOptions = $site->getThemeOptions();
         $this->render(
             'core::sites::index',
             array(

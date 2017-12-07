@@ -29,12 +29,17 @@ foreach ($params['sites'] as $site) {
         $active = '<span class="badge badge-danger">Désactivé</span>';
     }
 
+    // On gère les thème
+    if ($site->theme == null) {
+        $site->theme = "default";
+    }
+
     echo
         '<tr>'.
             '<td>'.$site->id.'</td>'.
             '<td>'.$site->label.'</td>'.
             '<td>'.$site->host.'</td>'.
-            '<td>'.$themOptions[$site->theme]['label'].'</td>'.
+            '<td>'.$themeOptions[$site->theme]['label'].'</td>'.
             '<td>'.$site->home_page.'</td>'.
             '<td>'.$active.'</td>'.
             '<td>';?>
