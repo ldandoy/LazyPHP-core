@@ -175,7 +175,7 @@ class Templator
                     }
                 }
 
-                if ($tag == 'input_select' || $tag == 'input_radiogroup' || $tag == 'input_checkboxgroup' || $tag == 'input_datetimepicker') {
+                if ($tag == 'input_select' || $tag == 'input_radiogroup' || $tag == 'input_checkboxgroup') {
                     $options = $this->getOptionsForInput($attributes, $params);
                     if ($options !== null) {
                         $attributes['options'] = $options;
@@ -288,8 +288,8 @@ class Templator
                         $replace = Form::media($attributes);
                         break;
 
-                    case 'input_datetimepicker':
-                        $replace = Form::datetimepicker($attributes);
+                    case 'input_datetime':
+                        $replace = Form::datetime($attributes);
                         break;
 
                     case 'input_magicsuggest':
