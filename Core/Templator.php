@@ -123,6 +123,7 @@ class Templator
                 }
                 return $options;
             } else if (isset($params[$options])) {
+                $optionsList = array();
                 foreach ($params[$options] as $value) {
                     $optionsList[] = array('label' => $value['label'], 'value' => $value['value']);
                 }

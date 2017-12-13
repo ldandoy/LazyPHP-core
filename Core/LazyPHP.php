@@ -125,3 +125,21 @@ function debug($data, $displayBacktrace = true)
 
     echo $html;
 }
+
+$appWidgetsDir = APP_DIR.DS.'widgets';
+if ($handle = opendir($appWidgetsDir)) {
+    while (false !== ($entry = readdir($handle))) {
+        if(!is_dir($appWidgetsDir.DS.$entry)) {
+            require $appWidgetsDir.DS.$entry;
+        }
+    }
+}
+
+$widgetsDir = ROOT_DIR.DS.'vendor'.DS.'overconsulting'.DS.'lazyphp-widget'.DS.'Widget'.DS.'widgets';
+if ($handle = opendir($widgetsDir)) {
+    while (false !== ($entry = readdir($handle))) {
+        if(!is_dir($widgetsDir.DS.$entry) && $entry != 'Widget.php') {
+            require $widgetsDir.DS.$entry;
+        }
+    }
+}
