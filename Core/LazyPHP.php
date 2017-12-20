@@ -130,7 +130,7 @@ $appWidgetsDir = APP_DIR.DS.'widgets';
 if ($handle = opendir($appWidgetsDir)) {
     while (false !== ($entry = readdir($handle))) {
         if(!is_dir($appWidgetsDir.DS.$entry)) {
-            require $appWidgetsDir.DS.$entry;
+            require_once $appWidgetsDir.DS.$entry;
         }
     }
 }
@@ -139,7 +139,7 @@ $widgetsDir = ROOT_DIR.DS.'vendor'.DS.'overconsulting'.DS.'lazyphp-widget'.DS.'W
 if ($handle = opendir($widgetsDir)) {
     while (false !== ($entry = readdir($handle))) {
         if(!is_dir($widgetsDir.DS.$entry) && $entry != 'Widget.php') {
-            require $widgetsDir.DS.$entry;
+            require_once $widgetsDir.DS.$entry;
         }
     }
 }
