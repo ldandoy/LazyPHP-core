@@ -180,7 +180,7 @@ class Controller
            $params['_controller'] = $this;
         }
 
-        if (!$this->rendered) {        
+        if (!$this->rendered) {
             if ($this->request->format == 'json') {
                 header('Content-Type: application/json');
                 echo json_encode($params);
