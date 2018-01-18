@@ -116,7 +116,7 @@ class Model
 
         if (isset($data['id'])) {
             $this->id = $data['id'];
-        }        
+        }
 
         $attachedFiles = $this->getAttachedFiles();
         $permittedColumns = $this->getPermittedColumns();
@@ -296,7 +296,7 @@ class Model
 
         $associations = $this->getAssociations();
         foreach ($associations as $name => $association) {
-            if ($association['type'] == '*') {                
+            if ($association['type'] == '*') {
                 $children = $this->$name;
                 foreach ($children as $child) {
                     $child->delete();
@@ -341,6 +341,10 @@ class Model
         $query->from($class::getTableName());
         $query->where($where);
         $query->order($order);
+
+        // On enregistre la requete
+        echo "passer";
+        Utils::writelogs($query->showSql());
 
         $rows = $query->executeAndFetchAll();
         foreach ($rows as $row) {

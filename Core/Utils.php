@@ -16,6 +16,16 @@ class Utils
     }
 
     /**
+     * Write logs
+     * @return void
+     */
+    public static function writelogs($log, $level = 'debug') {
+        $handle = fopen(LOG_DIR.DS.date("Ymd").'.log', "a+");
+        fwrite($handle, date("Y/m/d H:i:s") . ' ' . $level . ': ' .$log);
+        fclose($handle);
+    }
+
+    /**
      * Test if not empty
      *
      * @param mixed $v value to test

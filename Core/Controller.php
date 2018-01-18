@@ -78,6 +78,8 @@ class Controller
      */
     public $title = null;
 
+    public $meta_description = null;
+
     public function __construct($request)
     {
         $this->request = $request;
@@ -97,6 +99,10 @@ class Controller
         $this->routes = Router::$routes;
         $this->config = Config::$config;
         $this->title = isset($this->config["GENERAL"]["title"]) ? $this->config["GENERAL"]["title"] : "";
+
+        if (isset($this->site)) {
+            $this->title = $this->site->label;
+        }
     }
 
     /**
