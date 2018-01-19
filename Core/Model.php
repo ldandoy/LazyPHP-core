@@ -342,10 +342,6 @@ class Model
         $query->where($where);
         $query->order($order);
 
-        // On enregistre la requete
-        echo "passer";
-        Utils::writelogs($query->showSql());
-
         $rows = $query->executeAndFetchAll();
         foreach ($rows as $row) {
             $res[] = new $class($row);
@@ -369,7 +365,6 @@ class Model
         $query->select('*');
         $query->where('id = :id');
         $query->from($class::getTableName());
-
         $row = $query->executeAndFetch(array('id' => $id));
 
         if ($row !== false) {

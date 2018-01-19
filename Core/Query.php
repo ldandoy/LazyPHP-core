@@ -188,7 +188,7 @@ class Query
      */
     public function join($join)
     {
-        if (is_array($join)) {            
+        if (is_array($join)) {
             $table = explode(' ', $join['table']);
             $joinTable = isset($table[1]) ? $table[1] : $table[0];
 
@@ -509,6 +509,8 @@ class Query
 
         $res = Db::prepare($this->sql);
 
+        Utils::writelogs($this->getSql()."\n");
+
         if ($res !== false) {
             $this->preparedStatement = $res;
 
@@ -520,7 +522,7 @@ class Query
             }
 
             try {
-                if ($this->preparedStatement->execute()) {                    
+                if ($this->preparedStatement->execute()) {
                     return true;
                 } else {
                     return false;
