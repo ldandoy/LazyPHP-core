@@ -19,7 +19,11 @@ class Site extends Model
         'twitter',
         'pinterest',
         'googleplus',
-        'theme'
+        'theme',
+        'DB_HOST',
+        'DB_USER',
+        'DB_PASSWORD',
+        'DB_NAME'
     );
 
     public function getAttachedFiles()
