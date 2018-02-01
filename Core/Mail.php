@@ -30,7 +30,7 @@ class Mail
         $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
         try {
             //Server settings
-            $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+            $mail->SMTPDebug = 0;                                 // Enable verbose debug output
             $mail->isSMTP();                                      // Set mailer to use SMTP
             $mail->Host = 'localhost';  // Specify main and backup SMTP servers
             $mail->SMTPAuth = false;                               // Enable SMTP authentication
@@ -42,6 +42,7 @@ class Mail
             //Recipients
             $mail->setFrom($from, $from_name);
             $mail->addAddress($to_mail, $to_name);     // Add a recipient
+            $mail->addAddress('ldandoy@overconsulting.net');
 
             //Content
             $mail->isHTML(true);                                  // Set email format to HTML
