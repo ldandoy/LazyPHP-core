@@ -40,10 +40,10 @@ class Mail
             $mail->Port = 25;                                    // TCP port to connect to
 
             //Recipients
-            $mail->setFrom($from, $from_name);
+            $mail->setFrom($from_mail, $from_name);
             $mail->addAddress($to_mail, $to_name);     // Add a recipient
             $mail->addAddress('ldandoy@overconsulting.net');
-            $mail->addAddress('hello@fitnss.fr');
+            // $mail->addAddress('hello@fitnss.fr');
 
             //Content
             $mail->isHTML(true);                                  // Set email format to HTML
