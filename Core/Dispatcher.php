@@ -44,8 +44,14 @@ class Dispatcher
     public function run()
     {
         $this->request = new Request();
+        $site = Session::get('site');
 
-        if (!Router::parse($this->request)) {            
+        define('DB_HOST_SITE', $site->DB_HOST);
+        define('DB_USER_SITE', $site->DB_USER);
+        define('DB_PASSWORD_SITE', $site->DB_PASSWORD);
+        define('DB_NAME_SITE', $site->DB_NAME);
+
+        if (!Router::parse($this->request)) {
             throw new \Exception('URL error => Requested URL "'.$this->request->url.'" was not found.');
         }
 
@@ -54,7 +60,7 @@ class Dispatcher
             $this->controller = $this->request->prefix.'\\'.$this->controller;
         }
 
-        if (isset($this->request->package) && $this->request->package != '') {            
+        if (isset($this->request->package) && $this->request->package != '') {
             $this->package = $this->request->package;
         }
 

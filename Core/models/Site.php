@@ -21,6 +21,10 @@ class Site extends Model
         'googleplus',
         'theme',
         'maintenance',
+        'DB_HOST',
+        'DB_USER',
+        'DB_PASSWORD',
+        'DB_NAME'
     );
 
     public function getAttachedFiles()

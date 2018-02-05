@@ -38,12 +38,19 @@ class Db
     {
         if (!isset(self::$db)) {
             try {
-                self::$db = new \PDO(
-                    'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset='.DB_CHARSET,
-                    DB_USER,
-                    DB_PASSWORD
-                );
-
+                if (defined('DB_HOST_SITE')) {
+                    self::$db = new \PDO(
+                        'mysql:host='.DB_HOST_SITE.';dbname='.DB_NAME_SITE.';charset='.DB_CHARSET,
+                        DB_USER_SITE,
+                        DB_PASSWORD_SITE
+                    );
+                } else {
+                    self::$db = new \PDO(
+                        'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset='.DB_CHARSET,
+                        DB_USER,
+                        DB_PASSWORD
+                    );
+                }
                 self::$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 throw new \Exception('PDOException (PDO::__construct) : '.$e->getMessage(), $e->getCode());
