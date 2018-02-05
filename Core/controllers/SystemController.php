@@ -30,6 +30,13 @@ class SystemController extends Controller
         }
     }
 
+    public function maintenanceAction () {
+        $this->render(
+            'core::system::maintenance',
+            array()
+        );
+    }
+
     /**
      * errorAction
      *

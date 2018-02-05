@@ -118,6 +118,10 @@ class SitesController extends CockpitController
             $this->request->post['active'] = 0;
         }
 
+        if (!isset($this->request->post['maintenance'])) {
+            $this->request->post['maintenance'] = 0;
+        }
+
         if (!isset($this->request->post['reducbox_opt'])) {
             $this->request->post['reducbox_opt'] = 0;
         }
@@ -139,6 +143,10 @@ class SitesController extends CockpitController
 
         if (!isset($this->request->post['active'])) {
             $this->request->post['active'] = 0;
+        }
+
+        if (!isset($this->request->post['maintenance'])) {
+            $this->request->post['maintenance'] = 0;
         }
 
         if (!isset($this->request->post['reducbox_opt'])) {

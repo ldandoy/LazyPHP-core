@@ -19,7 +19,8 @@ class Site extends Model
         'twitter',
         'pinterest',
         'googleplus',
-        'theme'
+        'theme',
+        'maintenance',
     );
 
     public function getAttachedFiles()

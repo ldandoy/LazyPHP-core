@@ -51,5 +51,23 @@
                 }
             ?>
         </p>
+        <p>
+            <b>Réducbox Option</b>:
+            <?php
+                if ($site->reducbox_opt == 1) {
+                    echo '<span class="badge badge-success">Activé</span>';
+                } else {
+                    echo '<span class="badge badge-danger">Désactivé</span>';
+                }
+            ?>
+        </p>
+        <?php if ($site->reducbox_opt == 1) { ?>
+            <p>
+                <b>ReducBox partkey</b>: <?php echo $site->reducbox_partkey; ?>
+            </p>
+            <p>
+                <b>ReducBox secret</b>: <?php echo $site->reducbox_secret; ?>
+            </p>
+        <?php } ?>
     </div>
 </div>

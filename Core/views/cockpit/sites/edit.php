@@ -29,6 +29,7 @@
             {% input_text name="googleplus" model="site.googleplus" label="Google +" %}
 <?php if ($this->current_user !== null && $this->current_user->site_id === null): ?>
             {% input_checkbox name="active" model="site.active" label="Actif" %}
+            {% input_checkbox name="maintenance" model="site.maintenance" label="Maintenance" %}
             {% input_checkbox name="reducbox_opt" model="site.reducbox_opt" label="Option Reducbox" %}
 
             {% input_text name="reducbox_partkey" model="site.reducbox_partkey" label="Clé partenaire Reducbox" %}

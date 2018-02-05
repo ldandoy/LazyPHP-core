@@ -69,10 +69,12 @@ class Request
 
         $this->host = $_SERVER['HTTP_HOST'];
 
+        $siteClass = Model::loadModel('Site');
+        $current_site = $siteClass::findBy('host', $this->host);
+
         $site = Session::get('site');
         if ($site === null) {
-            $siteClass = Model::loadModel('Site');
-            $site = $siteClass::findBy('host', $this->host);
+            $site = $current_site;
             Session::set('site', $site);
         }
 
@@ -130,6 +132,10 @@ class Request
             } else { // Sinon on prend le root
                 $this->url = Config::getValueG('root');
             }
+        }
+
+        if ($site->maintenance == 1) {
+            $this->url = '/system/maintenance';
         }
 
         $this->method = strtolower($_SERVER['REQUEST_METHOD']);

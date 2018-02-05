@@ -15,6 +15,7 @@
                     <th>Host</th>
                     <th>Thème</th>
                     <th>Page d'accueil</th>
+                    <th>RéducBox</th>
                     <th>Status</th>
                     <th width="10%">Actions</th>
                 </tr>
@@ -23,10 +24,20 @@
 <?php
 
 foreach ($params['sites'] as $site) {
-    if ($site->active == 1) {
+    if ($site->active == 1 && $site->maintenance == 0) {
         $active = '<span class="badge badge-success">Activé</span>';
     } else {
-        $active = '<span class="badge badge-danger">Désactivé</span>';
+        if ($site->maintenance == 1) {
+            $active = '<span class="badge badge-danger">En maintenance</span>';
+        } else {
+            $active = '<span class="badge badge-danger">Désactivé</span>';
+        }
+    }
+
+    if ($site->reducbox_opt == 1) {
+        $active_reducbox = '<span class="badge badge-success">Activé</span>';
+    } else {
+        $active_reducbox = '<span class="badge badge-danger">Désactivé</span>';
     }
 
     // On gère les thème
@@ -41,6 +52,7 @@ foreach ($params['sites'] as $site) {
             '<td>'.$site->host.'</td>'.
             '<td>'.$themeOptions[$site->theme]['label'].'</td>'.
             '<td>'.$site->home_page.'</td>'.
+            '<td>'.$active_reducbox.'</td>'.
             '<td>'.$active.'</td>'.
             '<td>';?>
                 {% button url="cockpit_core_sites_show_<?php echo $site->id; ?>" type="secondary" size="sm" icon="eye" hint="Modifier" %}
