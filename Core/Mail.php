@@ -37,7 +37,9 @@ class Mail
             //$mail->Username = 'user@example.com';                 // SMTP username
             //$mail->Password = 'secret';                           // SMTP password
             //$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-            $mail->Port = 25;                                    // TCP port to connect to
+            $mail->Port = 25;    
+            $mail->CharSet = 'UTF-8';
+                                            // TCP port to connect to
 
             //Recipients
             $mail->setFrom($from_mail, $from_name);
