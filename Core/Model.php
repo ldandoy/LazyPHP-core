@@ -29,6 +29,8 @@ class Model
 {
     public $errors = array();
 
+    public $lastInsertId;
+
     /**
      * Constructeur
      *
@@ -257,6 +259,8 @@ class Model
         $res = $query->execute($permittedData);
         if ($res) {
             $res = $query->lastInsertId();
+            $tĥis->lastInsertId = $res;
+            var_dump("passer", $tĥis->lastInsertId, $res);
         }
 
         return $res;
