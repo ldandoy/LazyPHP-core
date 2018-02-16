@@ -260,7 +260,6 @@ class Model
         if ($res) {
             $res = $query->lastInsertId();
             $tĥis->lastInsertId = $res;
-            var_dump("passer", $tĥis->lastInsertId, $res);
         }
 
         return $res;
