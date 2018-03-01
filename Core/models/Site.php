@@ -67,7 +67,7 @@ class Site extends Model
             if (file_exists($dir) && is_dir($dir)) {
                 if ($handle = opendir($dir)) {
                     while (false !== ($entry = readdir($handle))) {
-                        if ($entry != '.' && $entry != '..' && !is_dir($dir.'/'.$entry)) {
+                        if ($entry != '.' && $entry != '..' && !is_dir($dir.'/'.$entry) && strpos($entry, '.css') !== false) {
                             $value = str_replace('.css', '', $entry);
                             $label = $value;
 
