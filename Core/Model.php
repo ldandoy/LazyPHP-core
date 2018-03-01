@@ -259,7 +259,7 @@ class Model
         $res = $query->execute($permittedData);
         if ($res) {
             $res = $query->lastInsertId();
-            $tĥis->lastInsertId = $res;
+            $this->lastInsertId = $res;
         }
 
         return $res;
