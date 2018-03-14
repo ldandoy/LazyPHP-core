@@ -126,7 +126,16 @@ function debug($data, $displayBacktrace = true)
     echo $html;
 }
 
+$appModelsDir = APP_DIR.DS.'models';
+if (!is_dir($appModelsDir)) {
+    mkdir($appModelsDir);
+}
+
 $appWidgetsDir = APP_DIR.DS.'widgets';
+if (!is_dir($appWidgetsDir)) {
+    mkdir($appWidgetsDir);
+}
+
 if ($handle = opendir($appWidgetsDir)) {
     while (false !== ($entry = readdir($handle))) {
         if(!is_dir($appWidgetsDir.DS.$entry)) {
