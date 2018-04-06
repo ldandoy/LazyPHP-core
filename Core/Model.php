@@ -334,7 +334,7 @@ class Model
      *
      * @return mixed
      */
-    public static function findAll($where = '', $order = '')
+    public static function findAll($where = '', $order = '', $limit = null)
     {
         $res = array();
         $class = get_called_class();
@@ -344,6 +344,10 @@ class Model
         $query->from($class::getTableName());
         $query->where($where);
         $query->order($order);
+
+        if ($limit != null) {
+            $query->limit($limit);
+        }
 
         $rows = $query->executeAndFetchAll();
         foreach ($rows as $row) {
@@ -406,7 +410,7 @@ class Model
      *
      * @return \system\Model
      */
-    public static function findBy($key = 'id', $value = 0)
+    public static function findBy($key = 'id', $value = 0, $limit = null)
     {
         $class = get_called_class();
 
@@ -414,6 +418,10 @@ class Model
         $query->select('*');
         $query->where($key.' = :'.$key);
         $query->from($class::getTableName());
+
+        if ($limit != null) {
+            $query->limit($limit);
+        }
 
         $row = $query->executeAndFetch(array($key => $value));
 
