@@ -20,6 +20,10 @@ class Utils
      * @return void
      */
     public static function writelogs($log, $level = 'debug') {
+        $appLogsDir = LOG_DIR;
+        if (!is_dir($appLogsDir)) {
+            mkdir($appLogsDir);
+        }
         $handle = fopen(LOG_DIR.DS.date("Ymd").'.log', "a+");
         fwrite($handle, date("Y/m/d H:i:s") . ' ' . $level . ': ' .$log);
         fclose($handle);
