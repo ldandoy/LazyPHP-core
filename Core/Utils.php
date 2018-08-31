@@ -24,9 +24,11 @@ class Utils
         if (!is_dir($appLogsDir)) {
             mkdir($appLogsDir);
         }
-        $handle = fopen(LOG_DIR.DS.date("Ymd").'.log', "a+");
-        fwrite($handle, date("Y/m/d H:i:s") . ' ' . $level . ': ' .$log);
-        fclose($handle);
+        if (is_writable(LOG_DIR.DS.date("Ymd").'.log')) {
+            $handle = fopen(LOG_DIR.DS.date("Ymd").'.log', "a+");
+            fwrite($handle, date("Y/m/d H:i:s") . ' ' . $level . ': ' .$log);
+            fclose($handle);
+        }
     }
 
     /**

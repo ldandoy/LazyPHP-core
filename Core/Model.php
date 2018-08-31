@@ -184,6 +184,7 @@ class Model
     {
         $data = array();
         $attachedFiles = $this->getAttachedFiles();
+
         foreach ($attachedFiles as $key => $attachedFile) {
             if (isset($this->$key) && $this->$key != '') {
                 $value = &$this->$key;
