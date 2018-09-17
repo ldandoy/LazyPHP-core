@@ -142,6 +142,11 @@ class Model
                     } else if (isset($data['_'.$column.'_']) && $data['_'.$column.'_'] != '') {
                         $url = $data['_'.$column.'_'];
                         $uploadedFile = null;
+                    } else {
+                        if ($this->$column != null) {
+                            $url = $this->$column->url;
+                            $uploadedFile = null;
+                        }
                     }
                     $maxSize = isset($attachedFiles[$column]['maxSize']) ? (int)$attachedFiles[$column]['maxSize'] : null;
                     $this->$column = new AttachedFile($url, $uploadedFile, $attachedFiles[$column]['type'], $maxSize);
@@ -215,9 +220,9 @@ class Model
     public function save($data = array())
     {
         $this->setData($data);
-
         if ($this->valid()) {
             if (isset($this->id)) {
+                
                 $res = $this->update((array)$this);
                 if (!$res) {
                     return false;
