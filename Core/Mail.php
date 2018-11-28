@@ -44,7 +44,7 @@ class Mail
             //Recipients
             $mail->setFrom($from_mail, $from_name);
             $mail->addAddress($to_mail, $to_name);     // Add a recipient
-            $mail->addAddress('ldandoy@overconsulting.net');
+            //$mail->addAddress('ldandoy@overconsulting.net');
             // $mail->addAddress('hello@fitnss.fr');
 
             //Content
