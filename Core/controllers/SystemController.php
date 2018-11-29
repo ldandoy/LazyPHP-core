@@ -35,7 +35,7 @@ class SystemController extends Controller
             'core::system::maintenance',
             array(
                 'altImageLogin' => 'Default Image Login',
-                'imageLogin' => '/assets/images/default_image_login.png',
+                'imageLogin' => $this->site->brand_logo->url,
             )
         );
     }
