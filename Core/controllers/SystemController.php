@@ -7,7 +7,7 @@ use Core\Controller;
 class SystemController extends Controller
 {
 
-    public $layout = 'error';
+    public $layout = 'login';
 
     /**
      * routesAction
@@ -33,7 +33,10 @@ class SystemController extends Controller
     public function maintenanceAction () {
         $this->render(
             'core::system::maintenance',
-            array()
+            array(
+                'altImageLogin' => 'Default Image Login',
+                'imageLogin' => '/assets/images/default_image_login.png',
+            )
         );
     }
 
