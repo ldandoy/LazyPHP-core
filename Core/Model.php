@@ -366,6 +366,35 @@ class Model
     }
 
     /**
+     * Get all rows from a table
+     *
+     * @param mixed $where
+     * @param mixed $order
+     *
+     * @return mixed
+     */
+    public static function findOne($where = '')
+    {
+        $res = array();
+        $class = get_called_class();
+
+        $query = new Query();
+        $query->select('*');
+        $query->from($class::getTableName());
+        $query->where($where);
+
+        $row = $query->executeAndFetch();
+
+        if ($row !== false) {
+            $res = new $class($row);
+        } else {
+            $res = null;
+        }
+
+        return $res;
+    }
+
+    /**
      * Get a record from a table by id
      *
      * @param int $id
