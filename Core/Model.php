@@ -191,7 +191,7 @@ class Model
         $attachedFiles = $this->getAttachedFiles();
 
         foreach ($attachedFiles as $key => $attachedFile) {
-            if (isset($this->$key) && $this->$key != '' && ($dataIn["_".$key."_"] != "" || $dataIn[$key] != "") ) {
+            if (isset($this->$key) && $this->$key != '' && ((isset($dataIn["_".$key."_"]) && $dataIn["_".$key."_"] != "") || $dataIn[$key] != "") ) {
                 $value = &$this->$key;
                 if ($value->saveUploadedFile(strtolower(basename(str_replace('\\', '/', get_called_class()))), $this->id, $key)) {
                 }
