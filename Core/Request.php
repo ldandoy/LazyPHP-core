@@ -83,7 +83,7 @@ class Request
         $pathinfo = pathinfo($parsedUrl['path']);
         $path = rtrim(str_replace('\\', '/', $pathinfo['dirname']), '/').'/'.$pathinfo['filename'];
 
-        $allowedFormats = array('html', 'json', 'raw');
+        $allowedFormats = array('html', 'json', 'csv', 'raw');
         if (isset($pathinfo['extension'])) {
             $ext = $pathinfo['extension'];
             $this->format = in_array($ext, $allowedFormats) ? $ext : 'html';

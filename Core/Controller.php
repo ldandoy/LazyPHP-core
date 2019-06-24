@@ -190,6 +190,10 @@ class Controller
             if ($this->request->format == 'json') {
                 header('Content-Type: application/json');
                 echo json_encode($params);
+            } if ($this->request->format == 'csv') {
+                header('Content-Type: application/csv');
+                header('Content-Disposition: attachment; filename="'.$params['filename'].'"');
+                echo $params['csv'];
             } else {
                 if ($this->request->format == 'raw') {
                     $html = $view;
